@@ -1,0 +1,102 @@
+/* Device component styles */
+.device {
+  position: absolute;
+  background: white;
+  border-radius: 10px;
+  padding: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ecf0f1;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: move;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.device:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  border-color: #3498db;
+}
+
+.device:hover:not(.dragging) {
+  transform: translateY(-2px);
+}
+
+.device.active {
+  border-color: #e74c3c;
+  box-shadow: 0 8px 30px rgba(231, 76, 60, 0.4);
+}
+
+.device.active:not(.dragging) {
+  transform: scale(1.1);
+}
+
+.device.dragging {
+  z-index: 1000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  /* Don't apply any transforms while dragging to avoid position conflicts */
+}
+
+.device-icon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.device-icon i {
+  color: #7f8c8d;
+}
+
+.device-label {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.2rem;
+  font-size: 0.75rem;
+  line-height: 1.1;
+}
+
+.device-ip {
+  font-size: 0.65rem;
+  color: #7f8c8d;
+  font-family: 'Courier New', monospace;
+}
+
+/* Device-specific colors */
+.device.client .device-icon i {
+  color: #3498db;
+}
+
+.device.router1 .device-icon i {
+  color: #e67e22;
+}
+
+.device.ispRouter .device-icon i {
+  color: #9b59b6;
+}
+
+.device.internetRouter1 .device-icon i {
+  color: #8e44ad;
+}
+
+.device.internetRouter2 .device-icon i {
+  color: #e67e22;
+}
+
+.device.internetRouter3 .device-icon i {
+  color: #16a085;
+}
+
+.device.dnsServer .device-icon i {
+  color: #e74c3c;
+}
+
+.device.webServer .device-icon i {
+  color: #27ae60;
+}
+
+.device.cdnServer .device-icon i {
+  color: #f39c12;
+}

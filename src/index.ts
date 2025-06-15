@@ -1,0 +1,56 @@
+// NetworkGame Flow - Component Library Exports
+// Use these exports when importing this project as a reusable component
+
+// Main components
+export { NetworkSimulator } from './components/NetworkSimulator';
+export { Device } from './components/Device';
+export { Connection } from './components/Connection';
+export { ControlPanel } from './components/ControlPanel';
+export { Logger } from './components/Logger';
+export { StepController } from './components/StepController';
+export { EducationalPopup } from './components/EducationalPopup';
+
+// Custom hooks
+export { useNetworkSimulator } from './hooks/useNetworkSimulator';
+
+// Types
+export type {
+  Position,
+  DeviceData,
+  DeviceType,
+  Connection as ConnectionType,
+  PacketInfo,
+  StepData,
+  WebComponent,
+  ChaosSettings,
+  NetworkStats,
+  ScenarioType,
+  LogType,
+  LogEntry,
+  EducationalPopup as EducationalPopupType,
+  NetworkSimulatorProps,
+  DeviceProps,
+  ConnectionProps,
+  StepControllerProps,
+} from './types';
+
+// Utility functions (commented out until implemented)
+// export { 
+//   getDeviceColor,
+//   getDeviceDisplayName,
+//   formatBytes,
+//   formatDuration,
+// } from './utils/helpers';
+
+// Constants (commented out until implemented)
+// export {
+//   DEVICE_POSITIONS,
+//   DEVICE_CONNECTIONS,
+//   DEVICE_INFO,
+//   NETWORK_SCENARIOS,
+//   PACKET_COLORS,
+//   ANIMATION_DURATION,
+// } from './utils/constants';
+
+// Main App component (for standalone usage)
+export { default as App } from './App';

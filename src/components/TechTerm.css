@@ -1,0 +1,12 @@
+.tech-term {
+  color: #3498db;
+  cursor: help;
+  border-bottom: 1px dotted #3498db;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.tech-term:hover {
+  color: #2980b9;
+  border-bottom-color: #2980b9;
+}
