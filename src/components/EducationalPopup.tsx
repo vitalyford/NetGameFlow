@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef } from 'react';
 import type { EducationalPopup as EducationalPopupType } from '../types';
 import './EducationalPopup.css';
 
@@ -9,30 +9,6 @@ interface EducationalPopupProps {
 
 export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClose }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const [hasOverflow, setHasOverflow] = useState(false);
-
-  useEffect(() => {
-    const checkOverflow = () => {
-      if (contentRef.current) {
-        const overflow = contentRef.current.scrollHeight > contentRef.current.clientHeight;
-        setHasOverflow(overflow);
-        if (overflow) {
-          contentRef.current.classList.add('has-overflow');
-        } else {
-          contentRef.current.classList.remove('has-overflow');
-        }
-      }
-    };
-
-    if (popup) {
-      // Check overflow after content loads
-      setTimeout(checkOverflow, 100);
-      
-      // Check on window resize
-      window.addEventListener('resize', checkOverflow);
-      return () => window.removeEventListener('resize', checkOverflow);
-    }
-  }, [popup]);
 
   if (!popup) return null;
 
@@ -93,17 +69,10 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
                 loading="lazy"
               />
             </div>
-          )}
-            {popup.additionalInfo && (
+          )}          {popup.additionalInfo && (
             <div className="educational-popup-additional">
               <h3>Additional Information</h3>
               <p>{popup.additionalInfo}</p>
-            </div>
-          )}
-          
-          {hasOverflow && (
-            <div className="educational-popup-scroll-hint">
-              ⬇️ Scroll down for more content ⬇️
             </div>
           )}
         </div><div className="educational-popup-footer">

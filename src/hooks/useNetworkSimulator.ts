@@ -137,12 +137,31 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       },
     }));
   }, []);
-
   const clearDeviceHighlights = useCallback(() => {
     setDevices(prev => {
       const updated = { ...prev };
       Object.keys(updated).forEach(id => {
         updated[id] = { ...updated[id], active: false };
+      });
+      return updated;
+    });
+  }, []);
+
+  const setDeviceAttackState = useCallback((deviceId: string, attackState: 'normal' | 'under-attack' | 'recovery' | 'protected') => {
+    setDevices(prev => ({
+      ...prev,
+      [deviceId]: {
+        ...prev[deviceId],
+        attackState,
+      },
+    }));
+  }, []);
+
+  const clearAllAttackStates = useCallback(() => {
+    setDevices(prev => {
+      const updated = { ...prev };
+      Object.keys(updated).forEach(id => {
+        updated[id] = { ...updated[id], attackState: 'normal' };
       });
       return updated;
     });
@@ -612,12 +631,10 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Router forwards CDN request to ISP',
       phase: 'resources',
       description: 'Home router routes request through ISP to reach CDN server'
-    });
-
-    newStepData.push({
+    });    newStepData.push({
       stepNumber: 21,
       fromDevice: 'ispRouter',
-      toDevice: 'cdnServer',
+      toDevice: 'internetRouter1',
       packetInfo: {
         source: '192.168.1.100:45679',
         destination: '151.101.1.140:443',
@@ -626,15 +643,49 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         query: 'GET /style.css',
       },
       routingInfo: devices.ispRouter?.routingTable || {},
-      action: 'ISP routes to nearby CDN server',
+      action: 'ISP routes CDN request through internet',
       phase: 'resources',
-      description: 'ISP finds the closest CDN server for faster content delivery'
+      description: 'ISP router determines path to CDN through internet backbone'
     });
 
     newStepData.push({
       stepNumber: 22,
+      fromDevice: 'internetRouter1',
+      toDevice: 'internetRouter3',
+      packetInfo: {
+        source: '192.168.1.100:45679',
+        destination: '151.101.1.140:443',
+        protocol: 'HTTPS (TCP)',
+        size: '512 bytes',
+        query: 'GET /style.css',
+      },
+      routingInfo: devices.internetRouter1?.routingTable || {},
+      action: 'Routing to CDN through internet backbone',
+      phase: 'resources',
+      description: 'Request travels through internet infrastructure to reach CDN edge server'
+    });
+
+    newStepData.push({
+      stepNumber: 23,
+      fromDevice: 'internetRouter3',
+      toDevice: 'cdnServer',
+      packetInfo: {
+        source: '192.168.1.100:45679',
+        destination: '151.101.1.140:443',
+        protocol: 'HTTPS (TCP)',
+        size: '512 bytes',
+        query: 'GET /style.css',
+      },
+      routingInfo: devices.internetRouter3?.routingTable || {},
+      action: 'Request reaches CDN server',
+      phase: 'resources',
+      description: 'Request finally reaches the nearby CDN edge server for fast content delivery'
+    });
+
+    newStepData.push({
+      stepNumber: 24,
       fromDevice: 'cdnServer',
-      toDevice: 'ispRouter',
+      toDevice: 'client',
       packetInfo: {
         source: '151.101.1.140:443',
         destination: '192.168.1.100:45679',
@@ -643,9 +694,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         query: 'CSS Stylesheet',
       },
       routingInfo: devices.cdnServer?.routingTable || {},
-      action: 'CDN responds with CSS file',
+      action: 'CDN delivers CSS back to browser',
       phase: 'resources',
-      description: 'CDN server delivers CSS much faster than the main web server would'
+      description: 'CDN server sends CSS file back through the shortest path (optimized routing)'
     });
 
     newStepData.push({
@@ -679,24 +730,28 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       routingInfo: devices.router1?.routingTable || {},
       action: 'CSS delivered to browser',
       phase: 'resources',
-      description: 'Your browser receives CSS and can now style the webpage beautifully'    });
-
-    // Phase 5: DDoS Attack Simulation - The Dark Side of the Internet! 💀
+      description: 'Your browser receives CSS and can now style the webpage beautifully'    });    // Phase 5: DDoS Attack Simulation - The Dark Side of the Internet! 💀
     newStepData.push({
       stepNumber: 25,
       fromDevice: 'client',
       toDevice: 'webServer',
       packetInfo: {
-        source: '🤖 Bot Army (1000+ IPs)',
+        source: '🤖💀 Bot Army (10,000+ zombie computers)',
         destination: '93.184.216.34:443',
-        protocol: '💥 TCP SYN Flood',
-        size: '500MB/s',
-        query: '⚠️ DDoS ATTACK TRAFFIC ⚠️',
+        protocol: '⚡💥 TCP SYN Flood',
+        size: '🌊 2GB/s flood',
+        query: '🚨 DDOS ATTACK IN PROGRESS 🚨',
+        request: '💀 Overwhelming the server',
       },
       routingInfo: {},
-      action: '🚨 MASSIVE DDoS attack launched!',
+      action: '🚨 MASSIVE DDoS attack launched! 💀',
       phase: 'attack',
-      description: '💀 Evil hackers unleash a botnet army to flood the server with fake requests!'
+      description: '⚡ Evil hackers unleash a MASSIVE botnet army - thousands of compromised computers flooding the server!',
+      detailedExplanation: {
+        packetJourney: 'A coordinated attack from 10,000+ compromised computers worldwide sends massive fake traffic',
+        routingLogic: 'All internet infrastructure is overloaded with malicious traffic',
+        networkingConcepts: ['DDoS Attack', 'Botnet', 'TCP SYN Flood', 'Network Congestion']
+      }
     });
 
     newStepData.push({
@@ -706,14 +761,20 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       packetInfo: {
         source: '93.184.216.34:443',
         destination: '192.168.1.100:45678',
-        protocol: 'HTTP Error',
+        protocol: '💔 HTTP Error',
         size: '500 bytes',
-        query: '😵 503 Service Unavailable',
+        query: '😵‍💫 503 Service Unavailable',
+        request: '💔 Server overwhelmed'
       },
       routingInfo: devices.webServer?.routingTable || {},
-      action: '😵 Server is drowning in traffic!',
+      action: '😵‍💫 Server is drowning! Can\'t breathe! 💔',
       phase: 'attack',
-      description: '💔 Poor server can\'t breathe! It\'s overwhelmed and starts rejecting legitimate users'
+      description: '� Poor server is overwhelmed by the attack! It can\'t handle legitimate users anymore!',
+      detailedExplanation: {
+        packetJourney: 'Server resources completely exhausted - CPU, memory, and network all maxed out',
+        routingLogic: 'Server forced to reject legitimate requests to survive',
+        networkingConcepts: ['Service Unavailable', 'Resource Exhaustion', 'Server Overload']
+      }
     });
 
     newStepData.push({
@@ -723,13 +784,20 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       packetInfo: {
         source: '93.184.216.34:443',
         destination: '192.168.1.100:45678',
-        protocol: 'HTTPS (TCP)',
+        protocol: '🛡️ HTTPS (TCP)',
         size: '2048 bytes',
-        query: '🛡️ Service Restored! 🎉',
-      },      routingInfo: devices.webServer?.routingTable || {},
-      action: '🛡️ DDoS protection activated!',
+        query: '✨ Service Restored! Welcome Back! 🎉',
+        request: '🦸‍♂️ DDoS Protection Activated'
+      },      
+      routingInfo: devices.webServer?.routingTable || {},
+      action: '🛡️ SUPERHERO DDoS protection activated! 🦸‍♂️',
       phase: 'recovery',
-      description: '🦸‍♂️ Security heroes deploy anti-DDoS shields and restore normal service!'
+      description: '🦸‍♂️ Security heroes deploy anti-DDoS shields and restore normal service! Good wins over evil!',
+      detailedExplanation: {
+        packetJourney: 'Advanced DDoS protection filters malicious traffic and allows legitimate users through',
+        routingLogic: 'Traffic filtering, rate limiting, and IP blacklisting deployed',
+        networkingConcepts: ['DDoS Protection', 'Traffic Filtering', 'Rate Limiting', 'IP Blacklisting']
+      }
     });
     
     setStepData(newStepData);
@@ -755,7 +823,6 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     highlightConnection,
     addLogEntry,
   ]);
-
   const nextStep = useCallback(() => {
     if (currentStep < stepData.length - 1) {
       const newStep = currentStep + 1;
@@ -764,6 +831,31 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       const step = stepData[newStep];
       clearConnectionHighlights();
       clearDeviceHighlights();
+        // Handle special attack states for DDoS visualization
+      if (step.phase === 'attack') {
+        if (step.stepNumber === 25) {
+          // DDoS attack start - mark web server as under attack
+          setDeviceAttackState('webServer', 'under-attack');
+          setDeviceAttackState('client', 'under-attack');
+        } else if (step.stepNumber === 26) {
+          // Server overwhelmed
+          setDeviceAttackState('webServer', 'under-attack');
+        }
+      } else if (step.phase === 'recovery') {
+        // Recovery phase - show protection activation
+        setDeviceAttackState('webServer', 'recovery');
+        setTimeout(() => {
+          setDeviceAttackState('webServer', 'protected');
+        }, 2000);
+        clearAllAttackStates();
+        setTimeout(() => {
+          setDeviceAttackState('webServer', 'protected');
+        }, 2500);
+      } else {
+        // Normal operations - clear attack states
+        clearAllAttackStates();
+      }
+      
       activateDevice(step.fromDevice);
       highlightConnection(step.fromDevice, step.toDevice);
       
@@ -776,13 +868,18 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         autoPlayInterval.current = null;
       }
       clearConnectionHighlights();
-      clearDeviceHighlights();      addLogEntry('✅ Step-by-step simulation completed!', 'success');
+      clearDeviceHighlights();
+      clearAllAttackStates();
+
+      addLogEntry('✅ Step-by-step simulation completed!', 'success');
     }
   }, [
     currentStep,
     stepData,
     clearConnectionHighlights,
     clearDeviceHighlights,
+    setDeviceAttackState,
+    clearAllAttackStates,
     activateDevice,
     highlightConnection,
     addLogEntry,
@@ -875,8 +972,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   useEffect(() => {
     return () => {
       if (autoPlayInterval.current) {
-        clearInterval(autoPlayInterval.current);
-      }
+        clearInterval(autoPlayInterval.current);      }
     };
   }, []);
 
@@ -913,5 +1009,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     simulateDDoS,
     updateStats,
     setChaosSettings,
+    setDeviceAttackState,
+    clearAllAttackStates,
   };
 };

@@ -125,3 +125,87 @@
 .device:hover::after {
   opacity: 1;
 }
+
+/* DDoS Attack States */
+.device.under-attack {
+  border-color: #e74c3c !important;
+  background: #ffebee !important;
+  animation: attack-pulse 0.8s infinite alternate;
+  box-shadow: 0 8px 30px rgba(231, 76, 60, 0.6) !important;
+}
+
+.device.under-attack .device-icon i {
+  color: #c62828 !important;
+  animation: attack-shake 0.5s infinite;
+}
+
+.device.recovery {
+  border-color: #27ae60 !important;
+  background: #e8f5e8 !important;
+  animation: recovery-glow 2s ease-in-out;
+  box-shadow: 0 8px 30px rgba(39, 174, 96, 0.6) !important;
+}
+
+.device.recovery .device-icon i {
+  color: #2e7d32 !important;
+}
+
+.device.protected {
+  border-color: #2196f3 !important;
+  background: #e3f2fd !important;
+  box-shadow: 0 8px 30px rgba(33, 150, 243, 0.6) !important;
+}
+
+.device.protected .device-icon i {
+  color: #1565c0 !important;
+}
+
+@keyframes attack-pulse {
+  0% {
+    transform: scale(1);
+    background: #ffebee !important;
+  }
+  100% {
+    transform: scale(1.05);
+    background: #ffcdd2 !important;
+  }
+}
+
+@keyframes attack-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes recovery-glow {
+  0% {
+    background: #ffebee !important;
+    border-color: #e74c3c !important;
+  }
+  50% {
+    background: #e1f5fe !important;
+    border-color: #2196f3 !important;
+  }
+  100% {
+    background: #e8f5e8 !important;
+    border-color: #27ae60 !important;
+  }
+}
+
+.device.under-attack::after {
+  content: "⚠️";
+  opacity: 1 !important;
+  background: #e74c3c !important;
+  animation: warning-blink 1s infinite;
+}
+
+.device.protected::after {
+  content: "🛡️";
+  opacity: 1 !important;
+  background: #27ae60 !important;
+}
+
+@keyframes warning-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}

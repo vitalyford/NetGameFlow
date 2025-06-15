@@ -72,8 +72,7 @@ export const StepController: React.FC<StepControllerProps> = ({
       startHeight: size.height,
       direction
     };
-  }, [size]);
-  const handleMouseMove = useCallback((e: MouseEvent) => {
+  }, [size]);  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging && !isResizing) return;
     
     if (isDragging) {
@@ -90,31 +89,33 @@ export const StepController: React.FC<StepControllerProps> = ({
       
       let newWidth = resizeData.current.startWidth;
       let newHeight = resizeData.current.startHeight;
-        // Handle different resize directions
+      let newX = position.x;
+      let newY = position.y;
+      
+      // Handle different resize directions
       if (resizeDirection.includes('e')) {
         newWidth = Math.max(350, Math.min(900, resizeData.current.startWidth + deltaX));
       }
       if (resizeDirection.includes('w')) {
-        const widthDelta = -deltaX;
-        newWidth = Math.max(350, Math.min(900, resizeData.current.startWidth + widthDelta));
-        if (newWidth !== size.width) {
-          setPosition(prev => ({ ...prev, x: prev.x - widthDelta }));
-        }
+        const potentialWidth = Math.max(350, Math.min(900, resizeData.current.startWidth - deltaX));
+        const widthChange = potentialWidth - resizeData.current.startWidth;
+        newWidth = potentialWidth;
+        newX = position.x - widthChange;
       }
       if (resizeDirection.includes('s')) {
         newHeight = Math.max(450, Math.min(900, resizeData.current.startHeight + deltaY));
       }
       if (resizeDirection.includes('n')) {
-        const heightDelta = -deltaY;
-        newHeight = Math.max(450, Math.min(900, resizeData.current.startHeight + heightDelta));
-        if (newHeight !== size.height) {
-          setPosition(prev => ({ ...prev, y: prev.y - heightDelta }));
-        }
+        const potentialHeight = Math.max(450, Math.min(900, resizeData.current.startHeight - deltaY));
+        const heightChange = potentialHeight - resizeData.current.startHeight;
+        newHeight = potentialHeight;
+        newY = position.y - heightChange;
       }
       
       setSize({ width: newWidth, height: newHeight });
+      setPosition({ x: newX, y: newY });
     }
-  }, [isDragging, isResizing, resizeDirection, size.width, size.height]);
+  }, [isDragging, isResizing, resizeDirection, position.x, position.y]);
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setIsResizing(false);

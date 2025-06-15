@@ -237,10 +237,9 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showControlPanel, showLogPanel]);
-
-  return (
-    <div className={`network-simulator ${className}`}>      {/* Header */}
+  }, [showControlPanel, showLogPanel]);  return (
+    <div className={`network-simulator ${className}`}>
+      {/* Header */}
       <header className="network-header">
         <div className="header-content">
           <div className="header-title">
@@ -284,21 +283,20 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                 title={`${showLogPanel ? "Hide" : "Show"} activity log (Ctrl+2)`}
               >
                 <i className="fas fa-list"></i>
-                <span>Log</span>              </button>
+                <span>Log</span>
+              </button>
             </div>
           </div>
         </div>
       </header>
 
-      <div className={`network-layout ${!showControlPanel ? 'no-control-panel' : ''} ${!showLogPanel ? 'no-log-panel' : ''}`}>
-        {/* Control Panel */}        {showControls && showControlPanel && (
+      <div className={`network-layout ${!showControlPanel ? 'no-control-panel' : ''} ${!showLogPanel ? 'no-log-panel' : ''}`}>{/* Control Panel */}        {showControls && showControlPanel && (
           <ControlPanel
-            stats={stats}
             onStartPacketSimulation={() => startStepMode('packet')}
             onStartMessageSimulation={() => startStepMode('message')}
             onClearLog={clearLog}
           />
-        )}        {/* Network Topology */}
+        )}{/* Network Topology */}
         <div className="network-container">
           <div className="network-topology" ref={containerRef}>
             {/* Devices */}

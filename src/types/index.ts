@@ -12,6 +12,7 @@ export interface DeviceData {
   routingTable: RoutingTable;
   ip: string;
   type: DeviceType;
+  attackState?: 'normal' | 'under-attack' | 'recovery' | 'protected';
 }
 
 export interface RoutingTable {

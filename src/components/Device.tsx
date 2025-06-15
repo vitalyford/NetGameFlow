@@ -132,11 +132,10 @@ export const Device: React.FC<DeviceProps> = ({
   if (!containerRect || containerRect.width === 0 || containerRect.height === 0) {
     return null;
   }
-
   return (
     <div
       ref={deviceRef}
-      className={`device ${device.type} ${device.active ? 'active' : ''} ${isDragging ? 'dragging' : ''}`}
+      className={`device ${device.type} ${device.active ? 'active' : ''} ${isDragging ? 'dragging' : ''} ${device.attackState || ''}`}
       style={deviceStyle}
       onMouseDown={handleMouseDown}
       data-device-id={device.id}
