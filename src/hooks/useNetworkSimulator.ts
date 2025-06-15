@@ -59,8 +59,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     const padding = 80; // Enough for device size + some margin
     const usableWidth = width - (padding * 2);
     const usableHeight = height - (padding * 2);
-    
-    const devicePositions: Record<string, Position> = {
+      const devicePositions: Record<string, Position> = {
       client: { 
         x: padding + usableWidth * 0.08, 
         y: padding + usableHeight * 0.15 
@@ -97,11 +96,19 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         x: padding + usableWidth * 0.74, 
         y: padding + usableHeight * 0.60 
       },
+      // Attack simulation nodes - initially hidden
+      botnetCloud: {
+        x: padding + usableWidth * 0.08,
+        y: padding + usableHeight * 0.85
+      },
+      cloudflareEdge: {
+        x: padding + usableWidth * 0.30,
+        y: padding + usableHeight * 0.85
+      }
     };
 
     const newDevices: Record<string, DeviceData> = {};
-    
-    Object.entries(devicePositions).forEach(([id, position]) => {
+      Object.entries(devicePositions).forEach(([id, position]) => {
       newDevices[id] = {
         id,
         position,
@@ -110,6 +117,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingTable: ROUTING_TABLES[id as keyof typeof ROUTING_TABLES] || {},
         ip: DEVICE_IPS[id as keyof typeof DEVICE_IPS] || '127.0.0.1',
         type: id as DeviceType,
+        // Initially hide attack simulation devices
+        attackState: (id === 'botnetCloud' || id === 'cloudflareEdge') ? 'normal' : 'normal',
       };
     });
 
@@ -408,42 +417,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         packetJourney: 'Router performs reverse NAT: 98.76.54.32:12345 → 192.168.1.100:54321, delivers to client',
         routingLogic: 'NAT state table lookup: session 98.76.54.32:12345 maps back to 192.168.1.100:54321',
         networkingConcepts: ['Reverse NAT', 'Stateful NAT Table', 'Session Tracking', 'Local Delivery']
-      }
-    });
-
-    newStepData.push({
-      stepNumber: 7,
-      fromDevice: 'ispRouter',
-      toDevice: 'router1',
-      packetInfo: {
-        source: '8.8.8.8:53',
-        destination: '192.168.1.100:54321',
-        protocol: 'DNS (UDP)',
-        size: '128 bytes',
-        query: 'www.example.com → 93.184.216.34',
-      },
-      routingInfo: devices.ispRouter?.routingTable || {},
-      action: 'ISP routes response to home network',
-      phase: 'dns',
-      description: 'ISP router forwards the DNS response to your home router'
-    });
-
-    newStepData.push({
-      stepNumber: 8,
-      fromDevice: 'router1',
-      toDevice: 'client',
-      packetInfo: {
-        source: '8.8.8.8:53',
-        destination: '192.168.1.100:54321',
-        protocol: 'DNS (UDP)',
-        size: '128 bytes',
-        query: 'www.example.com → 93.184.216.34',
-      },
-      routingInfo: devices.router1?.routingTable || {},
-      action: 'DNS response reaches your computer',
-      phase: 'dns',
-      description: 'Your computer now knows the IP address: 93.184.216.34'
-    });
+      }    });
 
     // Phase 2: Initial HTTP Request (6 steps)
     newStepData.push({
@@ -456,11 +430,19 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         protocol: 'HTTPS (TCP)',
         size: '1420 bytes',
         query: 'GET / HTTP/1.1',
+        ttl: 64,
+        routingDecision: 'Route to default gateway',
+        nextHop: '192.168.1.1'
       },
       routingInfo: devices.client?.routingTable || {},
       action: 'Sending HTTPS request to website',
       phase: 'request',
-      description: 'Now that we have the IP, request the website over secure HTTPS'
+      description: 'Now that we have the IP, request the website over secure HTTPS',
+      detailedExplanation: {
+        packetJourney: 'Browser creates HTTPS request packet destined for resolved IP address',
+        routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
+        networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
+      }
     });
 
     newStepData.push({
@@ -679,28 +661,86 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       routingInfo: devices.internetRouter3?.routingTable || {},
       action: 'Request reaches CDN server',
       phase: 'resources',
-      description: 'Request finally reaches the nearby CDN edge server for fast content delivery'
-    });
+      description: 'Request finally reaches the nearby CDN edge server for fast content delivery'    });
 
+    // CDN Response Journey - proper routing back through internet infrastructure
     newStepData.push({
       stepNumber: 24,
       fromDevice: 'cdnServer',
-      toDevice: 'client',
+      toDevice: 'internetRouter3',
       packetInfo: {
         source: '151.101.1.140:443',
         destination: '192.168.1.100:45679',
         protocol: 'HTTPS (TCP)',
         size: '4096 bytes',
         query: 'CSS Stylesheet',
+        ttl: 64,
+        routingDecision: 'Return via internet backbone',
+        nextHop: '172.16.0.1'
       },
       routingInfo: devices.cdnServer?.routingTable || {},
-      action: 'CDN delivers CSS back to browser',
+      action: 'CDN sends CSS response back through internet',
       phase: 'resources',
-      description: 'CDN server sends CSS file back through the shortest path (optimized routing)'
+      description: 'CDN server delivers cached CSS file, routing back through internet infrastructure',
+      detailedExplanation: {
+        packetJourney: 'CDN edge server creates response packet with CSS content, routes back via internet backbone',
+        routingLogic: 'Destination 192.168.1.100 is not local, route via default gateway back through internet',
+        networkingConcepts: ['CDN Edge Servers', 'Content Caching', 'Optimized Delivery', 'Return Path Routing']
+      }
     });
 
     newStepData.push({
-      stepNumber: 23,
+      stepNumber: 25,
+      fromDevice: 'internetRouter3',
+      toDevice: 'internetRouter1',
+      packetInfo: {
+        source: '151.101.1.140:443',
+        destination: '192.168.1.100:45679',
+        protocol: 'HTTPS (TCP)',
+        size: '4096 bytes',
+        query: 'CSS Stylesheet',
+        ttl: 63,
+        routingDecision: 'Internet backbone routing',
+        nextHop: '203.0.113.1'
+      },
+      routingInfo: devices.internetRouter3?.routingTable || {},
+      action: 'CSS response travels through internet backbone',
+      phase: 'resources',
+      description: 'Response packet travels back through internet infrastructure toward customer ISP',
+      detailedExplanation: {
+        packetJourney: 'CSS response travels back through multiple internet routers using optimal path',
+        routingLogic: 'BGP routing tables determine best path back to customer ISP network',
+        networkingConcepts: ['Internet Backbone', 'Return Path Optimization', 'BGP Path Selection']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 26,
+      fromDevice: 'internetRouter1',
+      toDevice: 'ispRouter',
+      packetInfo: {
+        source: '151.101.1.140:443',
+        destination: '192.168.1.100:45679',
+        protocol: 'HTTPS (TCP)',
+        size: '4096 bytes',
+        query: 'CSS Stylesheet',
+        ttl: 62,
+        routingDecision: 'Route to customer ISP',
+        nextHop: '98.76.54.32'
+      },
+      routingInfo: devices.internetRouter1?.routingTable || {},
+      action: 'CSS response reaches customer ISP',
+      phase: 'resources',
+      description: 'Internet router forwards CSS response to customer ISP',
+      detailedExplanation: {
+        packetJourney: 'Response enters customer ISP network from internet backbone',
+        routingLogic: 'ISP border router receives response destined for customer IP block',
+        networkingConcepts: ['ISP Border Gateway', 'Customer IP Blocks', 'Last Mile Routing']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 27,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
       packetInfo: {
@@ -709,15 +749,23 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         protocol: 'HTTPS (TCP)',
         size: '4096 bytes',
         query: 'CSS Stylesheet',
+        ttl: 61,
+        routingDecision: 'Route to customer premises',
+        nextHop: '98.76.54.32'
       },
       routingInfo: devices.ispRouter?.routingTable || {},
       action: 'ISP forwards CSS back to customer',
       phase: 'resources',
-      description: 'CSS file travels back through ISP network to your home'
+      description: 'ISP router recognizes customer public IP and routes to customer router',
+      detailedExplanation: {
+        packetJourney: 'ISP routes response to specific customer connection based on IP assignment',
+        routingLogic: 'Customer IP 98.76.54.32 is assigned to this customer line',
+        networkingConcepts: ['Customer Premises Equipment', 'IP Assignment', 'Last Mile Delivery']
+      }
     });
 
     newStepData.push({
-      stepNumber: 24,
+      stepNumber: 28,
       fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
@@ -726,77 +774,142 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         protocol: 'HTTPS (TCP)',
         size: '4096 bytes',
         query: 'CSS Stylesheet',
+        originalDestination: '98.76.54.32:12346',
+        translatedDestination: '192.168.1.100:45679',
+        natPerformed: true,
+        ttl: 60,
+        routingDecision: 'NAT reverse translation and local delivery',
+        nextHop: '192.168.1.100'
       },
       routingInfo: devices.router1?.routingTable || {},
       action: 'CSS delivered to browser',
       phase: 'resources',
-      description: 'Your browser receives CSS and can now style the webpage beautifully'    });    // Phase 5: DDoS Attack Simulation - The Dark Side of the Internet! 💀
+      description: 'Home router performs reverse NAT and delivers CSS to your browser - webpage now loads with beautiful styling!',
+      detailedExplanation: {
+        packetJourney: 'Router performs reverse NAT and delivers CSS content to browser',
+        routingLogic: 'NAT state table lookup and local network delivery to client',
+        networkingConcepts: ['Reverse NAT', 'Content Delivery', 'Web Resource Loading', 'Browser Rendering']
+      }
+    });    // Phase 5: Realistic DDoS Attack with Botnet and Cloudflare Protection
     newStepData.push({
-      stepNumber: 25,
-      fromDevice: 'client',
+      stepNumber: 29,
+      fromDevice: 'botnetCloud',
+      toDevice: 'internetRouter1',
+      packetInfo: {
+        source: 'Botnet Command & Control',
+        destination: 'Internet Infrastructure',
+        protocol: 'Coordinated Multi-Vector Attack',
+        size: 'Massive Traffic Volume',
+        query: 'Attack Initiation Protocol',
+        request: 'Activate all compromised devices globally',
+        attackVectors: ['TCP SYN Flood', 'HTTP GET/POST Flood', 'UDP Amplification', 'Slowloris', 'Application Layer Attacks'],
+        maliciousIPs: ['50,000+ infected IoT devices', 'Hijacked cloud servers', 'Compromised residential routers', 'Infected mobile devices']
+      },
+      routingInfo: devices.botnetCloud?.routingTable || {},
+      action: 'Criminal botnet operators activate global zombie army',
+      phase: 'attack',
+      description: 'Cybercriminals remotely activate 50,000+ compromised devices worldwide. Each infected computer becomes a weapon in a coordinated assault on critical internet infrastructure.',
+      detailedExplanation: {
+        packetJourney: 'Botnet command servers send attack instructions to infected devices across continents',
+        routingLogic: 'Distributed attack sources overwhelm multiple network entry points simultaneously',
+        networkingConcepts: ['Distributed Denial of Service', 'Botnet Command & Control', 'Amplification Attacks', 'Multi-Vector Assault']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 30,
+      fromDevice: 'internetRouter1',
       toDevice: 'webServer',
       packetInfo: {
-        source: '🤖💀 Bot Army (10,000+ zombie computers)',
+        source: 'Global Attack Traffic',
         destination: '93.184.216.34:443',
-        protocol: '⚡💥 TCP SYN Flood',
-        size: '🌊 2GB/s flood',
-        query: '🚨 DDOS ATTACK IN PROGRESS 🚨',
-        request: '💀 Overwhelming the server',
+        protocol: 'Overwhelming Network Load',
+        size: '15 Gbps sustained attack',
+        query: 'Server resource exhaustion',
+        request: 'Force service outage',
+        attackVectors: ['SYN Flood', 'HTTP Flood', 'UDP Amplification', 'Slowloris'],
+        errorDetails: 'Network capacity exceeded by 300%'
       },
-      routingInfo: {},
-      action: '🚨 MASSIVE DDoS attack launched! 💀',
+      routingInfo: devices.internetRouter1?.routingTable || {},
+      action: 'Malicious traffic floods internet infrastructure toward target server',
       phase: 'attack',
-      description: '⚡ Evil hackers unleash a MASSIVE botnet army - thousands of compromised computers flooding the server!',
+      description: 'Attack traffic overwhelms internet routers and network links. Legitimate users cannot reach the website as malicious packets consume all available bandwidth and server resources.',
       detailedExplanation: {
-        packetJourney: 'A coordinated attack from 10,000+ compromised computers worldwide sends massive fake traffic',
-        routingLogic: 'All internet infrastructure is overloaded with malicious traffic',
-        networkingConcepts: ['DDoS Attack', 'Botnet', 'TCP SYN Flood', 'Network Congestion']
+        packetJourney: 'Massive volume of attack packets travels through internet infrastructure, congesting routers and links',
+        routingLogic: 'Router queues overflow as attack traffic exceeds normal capacity by orders of magnitude',
+        networkingConcepts: ['Network Congestion', 'Bandwidth Saturation', 'Router Queue Management', 'Quality of Service Degradation']
       }
     });
 
     newStepData.push({
-      stepNumber: 26,
+      stepNumber: 31,
       fromDevice: 'webServer',
       toDevice: 'client',
       packetInfo: {
         source: '93.184.216.34:443',
         destination: '192.168.1.100:45678',
-        protocol: '💔 HTTP Error',
+        protocol: 'HTTP 503 Service Unavailable',
         size: '500 bytes',
-        query: '😵‍💫 503 Service Unavailable',
-        request: '💔 Server overwhelmed'
+        query: 'Error: Server resources exhausted',
+        request: 'Service temporarily unavailable',
+        errorDetails: 'CPU: 100%, Memory: 100%, Network: Saturated, Connections: Maxed'
       },
       routingInfo: devices.webServer?.routingTable || {},
-      action: '😵‍💫 Server is drowning! Can\'t breathe! 💔',
+      action: 'Web server resources completely exhausted - legitimate users denied service',
       phase: 'attack',
-      description: '� Poor server is overwhelmed by the attack! It can\'t handle legitimate users anymore!',
+      description: 'The attack succeeds. Server hardware cannot handle the massive load. CPU utilization hits 100%, memory is exhausted, and network interfaces are saturated. The website becomes completely inaccessible to real users.',
       detailedExplanation: {
-        packetJourney: 'Server resources completely exhausted - CPU, memory, and network all maxed out',
-        routingLogic: 'Server forced to reject legitimate requests to survive',
-        networkingConcepts: ['Service Unavailable', 'Resource Exhaustion', 'Server Overload']
+        packetJourney: 'Server attempts to respond but lacks resources to process legitimate requests',
+        routingLogic: 'All server capacity consumed by processing malicious traffic',
+        networkingConcepts: ['Resource Exhaustion', 'Service Degradation', 'Denial of Service Impact', 'System Overload']
       }
     });
 
     newStepData.push({
-      stepNumber: 27,
+      stepNumber: 32,
+      fromDevice: 'cloudflareEdge',
+      toDevice: 'botnetCloud',
+      packetInfo: {
+        source: 'Cloudflare Global Network',
+        destination: 'Attack Sources',
+        protocol: 'DDoS Mitigation Activated',
+        size: 'Traffic Analysis & Filtering',
+        query: 'Intelligent threat detection',
+        request: 'Deploy protection measures',
+        protectionFeatures: ['ML-based traffic analysis', 'Rate limiting per IP', 'Behavioral fingerprinting', 'Challenge-response validation']
+      },
+      routingInfo: devices.cloudflareEdge?.routingTable || {},
+      action: 'Cloudflare DDoS protection automatically detects and responds to the attack',
+      phase: 'recovery',
+      description: 'Advanced AI-powered systems instantly recognize the attack pattern. Cloudflare\'s global network activates sophisticated countermeasures, filtering malicious traffic while allowing legitimate users through.',
+      detailedExplanation: {
+        packetJourney: 'Protection systems analyze traffic patterns and implement filtering rules across global edge locations',
+        routingLogic: 'Intelligent routing directs clean traffic to origin server while dropping malicious packets',
+        networkingConcepts: ['Traffic Analysis', 'Machine Learning Detection', 'Global Anycast Network', 'Intelligent Filtering']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 33,
       fromDevice: 'webServer',
       toDevice: 'client',
       packetInfo: {
         source: '93.184.216.34:443',
         destination: '192.168.1.100:45678',
-        protocol: '🛡️ HTTPS (TCP)',
+        protocol: 'HTTPS (TCP)',
         size: '2048 bytes',
-        query: '✨ Service Restored! Welcome Back! 🎉',
-        request: '🦸‍♂️ DDoS Protection Activated'
+        query: 'HTTP/1.1 200 OK - Service Restored',
+        request: 'Normal website operation resumed',
+        protectionFeatures: ['Clean traffic only', 'Attack traffic filtered', 'Performance optimized', 'Security monitoring active']
       },      
       routingInfo: devices.webServer?.routingTable || {},
-      action: '🛡️ SUPERHERO DDoS protection activated! 🦸‍♂️',
+      action: 'Service completely restored - clean traffic reaches server while attack is neutralized',
       phase: 'recovery',
-      description: '🦸‍♂️ Security heroes deploy anti-DDoS shields and restore normal service! Good wins over evil!',
+      description: 'Victory! Cloudflare\'s protection creates an impenetrable shield. The botnet attack is completely neutralized. Server resources return to normal levels. Legitimate users can access the website again without any issues.',
       detailedExplanation: {
-        packetJourney: 'Advanced DDoS protection filters malicious traffic and allows legitimate users through',
-        routingLogic: 'Traffic filtering, rate limiting, and IP blacklisting deployed',
-        networkingConcepts: ['DDoS Protection', 'Traffic Filtering', 'Rate Limiting', 'IP Blacklisting']
+        packetJourney: 'Only verified legitimate traffic reaches the origin server through Cloudflare\'s protection network',
+        routingLogic: 'Multi-layered filtering ensures malicious packets never reach the target infrastructure',
+        networkingConcepts: ['DDoS Mitigation Success', 'Traffic Scrubbing', 'Service Restoration', 'Security vs Performance Balance']
       }
     });
     
@@ -830,29 +943,39 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       
       const step = stepData[newStep];
       clearConnectionHighlights();
-      clearDeviceHighlights();
-        // Handle special attack states for DDoS visualization
+      clearDeviceHighlights();      // Handle special attack states for DDoS visualization
       if (step.phase === 'attack') {
-        if (step.stepNumber === 25) {
-          // DDoS attack start - mark web server as under attack
+        if (step.stepNumber === 29) {
+          // DDoS attack start - show botnet and mark infrastructure as under attack
+          setDeviceAttackState('botnetCloud', 'under-attack');
+          setDeviceAttackState('internetRouter1', 'under-attack');
+          setDeviceAttackState('internetRouter2', 'under-attack');
+          setDeviceAttackState('internetRouter3', 'under-attack');
+        } else if (step.stepNumber === 30) {
+          // Traffic flooding through infrastructure
+          setDeviceAttackState('ispRouter', 'under-attack');
           setDeviceAttackState('webServer', 'under-attack');
-          setDeviceAttackState('client', 'under-attack');
-        } else if (step.stepNumber === 26) {
-          // Server overwhelmed
+        } else if (step.stepNumber === 31) {
+          // Server overwhelmed - focus attack state on web server
           setDeviceAttackState('webServer', 'under-attack');
         }
       } else if (step.phase === 'recovery') {
-        // Recovery phase - show protection activation
-        setDeviceAttackState('webServer', 'recovery');
-        setTimeout(() => {
+        if (step.stepNumber === 32) {
+          // Cloudflare protection activates
+          setDeviceAttackState('cloudflareEdge', 'recovery');
+          setDeviceAttackState('botnetCloud', 'normal');
+          // Clear attack states from infrastructure
+          setDeviceAttackState('internetRouter1', 'normal');
+          setDeviceAttackState('internetRouter2', 'normal');
+          setDeviceAttackState('internetRouter3', 'normal');
+          setDeviceAttackState('ispRouter', 'normal');
+        } else if (step.stepNumber === 33) {
+          // Service fully restored
+          setDeviceAttackState('cloudflareEdge', 'protected');
           setDeviceAttackState('webServer', 'protected');
-        }, 2000);
-        clearAllAttackStates();
-        setTimeout(() => {
-          setDeviceAttackState('webServer', 'protected');
-        }, 2500);
+        }
       } else {
-        // Normal operations - clear attack states
+        // Normal operations - clear attack states and hide special devices
         clearAllAttackStates();
       }
       

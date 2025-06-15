@@ -34,6 +34,23 @@
   animation: currentStepPulse 1s infinite;
 }
 
+/* Attack traffic styling */
+.connection-line.attack-traffic {
+  stroke: #e74c3c;
+  stroke-width: 6;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: attackTrafficPulse 0.8s infinite;
+}
+
+.connection-line.protection-traffic {
+  stroke: #2ecc71;
+  stroke-width: 4;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: protectionTrafficPulse 1.2s infinite;
+}
+
 @keyframes connectionPulse {
   0%, 100% { 
     opacity: 1; 
@@ -53,5 +70,31 @@
   50% { 
     opacity: 0.8; 
     stroke-width: 5;
+  }
+}
+
+@keyframes attackTrafficPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 6;
+    stroke: #e74c3c;
+  }
+  50% { 
+    opacity: 0.6; 
+    stroke-width: 8;
+    stroke: #c0392b;
+  }
+}
+
+@keyframes protectionTrafficPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 4;
+    stroke: #2ecc71;
+  }
+  50% { 
+    opacity: 0.8; 
+    stroke-width: 5;
+    stroke: #27ae60;
   }
 }

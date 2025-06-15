@@ -28,7 +28,9 @@ export type DeviceType =
   | 'internetRouter3' 
   | 'dnsServer' 
   | 'webServer' 
-  | 'cdnServer';
+  | 'cdnServer'
+  | 'botnetCloud'
+  | 'cloudflareEdge';
 
 export interface Connection {
   from: string;
@@ -50,6 +52,11 @@ export interface PacketInfo {
   routingDecision?: string;
   nextHop?: string;
   ttl?: number;
+  // DDoS and attack-related properties
+  attackVectors?: string[];
+  maliciousIPs?: string[];
+  errorDetails?: string;
+  protectionFeatures?: string[];
 }
 
 export interface StepData {

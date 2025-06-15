@@ -98,7 +98,6 @@ export const Device: React.FC<DeviceProps> = ({
     width: DEVICE_CONFIG.WIDTH,
     height: DEVICE_CONFIG.HEIGHT,
   };
-
   const getDeviceIcon = (deviceType: string) => {
     const icons: Record<string, string> = {
       client: 'fas fa-laptop',
@@ -110,10 +109,11 @@ export const Device: React.FC<DeviceProps> = ({
       dnsServer: 'fas fa-address-book',
       webServer: 'fas fa-database',
       cdnServer: 'fas fa-rocket',
+      botnetCloud: 'fas fa-skull-crossbones',
+      cloudflareEdge: 'fas fa-shield-alt',
     };
     return icons[deviceType] || 'fas fa-circle';
-  };
-  const getDeviceLabel = (deviceType: string) => {
+  };  const getDeviceLabel = (deviceType: string) => {
     const labels: Record<string, string> = {
       client: 'Your Computer',
       router1: 'Home Router',
@@ -124,6 +124,8 @@ export const Device: React.FC<DeviceProps> = ({
       dnsServer: 'DNS Server',
       webServer: 'Web Server',
       cdnServer: 'CDN Server',
+      botnetCloud: 'Botnet Army',
+      cloudflareEdge: 'Cloudflare Edge',
     };
     return labels[deviceType] || deviceType;
   };

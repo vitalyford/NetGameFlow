@@ -102,6 +102,39 @@
   color: #f39c12;
 }
 
+/* Attack simulation devices */
+.device.botnetCloud .device-icon i {
+  color: #c0392b;
+  animation: malicious-pulse 2s infinite;
+}
+
+.device.cloudflareEdge .device-icon i {
+  color: #f4900c;
+  animation: protection-glow 3s infinite;
+}
+
+@keyframes malicious-pulse {
+  0%, 100% { 
+    color: #c0392b;
+    transform: scale(1);
+  }
+  50% { 
+    color: #e74c3c;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes protection-glow {
+  0%, 100% { 
+    color: #f4900c;
+    text-shadow: none;
+  }
+  50% { 
+    color: #3498db;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+  }
+}
+
 .device::after {
   content: "ℹ️";
   position: absolute;
@@ -208,4 +241,24 @@
 @keyframes warning-blink {
   0%, 50% { opacity: 1; }
   51%, 100% { opacity: 0.3; }
+}
+
+/* Initially hide attack simulation devices */
+.device.botnetCloud,
+.device.cloudflareEdge {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+/* Show attack simulation devices when they become active or under attack */
+.device.botnetCloud.under-attack,
+.device.botnetCloud.active,
+.device.cloudflareEdge.recovery,
+.device.cloudflareEdge.protected,
+.device.cloudflareEdge.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
 }
