@@ -298,9 +298,7 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
             onStartMessageSimulation={() => startStepMode('message')}
             onClearLog={clearLog}
           />
-        )}
-
-        {/* Network Topology */}
+        )}        {/* Network Topology */}
         <div className="network-container">
           <div className="network-topology" ref={containerRef}>
             {/* Devices */}
@@ -312,13 +310,101 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                 onDeviceClick={handleDeviceClick}
                 containerRect={containerRect}
               />
-            ))}            {/* Connections */}
+            ))}
+
+            {/* Connections */}
             <Connection
               connections={connections}
               devices={devices}
               activeConnections={activeConnections}
               currentStepConnection={currentStepConnection}
-            />{/* Step Controller Overlay */}
+            />
+
+            {/* Help Button */}
+            <button
+              className="floating-help-button"
+              onClick={() => {
+                setEducationalContent({
+                  title: 'Device Information',
+                  content: `<p><strong>💡 How to learn more:</strong></p>
+                           <p>• <strong>Click on any device</strong> to see detailed information about it</p>
+                           <p>• <strong>Drag devices</strong> to move them around</p>
+                           <p>• <strong>Use step mode</strong> to see how data travels through the network</p>
+                           <p><strong>Available devices:</strong></p>
+                           <ul>
+                             <li>🖥️ <strong>Your Computer</strong> - Where requests start</li>
+                             <li>🏠 <strong>Home Router</strong> - Your local network gateway</li>
+                             <li>🌐 <strong>ISP Router</strong> - Internet Service Provider</li>
+                             <li>🔍 <strong>DNS Server</strong> - Translates website names to addresses</li>
+                             <li>🖥️ <strong>Web Server</strong> - Hosts the website</li>
+                             <li>⚡ <strong>CDN Server</strong> - Fast content delivery</li>
+                           </ul>`
+                });
+                setShowEducational(true);
+              }}
+              title="Click to learn about devices"
+              aria-label="Help - Learn about network devices"
+            >
+              ❓
+            </button>            {/* Connections */}
+            <Connection
+              connections={connections}
+              devices={devices}
+              activeConnections={activeConnections}
+              currentStepConnection={currentStepConnection}
+            />
+
+            {/* Help Button */}
+            <button
+              className="floating-help-button"
+              onClick={() => {
+                setEducationalContent({
+                  title: 'Device Information',
+                  content: `<p><strong>💡 How to learn more:</strong></p>
+                           <p>• <strong>Click on any device</strong> to see detailed information about it</p>
+                           <p>• <strong>Drag devices</strong> to move them around</p>
+                           <p>• <strong>Use step mode</strong> to see how data travels through the network</p>
+                           <p><strong>Available devices:</strong></p>
+                           <ul>
+                             <li>🖥️ <strong>Your Computer</strong> - Where requests start</li>
+                             <li>🏠 <strong>Home Router</strong> - Your local network gateway</li>
+                             <li>🌐 <strong>ISP Router</strong> - Internet Service Provider</li>
+                             <li>🔍 <strong>DNS Server</strong> - Translates website names to addresses</li>
+                             <li>🖥️ <strong>Web Server</strong> - Hosts the website</li>
+                             <li>⚡ <strong>CDN Server</strong> - Fast content delivery</li>
+                           </ul>`
+                });
+                setShowEducational(true);
+              }}
+              title="Click to learn about devices"
+              aria-label="Help - Learn about network devices"            >
+              ❓
+            </button>
+
+            {/* Step Details Button - only shown during step mode */}
+            {isStepMode && (
+              <button
+                className="floating-step-details-button"
+                onClick={() => {
+                  // Force show the step controller by scrolling to it and expanding if minimized
+                  const stepTooltip = document.querySelector('.step-tooltip');
+                  if (stepTooltip) {
+                    stepTooltip.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    // If it's minimized, click the minimize button to expand it
+                    const minimizeBtn = stepTooltip.querySelector('.minimize-btn') as HTMLButtonElement;
+                    if (minimizeBtn && stepTooltip.classList.contains('minimized')) {
+                      minimizeBtn.click();
+                    }
+                  }
+                }}
+                title="Show current step details"
+                aria-label="Show current step details"
+              >
+                📋
+              </button>
+            )}
+
+            {/* Step Controller Overlay */}
             {isStepMode && currentStepData && (
               <StepController
                 isStepMode={isStepMode}
@@ -333,14 +419,18 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
               />
             )}
           </div>
-        </div>        {/* Activity Logger */}
+        </div>
+
+        {/* Activity Logger */}
         {showLogger && showLogPanel && (
           <Logger
             entries={logEntries}
             onClear={clearLog}
           />
         )}
-      </div>      {/* Educational Popup */}
+      </div>
+
+      {/* Educational Popup */}
       <EducationalPopup
         popup={showEducational ? {
           id: 'current',
@@ -349,7 +439,8 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
         } : null}
         onClose={() => setShowEducational(false)}
       />
-        {/* Welcome Guide */}
+
+      {/* Welcome Guide */}
       <WelcomeGuide
         isVisible={showWelcome && !hasStartedTour}
         onClose={handleWelcomeClose}

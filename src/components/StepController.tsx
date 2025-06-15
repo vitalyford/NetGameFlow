@@ -310,8 +310,7 @@ export const StepController: React.FC<StepControllerProps> = ({
           )}
         </div>
       )}      {/* Step Controls - always visible */}
-      <div className="step-controls">
-        <button
+      <div className="step-controls">        <button
           className="step-btn previous"
           onClick={onPrevious}
           disabled={currentStep === 0}
@@ -319,6 +318,7 @@ export const StepController: React.FC<StepControllerProps> = ({
           aria-label="Previous Step"
         >
           <i className="fas fa-chevron-left"></i>
+          <span className="btn-text">Previous</span>
         </button>
         
         {!isAutoPlaying ? (
@@ -329,6 +329,7 @@ export const StepController: React.FC<StepControllerProps> = ({
             aria-label="Auto Play"
           >
             <i className="fas fa-play"></i>
+            <span className="btn-text">Play</span>
           </button>
         ) : (
           <button
@@ -338,6 +339,7 @@ export const StepController: React.FC<StepControllerProps> = ({
             aria-label="Pause"
           >
             <i className="fas fa-pause"></i>
+            <span className="btn-text">Pause</span>
           </button>
         )}
         
@@ -349,6 +351,7 @@ export const StepController: React.FC<StepControllerProps> = ({
           aria-label="Next Step"
         >
           <i className="fas fa-chevron-right"></i>
+          <span className="btn-text">Next</span>
         </button>
         
         <button
@@ -358,6 +361,7 @@ export const StepController: React.FC<StepControllerProps> = ({
           aria-label="Restart Demo"
         >
           <i className="fas fa-redo"></i>
+          <span className="btn-text">Reset</span>
         </button>
       </div>
     </div>

@@ -367,3 +367,119 @@
   transform: translateX(100%);
   opacity: 0;
 }
+
+/* Floating Help Button */
+.floating-help-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  z-index: 50;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.floating-help-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.floating-help-button:active {
+  transform: scale(0.95);
+}
+
+.floating-help-button:focus {
+  outline: 3px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+
+/* Floating Step Details Button */
+.floating-step-details-button {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.4);
+  transition: all 0.3s ease;
+  z-index: 50;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.floating-step-details-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+  background: linear-gradient(135deg, #219a52 0%, #1bb584 100%);
+}
+
+.floating-step-details-button:active {
+  transform: scale(0.95);
+}
+
+.floating-step-details-button:focus {
+  outline: 3px solid rgba(40, 167, 69, 0.5);
+  outline-offset: 2px;
+}
+
+/* Responsive adjustments for help button */
+@media (max-width: 768px) {
+  .floating-help-button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+/* Responsive adjustments for step details button */
+@media (max-width: 768px) {
+  .floating-step-details-button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    top: 70px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-help-button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .floating-step-details-button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    top: 65px;
+    right: 10px;
+  }
+}

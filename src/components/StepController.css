@@ -11,9 +11,12 @@
   z-index: 500;
   max-width: 500px;
   min-width: 350px;
+  max-height: 500px;
   font-size: 0.9rem;
   transition: all 0.2s ease;
   user-select: none;
+  display: flex;
+  flex-direction: column;
 }
 
 .step-tooltip.dragging {
@@ -25,6 +28,30 @@
 .step-tooltip.minimized {
   max-height: 120px;
   overflow: hidden;
+  opacity: 0.9;
+  transform: translateX(-50%) scale(0.95);
+}
+
+.step-tooltip.minimized:hover {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.step-tooltip.minimized .minimize-btn {
+  background: rgba(255, 255, 255, 0.4);
+  animation: pulse-expand 2s infinite;
+}
+
+@keyframes pulse-expand {
+  0%, 100% { 
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+  }
 }
 
 .tooltip-header {
@@ -104,8 +131,53 @@
   background: rgba(255, 255, 255, 0.3);
 }
 
+/* Fallback for minimize button */
+.minimize-btn i:not([class*="fa-"]):not(.fa)::before {
+  content: "▼";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.minimized .minimize-btn i:not([class*="fa-"]):not(.fa)::before {
+  content: "▲";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Fallback for drag handle */
+.drag-handle i:not([class*="fa-"]):not(.fa)::before {
+  content: "⋮⋮";
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 1px;
+}
+
 .tooltip-content {
   padding: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Add visible scrollbar styling for StepController */
+.tooltip-content::-webkit-scrollbar {
+  width: 16px;
+}
+
+.tooltip-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.tooltip-content::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 8px;
+  border: 2px solid #f1f1f1;
+  min-height: 30px;
+}
+
+.tooltip-content::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
 }
 
 .current-action {
@@ -225,17 +297,70 @@
   background: #ffffff;
   border: 1px solid #dee2e6;
   color: #495057;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.15s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 0.5rem;
   min-width: 44px;
   min-height: 44px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+}
+
+.step-btn i {
+  font-size: 1rem;
+}
+
+/* Fallback styles for when FontAwesome doesn't load */
+.step-btn i::before {
+  display: inline-block;
+}
+
+.step-btn.previous i:not([class*="fa-"]):not(.fa)::before {
+  content: "⬅️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.step-btn.next i:not([class*="fa-"]):not(.fa)::before {
+  content: "➡️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.step-btn.auto-play i:not([class*="fa-"]):not(.fa)::before {
+  content: "▶️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.step-btn.pause i:not([class*="fa-"]):not(.fa)::before {
+  content: "⏸️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.step-btn.reset i:not([class*="fa-"]):not(.fa)::before {
+  content: "🔄";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.step-btn .btn-text {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+/* Hide text on very small screens */
+@media (max-width: 480px) {
+  .step-btn .btn-text {
+    display: none;
+  }
+  
+  .step-btn {
+    padding: 0.75rem;
+    min-width: 44px;
+  }
 }
 
 .step-btn:hover:not(:disabled) {
