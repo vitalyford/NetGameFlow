@@ -15,13 +15,21 @@ export const StepController: React.FC<StepControllerProps> = ({
   onReset,
   stepData,
 }) => {
-  const [isMinimized, setIsMinimized] = useState(false);
-  const [isDetailed, setIsDetailed] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);  const [isDetailed, setIsDetailed] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const dragRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 450, height: 600 });
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeDirection, setResizeDirection] = useState<string | null>(null);  const dragRef = useRef<HTMLDivElement>(null);
   const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
+  const resizeData = useRef({ 
+    startX: 0, 
+    startY: 0, 
+    startWidth: 0, 
+    startHeight: 0,
+    direction: '' 
+  });
 
   // Reset auto-play state when reaching the end or when manually navigating
   React.useEffect(() => {
@@ -29,11 +37,15 @@ export const StepController: React.FC<StepControllerProps> = ({
       setIsAutoPlaying(false);
     }
   }, [currentStep, totalSteps]);
-
   // Drag functionality
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.target instanceof HTMLElement && e.target.closest('button')) {
       return; // Don't drag when clicking buttons
+    }
+    
+    // Don't drag if clicking on resize handles
+    if (e.target instanceof HTMLElement && e.target.closest('.resize-handle')) {
+      return;
     }
     
     setIsDragging(true);
@@ -46,24 +58,70 @@ export const StepController: React.FC<StepControllerProps> = ({
     e.preventDefault();
   }, [position]);
 
+  // Resize functionality
+  const handleResizeMouseDown = useCallback((e: React.MouseEvent, direction: string) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    setIsResizing(true);
+    setResizeDirection(direction);
+    resizeData.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startWidth: size.width,
+      startHeight: size.height,
+      direction
+    };
+  }, [size]);
   const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging) return;
+    if (!isDragging && !isResizing) return;
     
-    const deltaX = e.clientX - dragData.current.startX;
-    const deltaY = e.clientY - dragData.current.startY;
-    
-    setPosition({
-      x: dragData.current.startPosX + deltaX,
-      y: dragData.current.startPosY + deltaY,
-    });
-  }, [isDragging]);
-
+    if (isDragging) {
+      const deltaX = e.clientX - dragData.current.startX;
+      const deltaY = e.clientY - dragData.current.startY;
+      
+      setPosition({
+        x: dragData.current.startPosX + deltaX,
+        y: dragData.current.startPosY + deltaY,
+      });
+    } else if (isResizing && resizeDirection) {
+      const deltaX = e.clientX - resizeData.current.startX;
+      const deltaY = e.clientY - resizeData.current.startY;
+      
+      let newWidth = resizeData.current.startWidth;
+      let newHeight = resizeData.current.startHeight;
+        // Handle different resize directions
+      if (resizeDirection.includes('e')) {
+        newWidth = Math.max(350, Math.min(900, resizeData.current.startWidth + deltaX));
+      }
+      if (resizeDirection.includes('w')) {
+        const widthDelta = -deltaX;
+        newWidth = Math.max(350, Math.min(900, resizeData.current.startWidth + widthDelta));
+        if (newWidth !== size.width) {
+          setPosition(prev => ({ ...prev, x: prev.x - widthDelta }));
+        }
+      }
+      if (resizeDirection.includes('s')) {
+        newHeight = Math.max(450, Math.min(900, resizeData.current.startHeight + deltaY));
+      }
+      if (resizeDirection.includes('n')) {
+        const heightDelta = -deltaY;
+        newHeight = Math.max(450, Math.min(900, resizeData.current.startHeight + heightDelta));
+        if (newHeight !== size.height) {
+          setPosition(prev => ({ ...prev, y: prev.y - heightDelta }));
+        }
+      }
+      
+      setSize({ width: newWidth, height: newHeight });
+    }
+  }, [isDragging, isResizing, resizeDirection, size.width, size.height]);
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
+    setIsResizing(false);
+    setResizeDirection(null);
   }, []);
-
   React.useEffect(() => {
-    if (isDragging) {
+    if (isDragging || isResizing) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
       return () => {
@@ -71,7 +129,7 @@ export const StepController: React.FC<StepControllerProps> = ({
         document.removeEventListener('mouseup', handleMouseUp);
       };
     }
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
   if (!isStepMode || !stepData) return null;
 
@@ -124,9 +182,11 @@ export const StepController: React.FC<StepControllerProps> = ({
     }
   };  return (
     <div 
-      className={`step-tooltip ${isMinimized ? 'minimized' : ''} ${isDragging ? 'dragging' : ''}`}
+      className={`step-tooltip ${isMinimized ? 'minimized' : ''} ${isDragging ? 'dragging' : ''} ${isResizing ? 'resizing' : ''}`}
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
+        width: `${size.width}px`,
+        height: isMinimized ? 'auto' : `${size.height}px`,
         cursor: isDragging ? 'grabbing' : 'grab'
       }}
       onMouseDown={handleMouseDown}
@@ -314,32 +374,29 @@ export const StepController: React.FC<StepControllerProps> = ({
           className="step-btn previous"
           onClick={onPrevious}
           disabled={currentStep === 0}
-          title="⬅️ Previous Step"
+          title="Previous Step"
           aria-label="Previous Step"
         >
           <i className="fas fa-chevron-left"></i>
-          <span className="btn-text">Previous</span>
         </button>
         
         {!isAutoPlaying ? (
           <button
             className="step-btn auto-play"
             onClick={handleAutoPlay}
-            title="▶️ Auto Play All Steps"
+            title="Auto Play All Steps"
             aria-label="Auto Play"
           >
             <i className="fas fa-play"></i>
-            <span className="btn-text">Play</span>
           </button>
         ) : (
           <button
             className="step-btn pause"
             onClick={handlePause}
-            title="⏸️ Pause Auto Play"
+            title="Pause Auto Play"
             aria-label="Pause"
           >
             <i className="fas fa-pause"></i>
-            <span className="btn-text">Pause</span>
           </button>
         )}
         
@@ -347,23 +404,66 @@ export const StepController: React.FC<StepControllerProps> = ({
           className="step-btn next"
           onClick={onNext}
           disabled={currentStep === totalSteps - 1}
-          title="➡️ Next Step"
+          title="Next Step"
           aria-label="Next Step"
         >
           <i className="fas fa-chevron-right"></i>
-          <span className="btn-text">Next</span>
         </button>
         
         <button
           className="step-btn reset"
           onClick={onReset}
-          title="🔄 Restart Demo"
+          title="Restart Demo from Beginning"
           aria-label="Restart Demo"
         >
           <i className="fas fa-redo"></i>
-          <span className="btn-text">Reset</span>
         </button>
       </div>
+
+      {/* Resize Handles */}
+      {!isMinimized && (
+        <>
+          {/* Corner handles */}
+          <div 
+            className="resize-handle resize-nw" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
+          />
+          <div 
+            className="resize-handle resize-ne" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
+          />
+          <div 
+            className="resize-handle resize-sw" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
+          />
+          <div 
+            className="resize-handle resize-se" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
+          />
+          
+          {/* Edge handles */}
+          <div 
+            className="resize-handle resize-n" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'n')}
+          />
+          <div 
+            className="resize-handle resize-s" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 's')}
+          />
+          <div 
+            className="resize-handle resize-w" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'w')}
+          />          <div 
+            className="resize-handle resize-e" 
+            onMouseDown={(e) => handleResizeMouseDown(e, 'e')}
+          />
+          
+          {/* Resize indicator */}
+          <div className="resize-indicator">
+            <i className="fas fa-expand-arrows-alt"></i>
+          </div>
+        </>
+      )}
     </div>
   );
 };

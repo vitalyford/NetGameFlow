@@ -7,22 +7,40 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e1e5e9;
-  z-index: 500;
-  max-width: 500px;
+  border: 1px solid #e1e5e9;  z-index: 500;
   min-width: 350px;
-  max-height: 500px;
+  max-width: 900px;
+  min-height: 450px;
+  max-height: 900px;
   font-size: 0.9rem;
   transition: all 0.2s ease;
   user-select: none;
   display: flex;
   flex-direction: column;
+  resize: none; /* Disable default resize since we have custom handles */
 }
 
 .step-tooltip.dragging {
   transform: none;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   z-index: 1000;
+}
+
+.step-tooltip.resizing {
+  transition: none;
+  user-select: none;
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.step-tooltip.resizing * {
+  user-select: none;
+  pointer-events: none;
+}
+
+.step-tooltip.resizing .resize-handle::after {
+  opacity: 1 !important;
+  background: rgba(102, 126, 234, 0.6) !important;
 }
 
 .step-tooltip.minimized {
@@ -151,7 +169,6 @@
 
 .tooltip-content {
   padding: 1.5rem;
-  max-height: 400px;
   overflow-y: auto;
   overflow-x: hidden;
   flex: 1;
@@ -286,18 +303,169 @@
 /* Step Controls */
 .step-controls {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.75rem;
   padding: 1rem 1.5rem;
   background: #f8f9fa;
   border-radius: 0 0 12px 12px;
   border-top: 1px solid #e9ecef;
+  justify-content: center;
+}
+
+/* Resize Handles */
+.resize-handle {
+  position: absolute;
+  background: transparent;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+/* Corner handles */
+.resize-handle.resize-nw {
+  top: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: nw-resize;
+}
+
+.resize-handle.resize-ne {
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: ne-resize;
+}
+
+.resize-handle.resize-sw {
+  bottom: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: sw-resize;
+}
+
+.resize-handle.resize-se {
+  bottom: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: se-resize;
+}
+
+/* Edge handles */
+.resize-handle.resize-n {
+  top: -5px;
+  left: 20px;
+  right: 20px;
+  height: 10px;
+  cursor: n-resize;
+}
+
+.resize-handle.resize-s {
+  bottom: -5px;
+  left: 20px;
+  right: 20px;
+  height: 10px;
+  cursor: s-resize;
+}
+
+.resize-handle.resize-w {
+  left: -5px;
+  top: 20px;
+  bottom: 20px;
+  width: 10px;
+  cursor: w-resize;
+}
+
+.resize-handle.resize-e {
+  right: -5px;
+  top: 20px;
+  bottom: 20px;
+  width: 10px;
+  cursor: e-resize;
+}
+
+/* Visual feedback for resize handles */
+.resize-handle::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resize-handle:hover::after,
+.step-tooltip:hover .resize-handle::after,
+.step-tooltip.resizing .resize-handle::after {
+  opacity: 1;
+}
+
+/* Make corner handles more visible on hover */
+.resize-handle.resize-nw::after,
+.resize-handle.resize-ne::after,
+.resize-handle.resize-sw::after,
+.resize-handle.resize-se::after {
+  background: rgba(102, 126, 234, 0.5);
+  border: 1px solid rgba(102, 126, 234, 0.7);
+}
+
+/* Edge handles get a different visual treatment */
+.resize-handle.resize-n::after,
+.resize-handle.resize-s::after {
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.4), transparent);
+  border: none;
+  border-radius: 0;
+}
+
+.resize-handle.resize-w::after,
+.resize-handle.resize-e::after {
+  background: linear-gradient(to bottom, transparent, rgba(102, 126, 234, 0.4), transparent);
+  border: none;
+  border-radius: 0;
+}
+
+/* Hide resize handles when minimized */
+.step-tooltip.minimized .resize-handle {
+  display: none;
+}
+
+/* Resize indicator */
+.resize-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  color: #adb5bd;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.step-tooltip:hover .resize-indicator {
+  opacity: 0.8;
+}
+
+/* Fallback for resize indicator */
+.resize-indicator i:not([class*="fa-"]):not(.fa)::before {
+  content: "⤡";
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
 }
 
 .step-btn {
   background: #ffffff;
   border: 1px solid #dee2e6;
   color: #495057;
-  padding: 0.75rem 1rem;
+  padding: 0.75rem;
   border-radius: 8px;
   font-size: 0.9rem;
   cursor: pointer;
@@ -305,15 +473,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.5rem;
   min-width: 44px;
   min-height: 44px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   font-weight: 500;
+  position: relative;
 }
 
 .step-btn i {
-  font-size: 1rem;
+  font-size: 1.1rem;
+  line-height: 1;
 }
 
 /* Fallback styles for when FontAwesome doesn't load */
@@ -341,26 +510,8 @@
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn.reset i:not([class*="fa-"]):not(.fa)::before {
-  content: "🔄";
+.step-btn.reset i:not([class*="fa-"]):not(.fa)::before {  content: "🔄";
   font-family: system-ui, -apple-system, sans-serif;
-}
-
-.step-btn .btn-text {
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-/* Hide text on very small screens */
-@media (max-width: 480px) {
-  .step-btn .btn-text {
-    display: none;
-  }
-  
-  .step-btn {
-    padding: 0.75rem;
-    min-width: 44px;
-  }
 }
 
 .step-btn:hover:not(:disabled) {
@@ -368,6 +519,77 @@
   border-color: #adb5bd;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced tooltip styling for step buttons */
+.step-btn[title] {
+  position: relative;
+}
+
+.step-btn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 5px;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s ease-out 0.5s forwards;
+  pointer-events: none;
+  max-width: 200px;
+  text-align: center;
+}
+
+.step-btn[title]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  margin-bottom: -5px;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s ease-out 0.5s forwards;
+  pointer-events: none;
+}
+
+/* Adjust tooltip positioning on smaller screens */
+@media (max-width: 480px) {
+  .step-btn[title]:hover::after {
+    bottom: auto;
+    top: 100%;
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+  
+  .step-btn[title]:hover::before {
+    bottom: auto;
+    top: 100%;
+    border-top-color: transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.9);
+    margin-bottom: 0;
+    margin-top: -5px;
+  }
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
 }
 
 .step-btn:disabled {
@@ -426,7 +648,6 @@
   background: #e9ecef;
   color: #495057;
   border-color: #dee2e6;
-  flex: 0.5;
 }
 
 .step-btn.reset:hover:not(:disabled) {
@@ -472,13 +693,18 @@
   }
   
   .step-controls {
-    flex-wrap: wrap;
-    gap: 0.25rem;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
   }
   
   .step-btn {
-    padding: 0.5rem;
-    font-size: 0.75rem;
+    padding: 0.6rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .step-btn i {
+    font-size: 1rem;
   }
 }
 

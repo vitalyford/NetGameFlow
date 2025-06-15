@@ -1,44 +1,47 @@
 import { useState } from 'react';
 import { NetworkSimulator } from './components/NetworkSimulator';
-import type { NetworkStats, ScenarioType } from './types';
+import type { NetworkStats } from './types';
 import './App.css';
 
 function App() {
   const [stats, setStats] = useState<NetworkStats>({ sent: 0, received: 0, lost: 0 });
-  const [currentScenario, setCurrentScenario] = useState<ScenarioType>('basic');
 
   const handleStatsChange = (newStats: NetworkStats) => {
     setStats(newStats);
   };
 
-  const handleScenarioChange = (scenario: ScenarioType) => {
-    setCurrentScenario(scenario);
-  };
-
   return (
     <div className="app">
       <header className="app-header">
-        <h1>NetworkGame Flow</h1>
-        <p className="app-description">
-          Interactive Network Simulation - Learn how data travels across the internet
-        </p>
-        <div className="app-stats">
-          <div className="stat-item">
-            <span className="stat-label">Packets Sent:</span>
-            <span className="stat-value">{stats.sent}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Packets Received:</span>
-            <span className="stat-value">{stats.received}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Packets Lost:</span>
-            <span className="stat-value">{stats.lost}</span>
-          </div>
-          <div className="stat-item">
-            <span className="stat-label">Current Scenario:</span>
-            <span className="stat-value">{currentScenario}</span>
-          </div>
+        <div className="header-left">
+          <h1>NetworkFlow</h1>
+          <span className="header-subtitle">Interactive Network Learning</span>
+        </div>
+        
+        <div className="header-stats">
+          {stats.sent > 0 || stats.received > 0 || stats.lost > 0 ? (
+            <>
+              <div className="stat-compact">
+                <span className="stat-icon">📤</span>
+                <span className="stat-number">{stats.sent}</span>
+              </div>
+              <div className="stat-compact">
+                <span className="stat-icon">📥</span>
+                <span className="stat-number">{stats.received}</span>
+              </div>
+              {stats.lost > 0 && (
+                <div className="stat-compact error">
+                  <span className="stat-icon">❌</span>
+                  <span className="stat-number">{stats.lost}</span>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="status-indicator">
+              <span className="status-dot"></span>
+              <span>Ready to simulate</span>
+            </div>
+          )}
         </div>
       </header>
 
@@ -46,7 +49,6 @@ function App() {
         <NetworkSimulator
           className="network-simulator-container"
           onStatsChange={handleStatsChange}
-          onScenarioChange={handleScenarioChange}
           initialScenario="basic"
           showControls={true}
           showLogger={true}

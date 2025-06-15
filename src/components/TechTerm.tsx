@@ -36,7 +36,7 @@ const TECH_EXPLANATIONS: Record<string, string> = {
   'Cache': 'Temporary storage of frequently used data to make things faster, like keeping snacks handy'
 };
 
-export const TechTerm: React.FC<TechTermProps> = ({ term, children, position = 'top' }) => {
+export const TechTerm: React.FC<TechTermProps> = ({ term, children, position = 'bottom' }) => {
   const explanation = TECH_EXPLANATIONS[term];
   
   if (!explanation) {
@@ -44,7 +44,7 @@ export const TechTerm: React.FC<TechTermProps> = ({ term, children, position = '
   }
 
   return (
-    <Tooltip content={explanation} position={position}>
+    <Tooltip content={explanation} position={position} delay={25}>
       <span className="tech-term">{children}</span>
     </Tooltip>
   );
