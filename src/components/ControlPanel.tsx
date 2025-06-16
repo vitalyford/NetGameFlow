@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './ControlPanel.css';
 
 interface ControlPanelProps {
   onStartPacketSimulation: () => void;
   onStartMessageSimulation: () => void;
-  onClearLog: () => void;
+  onStopSimulation: () => void;
   isStepMode?: boolean;
   currentStep?: number;
   totalSteps?: number;
@@ -12,26 +12,28 @@ interface ControlPanelProps {
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   onStartMessageSimulation,
-  onClearLog,
+  onStopSimulation,
   isStepMode = false,
   currentStep = 0,
   totalSteps = 0,
 }) => {
-  const [isRunning, setIsRunning] = useState(false);const handleStartDemo = () => {
+  // Use isStepMode to determine if simulation is running
+  const isRunning = isStepMode;
+
+  const handleStartDemo = () => {
     if (isRunning) {
-      // Stop the demo
-      setIsRunning(false);
-      onClearLog();
+      // Stop the demo completely and reset to initial state
+      onStopSimulation();
     } else {
       // Start the demo
-      setIsRunning(true);
       // This will trigger the complete demo flow:
       // 1. DNS Resolution
       // 2. Normal packet flow
       // 3. DDoS attack demonstration
       // 4. Show packet behavior during attack
       onStartMessageSimulation();
-    }  };
+    }
+  };
 
   return (
     <div className="control-panel">      {/* Header */}

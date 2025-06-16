@@ -819,7 +819,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         query: 'GET / HTTP/1.1',
       },
       routingInfo: devices.router1?.routingTable || {},
-      action: 'Router forwards HTTPS request',
+      action: 'Router forwards HTTPS request to ISP',
       phase: 'request',
       description: 'Home router forwards your HTTPS request to the ISP'
     });    newStepData.push({
@@ -1509,6 +1509,41 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     }
   }, [stopAutoPlay, clearConnectionHighlights, clearDeviceHighlights, stepData, activateDevice, highlightConnection]);
 
+  // Stop and reset simulation completely
+  const stopSimulation = useCallback(() => {
+    // Stop any auto-play
+    stopAutoPlay();
+    
+    // Exit step mode completely
+    setIsStepMode(false);
+    setCurrentStep(0);
+    setStepData([]);
+    
+    // Clear all visual highlights and states
+    clearConnectionHighlights();
+    clearDeviceHighlights();
+    clearAllAttackStates();
+    
+    // Reset active connections
+    setActiveConnections(new Set());
+    
+    // Clear the log with a fresh start message
+    setLogEntries([{
+      timestamp: Helpers.formatTimestamp(),
+      message: 'Network Simulator reset. Ready to start a new simulation!',
+      type: 'info',
+      category: 'system',
+    }]);
+    
+    addLogEntry('🔄 Simulation stopped and reset to initial state', 'info');
+  }, [
+    stopAutoPlay,
+    clearConnectionHighlights,
+    clearDeviceHighlights,
+    clearAllAttackStates,
+    addLogEntry,
+  ]);
+
   // Simulate DDoS attack
   const simulateDDoS = useCallback(async () => {
     addLogEntry('💥 Simulating DDoS attack - sending massive traffic!', 'error');
@@ -1563,10 +1598,10 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     changeScenario,
     startStepMode,
     nextStep,
-    previousStep,
-    startAutoPlay,
+    previousStep,    startAutoPlay,
     stopAutoPlay,
     resetSteps,
+    stopSimulation,
     simulateDDoS,
     updateStats,
     setChaosSettings,

@@ -67,6 +67,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     previousStep,    startAutoPlay,
     stopAutoPlay,
     resetSteps,
+    stopSimulation,
   } = useNetworkSimulator(initialScenario);  // Initialize container rect and devices
   useEffect(() => {
     const updateContainerRect = () => {
@@ -556,7 +557,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
               <ControlPanel
                 onStartPacketSimulation={() => startStepMode('packet')}
                 onStartMessageSimulation={() => startStepMode('message')}
-                onClearLog={clearLog}
+                onStopSimulation={stopSimulation}
                 isStepMode={isStepMode}
                 currentStep={currentStep}
                 totalSteps={stepData.length}
