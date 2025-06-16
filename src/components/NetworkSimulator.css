@@ -377,17 +377,30 @@
 }
 
 /* Layout modifications when panels are hidden */
-.network-layout.no-control-panel .network-container {
-  flex: 1;
+.network-layout.no-control-panel .control-panel-container {
+  width: 0;
 }
 
-.network-layout.no-log-panel .network-container {
-  flex: 1;
+.network-layout.no-log-panel .log-panel-container {
+  width: 0;
 }
 
 .network-layout.no-control-panel.no-log-panel .network-container {
   flex: 1;
   width: 100%;
+}
+
+/* Smooth transitions for panel containers */
+.control-panel-container {
+  transition: width 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.log-panel-container {
+  transition: width 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
 }
 
 /* Smooth transitions for panel toggles */
@@ -662,4 +675,344 @@
 /* Canvas drag boundaries visual feedback */
 .network-topology.at-boundary {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Panel Manager Dropdown */
+.panel-manager {
+  position: relative;
+}
+
+.panel-manager-btn {
+  background: #ffffff;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  min-width: 110px;
+  height: 40px;
+}
+
+.panel-manager-btn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panel-manager-btn .fa-chevron-down {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.panel-dropdown.show .panel-manager-btn .fa-chevron-down {
+  transform: rotate(180deg);
+}
+
+.panel-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.panel-dropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.panel-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.15s ease;
+}
+
+.panel-option:last-of-type {
+  border-bottom: none;
+}
+
+.panel-option:hover {
+  background: #f8f9fa;
+}
+
+.panel-option label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+  margin: 0;
+}
+
+.panel-option input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.panel-option input:checked + .checkmark {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.panel-option input:checked + .checkmark::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.option-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.option-content i {
+  color: #6c757d;
+  width: 16px;
+  text-align: center;
+}
+
+.option-content div {
+  display: flex;
+  flex-direction: column;
+}
+
+.option-title {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 0.875rem;
+}
+
+.option-desc {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.panel-option kbd {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  color: #6c757d;
+  font-family: monospace;
+}
+
+.panel-dropdown hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #f1f3f4;
+}
+
+.panel-presets {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.preset-label {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.preset-btn {
+  background: #667eea;
+  color: #ffffff;
+  border: 1px solid #667eea;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.preset-btn:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.preset-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(102, 126, 234, 0.2);
+}
+
+.preset-btn i {
+  font-size: 0.7rem;
+}
+
+/* Panel Collapse Buttons */
+.panel-collapse-btn {
+  position: absolute;
+  top: 200px; /* Fixed position instead of percentage */
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panel-collapse-btn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.panel-collapse-btn:active {
+  background: #e9ecef;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.control-panel-collapse {
+  right: -16px;
+}
+
+.log-panel-collapse {
+  left: -16px;
+}
+
+.panel-collapse-btn i {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Panel Container Styling */
+.control-panel-container,
+.log-panel-container {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.control-panel-container.collapsed,
+.log-panel-container.collapsed {
+  width: 0;
+  overflow: hidden;
+}
+
+.control-panel-container.collapsed .panel-collapse-btn,
+.log-panel-container.collapsed .panel-collapse-btn {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.control-panel-container.collapsed .panel-collapse-btn i,
+.log-panel-container.collapsed .panel-collapse-btn i {
+  color: white;
+}
+
+/* Visual indicators for collapsed panels */
+.control-panel-container.collapsed::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #667eea, #764ba2);
+  opacity: 0.6;
+  z-index: 5;
+}
+
+.log-panel-container.collapsed::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #667eea, #764ba2);
+  opacity: 0.6;
+  z-index: 5;
+}
+
+/* Hover effects for collapsed panels */
+.control-panel-container.collapsed:hover::before {
+  opacity: 1;
+  width: 6px;
+}
+
+.log-panel-container.collapsed:hover::before {
+  opacity: 1;
+  width: 6px;
+}
+
+/* Add subtle shadow to active panels */
+.control-panel-container.expanded,
+.log-panel-container.expanded {
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 768px) {
+  .panel-manager-btn span {
+    display: none;
+  }
+  
+  .panel-manager-btn {
+    min-width: 40px;
+  }
+  
+  .panel-dropdown {
+    right: auto;
+    left: 0;
+    min-width: 260px;
+  }
+  
+  .panel-collapse-btn {
+    display: none;
+  }
 }

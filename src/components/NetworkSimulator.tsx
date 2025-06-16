@@ -252,8 +252,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     changeScenario('basic');
     setTimeout(() => startStepMode('packet'), 500);
   };
-
-  // Keyboard shortcuts for panel toggles
+  // Keyboard shortcuts for panel toggles and dropdown management
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       // Only handle shortcuts if no input is focused
@@ -274,8 +273,22 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             break;
         }
       }
-    };    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      // Close panel dropdown when clicking outside
+      const dropdown = document.querySelector('.panel-dropdown.show');
+      if (dropdown && !dropdown.closest('.panel-manager')?.contains(e.target as Node)) {
+        dropdown.classList.remove('show');
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('click', handleClickOutside);
+    };
   }, [showControlPanel, showLogPanel]);
   // Constrain canvas offset to reasonable bounds
   const constrainOffset = useCallback((offset: { x: number; y: number }) => {
@@ -433,47 +446,121 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
               </div>
             </div>
           </div>          <div className="header-controls">
-            {/* Panel toggle buttons */}
-            <div className="panel-toggles">
-              {/* Canvas Reset Button - only show when canvas is moved */}
-              {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
-                <button
-                  className="toggle-btn reset-canvas-btn"
-                  onClick={resetCanvasPosition}
-                  title="Reset canvas position (R)"
-                >
-                  <i className="fas fa-home"></i>
-                  <span>Reset View</span>
-                </button>
-              )}
-              
+            {/* Canvas Reset Button - only show when canvas is moved */}
+            {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
               <button
-                className={`toggle-btn ${showControlPanel ? 'active' : ''}`}
-                onClick={() => setShowControlPanel(!showControlPanel)}
-                title={`${showControlPanel ? "Hide" : "Show"} control panel (Ctrl+1)`}
+                className="toggle-btn reset-canvas-btn"
+                onClick={resetCanvasPosition}
+                title="Reset canvas position (R)"
               >
-                <i className="fas fa-sliders-h"></i>
-                <span>Controls</span>
+                <i className="fas fa-home"></i>
+                <span>Reset View</span>
               </button>
-                <button
-                className={`toggle-btn ${showLogPanel ? 'active' : ''}`}
-                onClick={() => setShowLogPanel(!showLogPanel)}
-                title={`${showLogPanel ? "Hide" : "Show"} activity log (Ctrl+2)`}
+            )}
+
+            {/* Panel Manager Dropdown */}
+            <div className="panel-manager">              <button 
+                className="panel-manager-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  const dropdown = e.currentTarget.nextElementSibling as HTMLElement;
+                  dropdown.classList.toggle('show');
+                }}
+                title="Manage panels"
               >
-                <i className="fas fa-list"></i>
-                <span>Log</span>
+                <i className="fas fa-layout"></i>
+                <span>Panels</span>
+                <i className="fas fa-chevron-down"></i>
               </button>
+              <div className="panel-dropdown">
+                <div className="panel-option">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showControlPanel}
+                      onChange={() => setShowControlPanel(!showControlPanel)}
+                    />
+                    <span className="checkmark"></span>
+                    <div className="option-content">
+                      <i className="fas fa-sliders-h"></i>
+                      <div>
+                        <span className="option-title">Control Panel</span>
+                        <span className="option-desc">Simulation controls & scenarios</span>
+                      </div>
+                    </div>
+                  </label>
+                  <kbd>Ctrl+1</kbd>
+                </div>
+                <div className="panel-option">
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={showLogPanel}
+                      onChange={() => setShowLogPanel(!showLogPanel)}
+                    />
+                    <span className="checkmark"></span>
+                    <div className="option-content">
+                      <i className="fas fa-list"></i>
+                      <div>
+                        <span className="option-title">Activity Log</span>
+                        <span className="option-desc">Network traffic & events</span>
+                      </div>
+                    </div>
+                  </label>
+                  <kbd>Ctrl+2</kbd>
+                </div>
+                <hr />
+                <div className="panel-presets">
+                  <span className="preset-label">Quick Layouts:</span>                  <button 
+                    className="preset-btn"
+                    onClick={() => {
+                      setShowControlPanel(true);
+                      setShowLogPanel(true);
+                      // Close dropdown
+                      document.querySelector('.panel-dropdown.show')?.classList.remove('show');
+                    }}
+                    title="Show all panels"
+                  >
+                    <i className="fas fa-th"></i>
+                    All
+                  </button>
+                  <button 
+                    className="preset-btn"
+                    onClick={() => {
+                      setShowControlPanel(false);
+                      setShowLogPanel(false);
+                      // Close dropdown
+                      document.querySelector('.panel-dropdown.show')?.classList.remove('show');
+                    }}
+                    title="Hide all panels for focused view"
+                  >
+                    <i className="fas fa-expand"></i>
+                    Focus
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </header>
-
-      <div className={`network-layout ${!showControlPanel ? 'no-control-panel' : ''} ${!showLogPanel ? 'no-log-panel' : ''}`}>{/* Control Panel */}        {showControls && showControlPanel && (
-          <ControlPanel
-            onStartPacketSimulation={() => startStepMode('packet')}
-            onStartMessageSimulation={() => startStepMode('message')}
-            onClearLog={clearLog}
-          />
+      </header>      <div className={`network-layout ${!showControlPanel ? 'no-control-panel' : ''} ${!showLogPanel ? 'no-log-panel' : ''}`}>
+        {/* Control Panel */}
+        {showControls && (
+          <div className={`control-panel-container ${showControlPanel ? 'expanded' : 'collapsed'}`}>
+            <button 
+              className="panel-collapse-btn control-panel-collapse"
+              onClick={() => setShowControlPanel(!showControlPanel)}
+              title={showControlPanel ? "Collapse control panel" : "Expand control panel"}
+            >
+              <i className={`fas ${showControlPanel ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
+            </button>
+            {showControlPanel && (
+              <ControlPanel
+                onStartPacketSimulation={() => startStepMode('packet')}
+                onStartMessageSimulation={() => startStepMode('message')}
+                onClearLog={clearLog}
+              />
+            )}
+          </div>
         )}{/* Network Topology */}        <div className="network-container">
           <div 
             className={`network-topology ${isDragging ? 'dragging' : ''}`}
@@ -558,14 +645,23 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
               />
             )}
           </div>
-        </div>
-
-        {/* Activity Logger */}
-        {showLogger && showLogPanel && (
-          <Logger
-            entries={logEntries}
-            onClear={clearLog}
-          />
+        </div>        {/* Activity Logger */}
+        {showLogger && (
+          <div className={`log-panel-container ${showLogPanel ? 'expanded' : 'collapsed'}`}>
+            <button 
+              className="panel-collapse-btn log-panel-collapse"
+              onClick={() => setShowLogPanel(!showLogPanel)}
+              title={showLogPanel ? "Collapse activity log" : "Expand activity log"}
+            >
+              <i className={`fas ${showLogPanel ? 'fa-chevron-right' : 'fa-chevron-left'}`}></i>
+            </button>
+            {showLogPanel && (
+              <Logger
+                entries={logEntries}
+                onClear={clearLog}
+              />
+            )}
+          </div>
         )}
       </div>      {/* Educational Popup */}
       <EducationalPopup
