@@ -393,21 +393,29 @@
 /* Smooth transitions for panel toggles */
 .control-panel {
   transition: transform 0.3s ease, opacity 0.3s ease;
+  flex-shrink: 0; /* Prevent affecting container size during transitions */
+  will-change: transform, opacity; /* Optimize for animations */
 }
 
 .log-container {
   transition: transform 0.3s ease, opacity 0.3s ease;
+  flex-shrink: 0; /* Prevent affecting container size during transitions */
+  will-change: transform, opacity; /* Optimize for animations */
 }
 
-/* When panels are being hidden */
+/* When panels are being hidden - keep them in layout to prevent size changes */
 .network-layout.no-control-panel .control-panel {
   transform: translateX(-100%);
   opacity: 0;
+  pointer-events: none; /* Disable interactions when hidden */
+  overflow: hidden; /* Ensure no content spills out during animation */
 }
 
 .network-layout.no-log-panel .log-container {
   transform: translateX(100%);
   opacity: 0;
+  pointer-events: none; /* Disable interactions when hidden */
+  overflow: hidden; /* Ensure no content spills out during animation */
 }
 
 /* Floating Help Button */

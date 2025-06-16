@@ -67,7 +67,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     previousStep,    startAutoPlay,
     stopAutoPlay,
     resetSteps,
-  } = useNetworkSimulator(initialScenario);// Initialize container rect and devices
+  } = useNetworkSimulator(initialScenario);  // Initialize container rect and devices
   useEffect(() => {
     const updateContainerRect = () => {
       if (containerRef.current) {
@@ -75,7 +75,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         // Only initialize if we have a meaningful container size
         if (rect.width > 0 && rect.height > 0) {
           setContainerRect(rect);
-          initializeDevices(rect);
+          initializeDevices(rect, false); // Initial setup, don't preserve states
         }
       }
     };
@@ -84,17 +84,21 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     const timer = setTimeout(updateContainerRect, 100);
     
     return () => clearTimeout(timer);
-  }, [initializeDevices]);  // Handle window resize and re-initialize if needed
+  }, [initializeDevices]);// Handle window resize and re-initialize if needed
   useEffect(() => {
     const handleResize = () => {
       if (containerRef.current) {
         const rect = containerRef.current.getBoundingClientRect();
         if (rect.width > 0 && rect.height > 0) {
           setContainerRect(rect);
-          // Re-initialize devices on significant size changes
-          if (Math.abs(rect.width - (containerRect?.width || 0)) > 100 || 
-              Math.abs(rect.height - (containerRect?.height || 0)) > 100) {
-            initializeDevices(rect);
+          // Only re-initialize devices on significant size changes AND preserve states during simulations
+          const significantSizeChange = Math.abs(rect.width - (containerRect?.width || 0)) > 100 || 
+                                       Math.abs(rect.height - (containerRect?.height || 0)) > 100;
+          
+          if (significantSizeChange) {
+            // Preserve device states if we're in step mode or have active devices
+            const shouldPreserveStates = isStepMode || Object.values(devices).some(device => device.active || device.attackState !== 'normal');
+            initializeDevices(rect, shouldPreserveStates);
           }
         }
       }
@@ -111,7 +115,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
       window.removeEventListener('resize', handleResize);
       resizeObserver.disconnect();
     };
-  }, [containerRect, initializeDevices]);
+  }, [containerRect, initializeDevices, isStepMode, devices]);
 
   // Notify parent of stats changes
   useEffect(() => {

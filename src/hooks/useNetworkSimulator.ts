@@ -46,9 +46,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   
   // Auto-play state
   const autoPlayInterval = useRef<number | null>(null);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
-  // Initialize devices
-  const initializeDevices = useCallback((containerRect: DOMRect) => {
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);  // Initialize devices
+  const initializeDevices = useCallback((containerRect: DOMRect, preserveStates = false) => {
     // Ensure minimum container size and add padding for device boundaries
     const minWidth = 800;
     const minHeight = 500;
@@ -107,22 +106,29 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       }
     };
 
-    const newDevices: Record<string, DeviceData> = {};
+    setDevices(prevDevices => {
+      const newDevices: Record<string, DeviceData> = {};
+      
       Object.entries(devicePositions).forEach(([id, position]) => {
-      newDevices[id] = {
-        id,
-        position,
-        active: false,
-        isDragging: false,
-        routingTable: ROUTING_TABLES[id as keyof typeof ROUTING_TABLES] || {},
-        ip: DEVICE_IPS[id as keyof typeof DEVICE_IPS] || '127.0.0.1',
-        type: id as DeviceType,
-        // Initially hide attack simulation devices
-        attackState: (id === 'botnetCloud' || id === 'cloudflareEdge') ? 'normal' : 'normal',
-      };
-    });
+        const existingDevice = prevDevices[id];
+        
+        newDevices[id] = {
+          id,
+          position,
+          // Preserve existing states if requested, otherwise use defaults
+          active: preserveStates && existingDevice ? existingDevice.active : false,
+          isDragging: false, // Always reset dragging state
+          routingTable: ROUTING_TABLES[id as keyof typeof ROUTING_TABLES] || {},
+          ip: DEVICE_IPS[id as keyof typeof DEVICE_IPS] || '127.0.0.1',
+          type: id as DeviceType,
+          // Preserve attack states when preserveStates is true
+          attackState: preserveStates && existingDevice ? existingDevice.attackState : 
+                      (id === 'botnetCloud' || id === 'cloudflareEdge') ? 'normal' : 'normal',
+        };
+      });
 
-    setDevices(newDevices);
+      return newDevices;
+    });
   }, []);
 
   // Device movement handler
