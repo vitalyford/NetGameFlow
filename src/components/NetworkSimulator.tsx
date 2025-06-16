@@ -552,12 +552,14 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
               title={showControlPanel ? "Collapse control panel" : "Expand control panel"}
             >
               <i className={`fas ${showControlPanel ? 'fa-chevron-left' : 'fa-chevron-right'}`}></i>
-            </button>
-            {showControlPanel && (
+            </button>            {showControlPanel && (
               <ControlPanel
                 onStartPacketSimulation={() => startStepMode('packet')}
                 onStartMessageSimulation={() => startStepMode('message')}
                 onClearLog={clearLog}
+                isStepMode={isStepMode}
+                currentStep={currentStep}
+                totalSteps={stepData.length}
               />
             )}
           </div>

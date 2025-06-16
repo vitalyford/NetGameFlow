@@ -5,11 +5,17 @@ interface ControlPanelProps {
   onStartPacketSimulation: () => void;
   onStartMessageSimulation: () => void;
   onClearLog: () => void;
+  isStepMode?: boolean;
+  currentStep?: number;
+  totalSteps?: number;
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
   onStartMessageSimulation,
   onClearLog,
+  isStepMode = false,
+  currentStep = 0,
+  totalSteps = 0,
 }) => {
   const [isRunning, setIsRunning] = useState(false);const handleStartDemo = () => {
     if (isRunning) {
@@ -28,12 +34,25 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     }  };
 
   return (
-    <div className="control-panel">
-      {/* Header */}
+    <div className="control-panel">      {/* Header */}
       <div className="panel-header">
-        <h2>Network Demo</h2>
-        <p>Complete Internet Flow Demonstration</p>
-      </div>      {/* Main Control */}
+        <p className="text-center">Complete Internet Flow Demonstration</p>
+        
+        {/* Simple Progress Bar */}
+        {isStepMode && totalSteps > 0 && (
+          <div className="step-progress">
+            <div className="progress-info">
+              <span>Step {currentStep + 1} of {totalSteps}</span>
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
+      </div>{/* Main Control */}
       <div className="main-control">
         <button 
           className={`start-btn ${isRunning ? 'running' : ''}`}
