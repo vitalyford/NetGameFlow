@@ -150,9 +150,8 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                  <p>• Handles high-speed data transmission</p>
                  <p>• Routes data to the correct destinations</p>
                  <p><em>Think of it as: The main highway entrance ramp</em></p>`,
-      },
-      internetRouter1: {
-        title: 'Internet Backbone Router',
+      },      internetRouter1: {
+        title: 'Internet Backbone Router A',
         content: `<p>One of millions of routers that form the internet's backbone infrastructure.</p>
                  <p><strong>What it does:</strong></p>
                  <p>• Routes data across continents and countries</p>
@@ -160,6 +159,26 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                  <p>• Finds the fastest path to destinations</p>
                  <p>• Connects different internet service providers</p>
                  <p><em>Think of it as: A major highway interchange</em></p>`,
+      },
+      internetRouter2: {
+        title: 'Internet Backbone Router B',
+        content: `<p>Another critical router in the internet's backbone infrastructure, specialized for DNS routing.</p>
+                 <p><strong>What it does:</strong></p>
+                 <p>• Routes DNS queries to name servers</p>
+                 <p>• Handles domain name resolution traffic</p>
+                 <p>• Provides redundant paths for reliability</p>
+                 <p>• Connects to global DNS infrastructure</p>
+                 <p><em>Think of it as: A specialized post office that handles address lookups</em></p>`,
+      },
+      internetRouter3: {
+        title: 'Internet Backbone Router C',
+        content: `<p>A backbone router focused on web server and content delivery routing.</p>
+                 <p><strong>What it does:</strong></p>
+                 <p>• Routes requests to web servers</p>
+                 <p>• Handles content delivery traffic</p>
+                 <p>• Manages high-bandwidth data transfers</p>
+                 <p>• Optimizes paths to content servers</p>
+                 <p><em>Think of it as: An express highway to shopping centers and entertainment venues</em></p>`,
       },
       dnsServer: {
         title: 'DNS Server (Domain Name System)',

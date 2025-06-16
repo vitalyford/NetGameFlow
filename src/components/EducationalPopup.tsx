@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
 import type { EducationalPopup as EducationalPopupType } from '../types';
 import './EducationalPopup.css';
 
@@ -9,6 +9,54 @@ interface EducationalPopupProps {
 
 export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClose }) => {
   const contentRef = useRef<HTMLDivElement>(null);
+  const [size, setSize] = useState({ width: 650, height: 400 });
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeData = useRef({ 
+    startX: 0, 
+    startY: 0, 
+    startWidth: 0, 
+    startHeight: 0  });
+
+  // Resize functionality
+  const handleResizeMouseDown = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    
+    setIsResizing(true);
+    resizeData.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startWidth: size.width,
+      startHeight: size.height,
+    };
+  }, [size]);
+
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isResizing) return;
+    
+    const deltaX = e.clientX - resizeData.current.startX;
+    const deltaY = e.clientY - resizeData.current.startY;
+    
+    const newWidth = Math.max(400, Math.min(1200, resizeData.current.startWidth + deltaX));
+    const newHeight = Math.max(300, Math.min(800, resizeData.current.startHeight + deltaY));
+    
+    setSize({ width: newWidth, height: newHeight });
+  }, [isResizing]);
+
+  const handleMouseUp = useCallback(() => {
+    setIsResizing(false);
+  }, []);
+
+  React.useEffect(() => {
+    if (isResizing) {
+      document.addEventListener('mousemove', handleMouseMove);
+      document.addEventListener('mouseup', handleMouseUp);
+      return () => {
+        document.removeEventListener('mousemove', handleMouseMove);
+        document.removeEventListener('mouseup', handleMouseUp);
+      };
+    }
+  }, [isResizing, handleMouseMove, handleMouseUp]);
 
   if (!popup) return null;
 
@@ -34,7 +82,7 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
       aria-labelledby="popup-title"
       tabIndex={-1}
     >
-      <div className="educational-popup">        <div className="educational-popup-header">
+      <div className={`educational-popup ${isResizing ? 'resizing' : ''}`} style={{ width: size.width, height: size.height }}>        <div className="educational-popup-header">
           <h2 id="popup-title" className="educational-popup-title">
             {popup.title}
           </h2>          <button
@@ -49,11 +97,11 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           className="educational-popup-content" 
           ref={contentRef}
           style={{
-            maxHeight: '280px',
-            height: '280px',
-            overflowY: 'scroll',
+            flex: 1,
+            overflowY: 'auto',
             overflowX: 'hidden',
-            padding: '24px'
+            padding: '24px',
+            minHeight: 0
           }}
         >
           <div 
@@ -85,7 +133,11 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           >
             Got it! ✓
           </button>
-          <div className="educational-popup-resize-handle" title="Drag to resize" />
+          <div 
+            className="educational-popup-resize-handle" 
+            title="Drag to resize"
+            onMouseDown={handleResizeMouseDown}
+          />
         </div>
       </div>
     </div>

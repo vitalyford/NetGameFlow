@@ -293,10 +293,36 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         packetJourney: 'ISP router forwards packet from customer network toward Google\'s Autonomous System',
         routingLogic: 'BGP table lookup: 8.8.8.8/32 belongs to Google AS15169, best path via next-hop 172.16.0.1',
         networkingConcepts: ['BGP (Border Gateway Protocol)', 'Autonomous Systems', 'Internet Routing', 'Longest Prefix Match']
-      }
-    });    newStepData.push({
+      }    });
+
+    newStepData.push({
       stepNumber: 4,
       fromDevice: 'internetRouter1',
+      toDevice: 'internetRouter2',
+      packetInfo: {
+        source: '98.76.54.32:12345',
+        destination: '8.8.8.8:53',
+        protocol: 'DNS (UDP)',
+        size: '64 bytes',
+        query: 'www.example.com A?',
+        ttl: 60,
+        routingDecision: 'Route to DNS infrastructure',
+        nextHop: '198.51.100.1'
+      },
+      routingInfo: devices.internetRouter1?.routingTable || {},
+      action: 'Routing through internet backbone to DNS infrastructure',
+      phase: 'dns',
+      description: 'Internet Router A forwards the DNS query to Internet Router B which connects to DNS servers',
+      detailedExplanation: {
+        packetJourney: 'Packet travels through internet backbone routers toward DNS server infrastructure',
+        routingLogic: 'Router A forwards to Router B based on routing table: 8.8.8.8/32 reachable via next-hop 198.51.100.1',
+        networkingConcepts: ['Internet Backbone Routing', 'Multi-hop Forwarding', 'Specialized Infrastructure']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 5,
+      fromDevice: 'internetRouter2',
       toDevice: 'dnsServer',
       packetInfo: {
         source: '98.76.54.32:12345',
@@ -304,25 +330,24 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         protocol: 'DNS (UDP)',
         size: '64 bytes',
         query: 'www.example.com A?',
-        ttl: 61,
+        ttl: 59,
         routingDecision: 'Direct delivery to Google DNS',
         nextHop: '8.8.8.8'
       },
-      routingInfo: devices.internetRouter1?.routingTable || {},
+      routingInfo: devices.internetRouter2?.routingTable || {},
       action: 'Packet reaches Google DNS server',
       phase: 'dns',
-      description: 'DNS query reaches Google\'s public DNS server',
+      description: 'DNS query reaches Google\'s public DNS server via specialized DNS routing infrastructure',
       detailedExplanation: {
         packetJourney: 'Final hop delivers packet to Google DNS server at 8.8.8.8',
-        routingLogic: 'Direct connected route: 8.8.8.8/32 is directly reachable via local interface',        networkingConcepts: ['DNS Resolution', 'Anycast Routing', 'Public DNS Servers']
+        routingLogic: 'Direct connected route: 8.8.8.8/32 is directly reachable via local interface',
+        networkingConcepts: ['DNS Resolution', 'Anycast Routing', 'Public DNS Servers']
       }
-    });
-
-    // DNS Response - Return journey (steps 5-8)
+    });    // DNS Response - Return journey (steps 6-10)
     newStepData.push({
-      stepNumber: 5,
+      stepNumber: 6,
       fromDevice: 'dnsServer',
-      toDevice: 'internetRouter1',
+      toDevice: 'internetRouter2',
       packetInfo: {
         source: '8.8.8.8:53',
         destination: '98.76.54.32:12345',
@@ -332,7 +357,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         ttl: 64,
         routingDecision: 'Return to source via reverse path',
         nextHop: '172.16.0.1'
-      },      routingInfo: devices.dnsServer?.routingTable || {},
+      },      
+      routingInfo: devices.dnsServer?.routingTable || {},
       action: 'DNS server responds with IP address',
       phase: 'dns',
       description: 'DNS server resolves www.example.com to 93.184.216.34',
@@ -344,9 +370,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 6,
-      fromDevice: 'internetRouter1',
-      toDevice: 'ispRouter',
+      stepNumber: 7,
+      fromDevice: 'internetRouter2',
+      toDevice: 'internetRouter1',
       packetInfo: {
         source: '8.8.8.8:53',
         destination: '98.76.54.32:12345',
@@ -354,13 +380,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         size: '128 bytes',
         query: 'www.example.com → 93.184.216.34',
         ttl: 63,
-        routingDecision: 'Route back to customer ISP',
+        routingDecision: 'Route back through internet backbone',
         nextHop: '203.0.113.1'
       },
-      routingInfo: devices.internetRouter1?.routingTable || {},
-      action: 'Routing DNS response back through internet',
+      routingInfo: devices.internetRouter2?.routingTable || {},
+      action: 'DNS response travels back through internet backbone',
       phase: 'dns',
-      description: 'Internet backbone routes response back toward customer ISP',
+      description: 'Response travels back through Internet Router B to Internet Router A',
       detailedExplanation: {
         packetJourney: 'Response packet travels back through internet infrastructure to customer ISP',
         routingLogic: '98.76.54.32/32 belongs to customer ISP block, route via learned BGP path',
@@ -369,11 +395,109 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 7,
+      stepNumber: 8,
+      fromDevice: 'internetRouter1',
+      toDevice: 'ispRouter',
+      packetInfo: {
+        source: '8.8.8.8:53',
+        destination: '98.76.54.32:12345',
+        protocol: 'DNS (UDP)',
+        size: '128 bytes',
+        query: 'www.example.com → 93.184.216.34',
+        ttl: 62,
+        routingDecision: 'Route back through internet backbone',
+        nextHop: '203.0.113.1'
+      },
+      routingInfo: devices.internetRouter1?.routingTable || {},
+      action: 'Response travels back through internet',
+      phase: 'dns',
+      description: 'Internet backbone routes response back toward customer ISP',
+      detailedExplanation: {
+        packetJourney: 'Response packet travels back through internet infrastructure to customer ISP',
+        routingLogic: '98.76.54.32/32 belongs to customer ISP block, route via learned BGP path',
+        networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Routing']
+      }
+    });    newStepData.push({
+      stepNumber: 9,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
       packetInfo: {
         source: '8.8.8.8:53',
+        destination: '98.76.54.32:12345',
+        protocol: 'DNS (UDP)',
+        size: '128 bytes',
+        query: 'www.example.com → 93.184.216.34',
+        ttl: 61,
+        routingDecision: 'Route to customer premises',
+        nextHop: '98.76.54.32'
+      },
+      routingInfo: devices.ispRouter?.routingTable || {},
+      action: 'ISP routes response to customer',
+      phase: 'dns',
+      description: 'ISP recognizes customer public IP and routes to customer router',
+      detailedExplanation: {
+        packetJourney: 'ISP router receives response and forwards to customer router based on IP assignment',
+        routingLogic: '98.76.54.32 is assigned to this customer, forward via customer connection interface',
+        networkingConcepts: ['ISP Routing', 'Customer IP Assignment', 'Last Mile Delivery']
+      }
+    });
+
+    newStepData.push({
+      stepNumber: 10,
+      fromDevice: 'router1',
+      toDevice: 'client',
+      packetInfo: {
+        source: '8.8.8.8:53',
+        destination: '192.168.1.100:54321',
+        protocol: 'DNS (UDP)',
+        size: '128 bytes',
+        query: 'www.example.com → 93.184.216.34',
+        originalDestination: '98.76.54.32:12345',
+        translatedDestination: '192.168.1.100:54321',
+        natPerformed: true,
+        ttl: 60,
+        routingDecision: 'NAT reverse translation',
+        nextHop: '192.168.1.100'
+      },
+      routingInfo: devices.router1?.routingTable || {},
+      action: 'Router performs reverse NAT to client',
+      phase: 'dns',
+      description: 'Home router translates public IP back to private IP and delivers to client',
+      detailedExplanation: {
+        packetJourney: 'Router performs reverse NAT: 98.76.54.32:12345 → 192.168.1.100:54321, delivers to client',
+        routingLogic: 'NAT state table lookup: session 98.76.54.32:12345 maps back to 192.168.1.100:54321',
+        networkingConcepts: ['Reverse NAT', 'Stateful NAT Table', 'Session Tracking', 'Local Delivery']
+      }
+    });    // Phase 2: Initial HTTP Request (6 steps)
+    newStepData.push({
+      stepNumber: 11,
+      fromDevice: 'client',
+      toDevice: 'router1',
+      packetInfo: {
+        source: '192.168.1.100:45678',
+        destination: '93.184.216.34:443',
+        protocol: 'HTTPS (TCP)',
+        size: '1420 bytes',
+        query: 'GET / HTTP/1.1',
+        ttl: 64,
+        routingDecision: 'Route to default gateway',
+        nextHop: '192.168.1.1'
+      },
+      routingInfo: devices.client?.routingTable || {},
+      action: 'Sending HTTPS request to website',
+      phase: 'request',
+      description: 'Now that we have the IP, request the website over secure HTTPS',
+      detailedExplanation: {
+        packetJourney: 'Browser creates HTTPS request packet destined for resolved IP address',
+        routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
+        networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
+      }
+    });    newStepData.push({
+      stepNumber: 12,
+      fromDevice: 'router1',
+      toDevice: 'ispRouter',
+      packetInfo: {
+        source: '192.168.1.100:45678',
         destination: '98.76.54.32:12345',
         protocol: 'DNS (UDP)',
         size: '128 bytes',
@@ -391,10 +515,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: '98.76.54.32 is assigned to this customer, forward via customer connection interface',
         networkingConcepts: ['ISP Routing', 'Customer IP Assignment', 'Last Mile Delivery']
       }
-    });
-
-    newStepData.push({
-      stepNumber: 8,
+    });    newStepData.push({
+      stepNumber: 10,
       fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
@@ -417,11 +539,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         packetJourney: 'Router performs reverse NAT: 98.76.54.32:12345 → 192.168.1.100:54321, delivers to client',
         routingLogic: 'NAT state table lookup: session 98.76.54.32:12345 maps back to 192.168.1.100:54321',
         networkingConcepts: ['Reverse NAT', 'Stateful NAT Table', 'Session Tracking', 'Local Delivery']
-      }    });
-
-    // Phase 2: Initial HTTP Request (6 steps)
+      }    });    // Phase 2: Initial HTTP Request (6 steps)
     newStepData.push({
-      stepNumber: 9,
+      stepNumber: 13,
       fromDevice: 'client',
       toDevice: 'router1',
       packetInfo: {
@@ -443,15 +563,12 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
         networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
       }
-    });
-
-    newStepData.push({
-      stepNumber: 10,
+    });    newStepData.push({
+      stepNumber: 14,
       fromDevice: 'router1',
       toDevice: 'ispRouter',
       packetInfo: {
-        source: '192.168.1.100:45678',
-        destination: '93.184.216.34:443',
+        source: '192.168.1.100:45678',        destination: '93.184.216.34:443',
         protocol: 'HTTPS (TCP)',
         size: '1420 bytes',
         query: 'GET / HTTP/1.1',
@@ -461,7 +578,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'request',
       description: 'Home router forwards your HTTPS request to the ISP'
     });    newStepData.push({
-      stepNumber: 11,
+      stepNumber: 13,
       fromDevice: 'ispRouter',
       toDevice: 'internetRouter1',
       packetInfo: {
@@ -476,7 +593,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'request',
       description: 'ISP router determines the best path to the destination server'
     });    newStepData.push({
-      stepNumber: 12,
+      stepNumber: 14,
       fromDevice: 'internetRouter1',
       toDevice: 'internetRouter3',
       packetInfo: {
@@ -491,7 +608,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'request',
       description: 'Packet travels through multiple internet routers to reach destination'
     });    newStepData.push({
-      stepNumber: 13,
+      stepNumber: 15,
       fromDevice: 'internetRouter3',
       toDevice: 'webServer',
       packetInfo: {
@@ -507,7 +624,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       description: 'Your HTTPS request finally reaches the destination web server'
     });    // Phase 3: Web Server Response (5 steps)
     newStepData.push({
-      stepNumber: 14,
+      stepNumber: 16,
       fromDevice: 'webServer',
       toDevice: 'internetRouter3',
       packetInfo: {
@@ -522,7 +639,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'response',
       description: 'Web server processes request and sends back HTML page content'
     });    newStepData.push({
-      stepNumber: 15,
+      stepNumber: 17,
       fromDevice: 'internetRouter3',
       toDevice: 'internetRouter1',
       packetInfo: {
@@ -537,7 +654,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'response',
       description: 'HTML response travels back through internet infrastructure'
     });    newStepData.push({
-      stepNumber: 16,
+      stepNumber: 18,
       fromDevice: 'internetRouter1',
       toDevice: 'ispRouter',
       packetInfo: {
@@ -552,7 +669,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'response',
       description: 'Response packet returns through your ISP network'
     });    newStepData.push({
-      stepNumber: 17,
+      stepNumber: 19,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
       packetInfo: {
@@ -567,7 +684,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'response',
       description: 'Response arrives back at your home router'
     });    newStepData.push({
-      stepNumber: 18,
+      stepNumber: 20,
       fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
@@ -582,7 +699,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'response',
       description: 'Your computer receives the HTML and starts rendering the webpage'    });    // Phase 4: CDN Resource Fetching (6 steps - through proper internet routing)
     newStepData.push({
-      stepNumber: 19,
+      stepNumber: 21,
       fromDevice: 'client',
       toDevice: 'router1',
       packetInfo: {
@@ -596,10 +713,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Requesting CSS from CDN',
       phase: 'resources',
       description: 'Browser needs CSS stylesheet and requests it from a Content Delivery Network'
-    });
-
-    newStepData.push({
-      stepNumber: 20,
+    });    newStepData.push({
+      stepNumber: 22,
       fromDevice: 'router1',
       toDevice: 'ispRouter',
       packetInfo: {
@@ -614,7 +729,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       phase: 'resources',
       description: 'Home router routes request through ISP to reach CDN server'
     });    newStepData.push({
-      stepNumber: 21,
+      stepNumber: 23,
       fromDevice: 'ispRouter',
       toDevice: 'internetRouter1',
       packetInfo: {
@@ -631,7 +746,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 22,
+      stepNumber: 24,
       fromDevice: 'internetRouter1',
       toDevice: 'internetRouter3',
       packetInfo: {
@@ -648,7 +763,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 23,
+      stepNumber: 25,
       fromDevice: 'internetRouter3',
       toDevice: 'cdnServer',
       packetInfo: {
@@ -665,7 +780,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
 
     // CDN Response Journey - proper routing back through internet infrastructure
     newStepData.push({
-      stepNumber: 24,
+      stepNumber: 26,
       fromDevice: 'cdnServer',
       toDevice: 'internetRouter3',
       packetInfo: {
@@ -687,10 +802,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Destination 192.168.1.100 is not local, route via default gateway back through internet',
         networkingConcepts: ['CDN Edge Servers', 'Content Caching', 'Optimized Delivery', 'Return Path Routing']
       }
-    });
-
-    newStepData.push({
-      stepNumber: 25,
+    });    newStepData.push({
+      stepNumber: 27,
       fromDevice: 'internetRouter3',
       toDevice: 'internetRouter1',
       packetInfo: {
@@ -715,7 +828,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 26,
+      stepNumber: 28,
       fromDevice: 'internetRouter1',
       toDevice: 'ispRouter',
       packetInfo: {
@@ -740,7 +853,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 27,
+      stepNumber: 29,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
       packetInfo: {
@@ -765,8 +878,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 28,
-      fromDevice: 'router1',
+      stepNumber: 30,      fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
         source: '151.101.1.140:443',
@@ -792,7 +904,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       }
     });    // Phase 5: Realistic DDoS Attack with Botnet and Cloudflare Protection
     newStepData.push({
-      stepNumber: 29,
+      stepNumber: 31,
       fromDevice: 'botnetCloud',
       toDevice: 'internetRouter1',
       packetInfo: {
@@ -814,10 +926,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Distributed attack sources overwhelm multiple network entry points simultaneously',
         networkingConcepts: ['Distributed Denial of Service', 'Botnet Command & Control', 'Amplification Attacks', 'Multi-Vector Assault']
       }
-    });
-
-    newStepData.push({
-      stepNumber: 30,
+    });    newStepData.push({
+      stepNumber: 32,
       fromDevice: 'internetRouter1',
       toDevice: 'webServer',
       packetInfo: {
@@ -842,7 +952,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 31,
+      stepNumber: 33,
       fromDevice: 'webServer',
       toDevice: 'client',
       packetInfo: {
@@ -866,7 +976,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 32,
+      stepNumber: 34,
       fromDevice: 'cloudflareEdge',
       toDevice: 'botnetCloud',
       packetInfo: {
@@ -890,7 +1000,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 33,
+      stepNumber: 35,
       fromDevice: 'webServer',
       toDevice: 'client',
       packetInfo: {
@@ -945,22 +1055,22 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       clearConnectionHighlights();
       clearDeviceHighlights();      // Handle special attack states for DDoS visualization
       if (step.phase === 'attack') {
-        if (step.stepNumber === 29) {
+        if (step.stepNumber === 31) {
           // DDoS attack start - show botnet and mark infrastructure as under attack
           setDeviceAttackState('botnetCloud', 'under-attack');
           setDeviceAttackState('internetRouter1', 'under-attack');
           setDeviceAttackState('internetRouter2', 'under-attack');
           setDeviceAttackState('internetRouter3', 'under-attack');
-        } else if (step.stepNumber === 30) {
+        } else if (step.stepNumber === 32) {
           // Traffic flooding through infrastructure
           setDeviceAttackState('ispRouter', 'under-attack');
           setDeviceAttackState('webServer', 'under-attack');
-        } else if (step.stepNumber === 31) {
+        } else if (step.stepNumber === 33) {
           // Server overwhelmed - focus attack state on web server
           setDeviceAttackState('webServer', 'under-attack');
         }
       } else if (step.phase === 'recovery') {
-        if (step.stepNumber === 32) {
+        if (step.stepNumber === 34) {
           // Cloudflare protection activates
           setDeviceAttackState('cloudflareEdge', 'recovery');
           setDeviceAttackState('botnetCloud', 'normal');
@@ -969,7 +1079,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           setDeviceAttackState('internetRouter2', 'normal');
           setDeviceAttackState('internetRouter3', 'normal');
           setDeviceAttackState('ispRouter', 'normal');
-        } else if (step.stepNumber === 33) {
+        } else if (step.stepNumber === 35) {
           // Service fully restored
           setDeviceAttackState('cloudflareEdge', 'protected');
           setDeviceAttackState('webServer', 'protected');

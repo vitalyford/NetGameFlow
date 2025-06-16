@@ -22,12 +22,13 @@ export const StepController: React.FC<StepControllerProps> = ({
   const [size, setSize] = useState({ width: 450, height: 600 });
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);  const dragRef = useRef<HTMLDivElement>(null);
-  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
-  const resizeData = useRef({ 
+  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });  const resizeData = useRef({ 
     startX: 0, 
     startY: 0, 
     startWidth: 0, 
     startHeight: 0,
+    startPosX: 0,
+    startPosY: 0,
     direction: '' 
   });
 
@@ -64,15 +65,16 @@ export const StepController: React.FC<StepControllerProps> = ({
     e.preventDefault();
     
     setIsResizing(true);
-    setResizeDirection(direction);
-    resizeData.current = {
+    setResizeDirection(direction);    resizeData.current = {
       startX: e.clientX,
       startY: e.clientY,
       startWidth: size.width,
       startHeight: size.height,
+      startPosX: position.x,
+      startPosY: position.y,
       direction
     };
-  }, [size]);  const handleMouseMove = useCallback((e: MouseEvent) => {
+  }, [size, position]);  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging && !isResizing) return;
     
     if (isDragging) {
@@ -86,11 +88,10 @@ export const StepController: React.FC<StepControllerProps> = ({
     } else if (isResizing && resizeDirection) {
       const deltaX = e.clientX - resizeData.current.startX;
       const deltaY = e.clientY - resizeData.current.startY;
-      
-      let newWidth = resizeData.current.startWidth;
+        let newWidth = resizeData.current.startWidth;
       let newHeight = resizeData.current.startHeight;
-      let newX = position.x;
-      let newY = position.y;
+      let newX = resizeData.current.startPosX;
+      let newY = resizeData.current.startPosY;
       
       // Handle different resize directions
       if (resizeDirection.includes('e')) {
@@ -98,24 +99,22 @@ export const StepController: React.FC<StepControllerProps> = ({
       }
       if (resizeDirection.includes('w')) {
         const potentialWidth = Math.max(350, Math.min(900, resizeData.current.startWidth - deltaX));
-        const widthChange = potentialWidth - resizeData.current.startWidth;
         newWidth = potentialWidth;
-        newX = position.x - widthChange;
+        newX = resizeData.current.startPosX + (resizeData.current.startWidth - potentialWidth);
       }
       if (resizeDirection.includes('s')) {
         newHeight = Math.max(450, Math.min(900, resizeData.current.startHeight + deltaY));
       }
       if (resizeDirection.includes('n')) {
         const potentialHeight = Math.max(450, Math.min(900, resizeData.current.startHeight - deltaY));
-        const heightChange = potentialHeight - resizeData.current.startHeight;
         newHeight = potentialHeight;
-        newY = position.y - heightChange;
+        newY = resizeData.current.startPosY + (resizeData.current.startHeight - potentialHeight);
       }
       
       setSize({ width: newWidth, height: newHeight });
       setPosition({ x: newX, y: newY });
     }
-  }, [isDragging, isResizing, resizeDirection, position.x, position.y]);
+  }, [isDragging, isResizing, resizeDirection]);
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setIsResizing(false);

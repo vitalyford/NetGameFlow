@@ -1,7 +1,27 @@
 import React from 'react';
-import type { ConnectionProps } from '../types';
+import type { ConnectionProps, DeviceData } from '../types';
 import { Helpers } from '../utils/helpers';
 import './Connection.css';
+
+// Helper function to determine if a device should be considered visible for connection rendering
+const isDeviceVisible = (deviceId: string, deviceData: DeviceData): boolean => {
+  // Always show regular network devices
+  if (deviceId !== 'botnetCloud' && deviceId !== 'cloudflareEdge') {
+    return true;
+  }
+  
+  // For attack simulation devices, only show if they have specific states
+  const attackState = deviceData?.attackState;
+  if (deviceId === 'botnetCloud') {
+    return attackState === 'under-attack' || deviceData?.active;
+  }
+  
+  if (deviceId === 'cloudflareEdge') {
+    return attackState === 'recovery' || attackState === 'protected' || deviceData?.active;
+  }
+  
+  return false;
+};
 
 export const Connection: React.FC<ConnectionProps> = ({
   connections,
@@ -45,12 +65,22 @@ export const Connection: React.FC<ConnectionProps> = ({
           <polygon points="0 0, 6 2, 0 4" fill="#3498db" />
         </marker>
       </defs>
-      
-      {connections.map((conn, index) => {
+        {connections.map((conn, index) => {
         const fromDevice = devices[conn.from];
         const toDevice = devices[conn.to];
         
+        // Don't render if either device doesn't exist
         if (!fromDevice || !toDevice) return null;
+        
+        // Don't render if either device should be hidden (attack simulation devices)
+        if (!isDeviceVisible(conn.from, fromDevice) || !isDeviceVisible(conn.to, toDevice)) {
+          return null;
+        }
+        
+        // Check device visibility for connection rendering
+        if (!isDeviceVisible(conn.from, fromDevice) || !isDeviceVisible(conn.to, toDevice)) {
+          return null;
+        }
         
         const { startX, startY, endX, endY } = Helpers.calculateConnectionPoints(
           fromDevice.position,
