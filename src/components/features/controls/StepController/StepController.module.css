@@ -47,7 +47,8 @@
 .stepTooltip.minimized {
   height: auto !important;
   min-height: auto !important;
-  max-height: none !important;  opacity: 0.9;
+  max-height: none !important;
+  opacity: 0.9;
   transform: translateX(-50%) scale(0.95);
 }
 

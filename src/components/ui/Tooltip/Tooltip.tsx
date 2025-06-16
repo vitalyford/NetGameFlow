@@ -31,10 +31,11 @@ export const Tooltip: React.FC<TooltipProps> = ({
             clearTimeout(timeoutRef.current);
         }
         setIsVisible(false);
-    };    // Check if we're inside a step controller for styling
+    };
+    // Check if we're inside a step controller for styling
     const isInStepController = () => {
-        return triggerRef.current?.closest(`.${styles.stepTooltip}`) !== null || 
-               triggerRef.current?.closest('.step-tooltip') !== null; // Fallback for external components
+        return triggerRef.current?.closest(`.${styles.stepTooltip}`) !== null ||
+            triggerRef.current?.closest('.step-tooltip') !== null; // Fallback for external components
     };
 
     const adjustPosition = () => {
@@ -45,9 +46,10 @@ export const Tooltip: React.FC<TooltipProps> = ({
         const viewport = {
             width: window.innerWidth,
             height: window.innerHeight
-        };        // Check if we're inside a step controller
-        const stepController = triggerRef.current.closest(`.${styles.stepTooltip}`) || 
-                              triggerRef.current.closest('.step-tooltip'); // Fallback for external components
+        };
+        // Check if we're inside a step controller
+        const stepController = triggerRef.current.closest(`.${styles.stepTooltip}`) ||
+            triggerRef.current.closest('.step-tooltip'); // Fallback for external components
         let newPosition = position;
         if (stepController) {
             const controllerContent = stepController.querySelector('.step-details-content') || stepController;
@@ -152,7 +154,9 @@ export const Tooltip: React.FC<TooltipProps> = ({
                 clearTimeout(timeoutRef.current);
             }
         };
-    }, []);    return (
+    }, []);
+
+    return (
         <div
             className={styles.container}
             ref={triggerRef}

@@ -33,10 +33,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       // 4. Show packet behavior during attack
       onStartMessageSimulation();
     }
-  }; return (
+  };
+
+  return (
     <div className={styles.controlPanel}>
-      {/* Header */}      <div className={styles.panelHeader}>
-        <p>Complete Internet Flow Demonstration</p>
+      {/* Header */}
+      <div className={styles.panelHeader}>
       </div>
       {/* Main Control */}
       <div className={styles.mainControl}>
@@ -46,7 +48,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         >
           <i className={`fas ${isRunning ? 'fa-stop' : 'fa-play'}`}></i>
           {isRunning ? 'Stop' : 'Start'}
-        </button>      </div>
+        </button>
+      </div>
       {/* Demo Flow Info */}
       <div className={styles.demoInfo}>
         <h3>🌐 Complete Network Journey</h3>

@@ -33,7 +33,7 @@ const WelcomeTechTerm: React.FC<{ term: string; children: React.ReactNode; onSho
   // If no explanation exists, just render the children without interaction
   if (!explanation) {
     return <>{children}</>;
-  }  return (
+  } return (
     <span
       className={`${techTermStyles.term} ${techTermStyles.clickable}`}
       onClick={handleClick}
@@ -83,7 +83,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
   const steps = [
     {
       title: "Welcome to NetworkFlow! 🌐",
-      content: (        <div>
+      content: (
+        <div>
           <p>Learn how the internet works through an interactive, step-by-step simulation!</p>
           <p>This educational platform shows you exactly how data travels from your computer to websites and back through <strong>35+ detailed steps</strong>.</p>
           <div className={styles.featureHighlight}>
@@ -101,7 +102,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
     },
     {
       title: "Complete Internet Journey 🚀",
-      content: (        <div>
+      content: (
+        <div>
           <div className={styles.journeyOverview}>
             <h4>One Complete Demonstration</h4>
             <p>Watch a <strong>complete internet flow</strong> from start to finish:</p>
@@ -120,7 +122,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
       )
     }, {
       title: "Understanding the Network 🗺️",
-      content: (        <div>
+      content: (
+        <div>
           <p>You'll see different devices that help move data across the internet:</p>
           <div className={styles.deviceGrid}>
             <div className={styles.deviceInfo}>
@@ -174,7 +177,8 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
     },
     {
       title: "Interactive Learning Features ✨",
-      content: (        <div>
+      content: (
+        <div>
           <div className={styles.featuresList}>
             <div className={styles.feature}>
               <span className={styles.featureIcon}>⏯️</span>
@@ -236,7 +240,9 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
     }
   };
 
-  const isLastStep = currentStep === steps.length - 1;  return (
+  const isLastStep = currentStep === steps.length - 1;
+
+  return (
     <div className={styles.welcomeOverlay} onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className={styles.welcomeGuide}>
         <div className={styles.welcomeHeader}>

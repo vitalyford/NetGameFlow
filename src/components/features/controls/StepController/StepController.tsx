@@ -23,7 +23,9 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
   const [isResizing, setIsResizing] = useState(false);
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
   const dragRef = useRef<HTMLDivElement>(null);
-  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });  const resizeData = useRef({
+  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
+  
+  const resizeData = useRef({
     startX: 0,
     startY: 0,
     startWidth: 0,
@@ -48,7 +50,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
     if (currentStep === totalSteps - 1) {
       setIsAutoPlaying(false);
     }
-  }, [currentStep, totalSteps]);  // Drag functionality
+  }, [currentStep, totalSteps]);
+  // Drag functionality
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // Always stop propagation to prevent canvas dragging
     e.stopPropagation();
@@ -194,7 +197,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
     } else if (step.fromDevice === 'webServer' && step.toDevice === 'client') {
       return "The website is sending back: 'Here's my webpage!'";
     } else {
-      return "Data is being passed through the internet infrastructure";    }
+      return "Data is being passed through the internet infrastructure";
+    }
   };
 
   return (
@@ -231,7 +235,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
             <i className={`fas fa-chevron-${isMinimized ? 'up' : 'down'}`}></i>
           </button>
         </div>
-      </div>      {!isMinimized && (
+      </div>
+      {!isMinimized && (
         <div className={styles.tooltipContent} onClick={(e) => e.stopPropagation()}>
           <div className={styles.currentAction}>
             <strong>What's happening:</strong> {stepData.action}
@@ -247,7 +252,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
             >
               {isDetailed ? 'Hide' : 'Show'} Technical Details
             </button>
-          </div>          {isDetailed && (
+          </div>
+          {isDetailed && (
             <>
               {/* Packet Journey Information */}
               <div className={styles.detailSection}>
@@ -391,7 +397,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
             </>
           )}
         </div>
-      )}      {/* Step Controls - always visible */}
+      )}
+      {/* Step Controls - always visible */}
       <div className={styles.stepControls} onClick={(e) => e.stopPropagation()}>
         <button
           className={`${styles.stepBtn} ${styles.previous}`}
@@ -456,7 +463,8 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
         >
           <i className="fas fa-redo"></i>
         </button>
-      </div>      {/* Resize Handles */}
+      </div>
+      {/* Resize Handles */}
       {!isMinimized && (
         <>
           {/* Corner handles */}
@@ -500,6 +508,7 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
             <i className="fas fa-expand-arrows-alt"></i>
           </div>
         </>
-      )}    </div>
+      )}
+    </div>
   );
 });

@@ -82,7 +82,9 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
     if (e.key === 'Escape') {
       onClose();
     }
-  };  return (
+  };
+
+  return (
     <div
       className={styles.overlay}
       onClick={handleBackdropClick}
@@ -144,7 +146,8 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
             <div className={styles.additional}>
               <h3>Additional Information</h3>
               <p>{popup.additionalInfo}</p>
-            </div>          )}
+            </div>
+          )}
         </div>
         <div
           className={styles.resizeHandle}

@@ -46,7 +46,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
 
   // Auto-play state
   const autoPlayInterval = useRef<number | null>(null);
-  const [isAutoPlaying, setIsAutoPlaying] = useState(false);  // Initialize devices
+  const [isAutoPlaying, setIsAutoPlaying] = useState(false);
+  // Initialize devices
   const initializeDevices = useCallback((containerRect: DOMRect, preserveStates = false) => {
     // Ensure minimum container size and add padding for device boundaries
     const minWidth = 800;

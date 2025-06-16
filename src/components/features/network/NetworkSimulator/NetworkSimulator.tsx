@@ -41,7 +41,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     });
 
     // Get educational context for tech terms
-    const { currentPopup, hidePopup } = useEducational();    // Panel visibility state
+    const { currentPopup, hidePopup } = useEducational();
+    // Panel visibility state
     const [showControlPanel, setShowControlPanel] = useState(true);
     const [showLogPanel, setShowLogPanel] = useState(true);
     const [showPanelDropdown, setShowPanelDropdown] = useState(false);
@@ -72,7 +73,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         stopAutoPlay,
         resetSteps,
         stopSimulation,
-    } = useNetworkSimulator(initialScenario);  // Initialize container rect and devices
+    } = useNetworkSimulator(initialScenario);
+    // Initialize container rect and devices
     useEffect(() => {
         const updateContainerRect = () => {
             if (containerRef.current) {
@@ -286,9 +288,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         break;
                 }
             }
-        };        const handleClickOutside = (e: MouseEvent) => {
+        };
+
+        const handleClickOutside = (e: MouseEvent) => {
             // Close panel dropdown when clicking outside
-            if (showPanelDropdown && 
+            if (showPanelDropdown &&
                 !document.querySelector(`.${styles.panelManager}`)?.contains(e.target as Node)) {
                 setShowPanelDropdown(false);
             }
@@ -307,7 +311,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         const constrainedOffset = {
             x: Math.max(-maxOffset, Math.min(maxOffset, offset.x)),
             y: Math.max(-maxOffset, Math.min(maxOffset, offset.y))
-        };        // Add visual feedback when at boundaries
+        };
+
+        // Add visual feedback when at boundaries
         const isAtBoundary = constrainedOffset.x !== offset.x || constrainedOffset.y !== offset.y;
         if (containerRef.current) {
             if (isAtBoundary) {
@@ -412,7 +418,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         };
     }, [isDragging, dragStart, canvasOffset, constrainOffset]);// Reset canvas position
     const resetCanvasPosition = useCallback(() => {
-        setCanvasOffset({ x: 0, y: 0 });        // Temporarily add a smooth transition class
+        setCanvasOffset({ x: 0, y: 0 });
+        // Temporarily add a smooth transition class
         if (containerRef.current) {
             containerRef.current.classList.add(styles.resettingPosition);
             setTimeout(() => {
@@ -438,7 +445,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [resetCanvasPosition]); return (
+    }, [resetCanvasPosition]);
+
+    return (
         <div className={`${styles.networkSimulator} ${className}`}>
             {/* Header */}
             <header className={styles.networkHeader}>
@@ -454,7 +463,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             </div>
                         </div>
                     </div>
-                    <div className={styles.headerControls}>                        {/* Canvas Reset Button - only show when canvas is moved */}
+                    <div className={styles.headerControls}>
+                        {/* Canvas Reset Button - only show when canvas is moved */}
                         {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
                             <button
                                 className={`${styles.toggleBtn} ${styles.resetCanvasBtn}`}
@@ -473,7 +483,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         >
                             <i className="fas fa-question-circle"></i>
                             <span>Tour</span>
-                        </button>                        {/* Panel Manager Dropdown */}
+                        </button>
+                        {/* Panel Manager Dropdown */}
                         <div className={styles.panelManager}>
                             <button
                                 className={styles.panelManagerBtn}
@@ -526,7 +537,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                 </div>
                                 <hr />
                                 <div className={styles.panelPresets}>
-                                    <span className={styles.presetLabel}>Quick Layouts:</span>                                    <button
+                                    <span className={styles.presetLabel}>Quick Layouts:</span>
+                                    <button
                                         className={styles.presetBtn} onClick={() => {
                                             setShowControlPanel(true);
                                             setShowLogPanel(true);
@@ -554,7 +566,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             </div>
                         </div>
                     </div>
-                </div>            </header>
+                </div>
+            </header>
             <div className={`${styles.networkLayout} ${!showControlPanel ? styles.noControlPanel : ''} ${!showLogPanel ? styles.noLogPanel : ''}`}>
                 {/* Control Panel */}
                 {showControls && (
@@ -614,7 +627,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px)`,
                             cursor: isDragging ? 'grabbing' : 'grab'
                         }}
-                    >                        {/* Canvas Drag Hint */}
+                    >
+                        {/* Canvas Drag Hint */}
                         {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && !isDragging && (
                             <div className={styles.canvasDragHint}>
                                 <i className="fas fa-hand-paper"></i>
@@ -645,26 +659,29 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             connections={connections}
                             devices={devices}
                             activeConnections={activeConnections}
-                            currentStepConnection={currentStepConnection} />                        {/* Step Details Button - only shown during step mode */}                        {isStepMode && (
-                                <button
-                                    className={styles.floatingStepDetailsButton}
-                                    onClick={() => {
-                                        // Force show the step controller by scrolling to it and expanding if minimized
-                                        if (stepControllerRef.current) {
-                                            stepControllerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                            // If it's minimized, click the minimize button to expand it
-                                            const minimizeBtn = stepControllerRef.current.querySelector('button[title*="Expand"]') as HTMLButtonElement;
-                                            if (minimizeBtn) {
-                                                minimizeBtn.click();
-                                            }
+                            currentStepConnection={currentStepConnection} />
+                        {/* Step Details Button - only shown during step mode */}
+                        {isStepMode && (
+                            <button
+                                className={styles.floatingStepDetailsButton}
+                                onClick={() => {
+                                    // Force show the step controller by scrolling to it and expanding if minimized
+                                    if (stepControllerRef.current) {
+                                        stepControllerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                        // If it's minimized, click the minimize button to expand it
+                                        const minimizeBtn = stepControllerRef.current.querySelector('button[title*="Expand"]') as HTMLButtonElement;
+                                        if (minimizeBtn) {
+                                            minimizeBtn.click();
                                         }
-                                    }}
-                                    title="Show current step details"
-                                    aria-label="Show current step details"
-                                >
-                                    📋
-                                </button>
-                            )}                        {/* Step Controller Overlay */}
+                                    }
+                                }}
+                                title="Show current step details"
+                                aria-label="Show current step details"
+                            >
+                                📋
+                            </button>
+                        )}
+                        {/* Step Controller Overlay */}
                         {isStepMode && currentStepData && (
                             <StepController
                                 ref={stepControllerRef}
@@ -680,7 +697,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             />
                         )}
                     </div>
-                </div>                {/* Activity Logger */}
+                </div>
+                {/* Activity Logger */}
                 {showLogger && (
                     <div className={`${styles.logPanelContainer} ${showLogPanel ? styles.expanded : styles.collapsed}`}>
                         <button

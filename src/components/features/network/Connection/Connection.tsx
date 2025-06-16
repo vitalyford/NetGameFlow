@@ -28,7 +28,8 @@ export const Connection: React.FC<ConnectionProps> = ({
   devices,
   activeConnections,
   currentStepConnection,
-}) => {  return (
+}) => {
+  return (
     <svg className={styles.connections} width="100%" height="100%">
       <defs>
         <marker
@@ -108,7 +109,8 @@ export const Connection: React.FC<ConnectionProps> = ({
         const markerType = (isCurrentStep || isCurrentStepReverse) ? 'arrowhead-current' :
           isActive ? 'arrowhead-active' : 'arrowhead';
 
-        return (          <line
+        return (
+          <line
             key={`connection-${index}`}
             x1={actualStartX}
             y1={actualStartY}
