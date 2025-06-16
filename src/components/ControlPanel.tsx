@@ -39,21 +39,6 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
     <div className="control-panel">      {/* Header */}
       <div className="panel-header">
         <p className="text-center">Complete Internet Flow Demonstration</p>
-        
-        {/* Simple Progress Bar */}
-        {isStepMode && totalSteps > 0 && (
-          <div className="step-progress">
-            <div className="progress-info">
-              <span>Step {currentStep + 1} of {totalSteps}</span>
-            </div>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
-                style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
       </div>{/* Main Control */}
       <div className="main-control">
         <button 
@@ -72,10 +57,24 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <li>📄 Receive Web Content</li>
           <li>🎯 Fetch CDN Resources</li>
           <li>⚡ DDoS Attack & Protection</li>
-        </ol>
-        <div className="journey-note">
+        </ol>        <div className="journey-note">
           <small>Watch 35+ detailed steps in action!</small>
         </div>
+        
+        {/* Simple Progress Bar - moved here to reduce DOM movement */}
+        {isStepMode && totalSteps > 0 && (
+          <div className="step-progress">
+            <div className="progress-info">
+              <span>Step {currentStep + 1} of {totalSteps}</span>
+            </div>
+            <div className="progress-bar">
+              <div 
+                className="progress-fill" 
+                style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Footer */}
