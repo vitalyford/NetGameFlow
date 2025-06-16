@@ -538,7 +538,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'ISP router forwards packet from customer network toward Google\'s Autonomous System',
         routingLogic: 'BGP table lookup: 8.8.8.8/32 belongs to Google AS15169, best path via next-hop 172.16.0.1',
-        networkingConcepts: ['BGP (Border Gateway Protocol)', 'Autonomous Systems', 'Internet Routing', 'Longest Prefix Match']
+        networkingConcepts: ['BGP (Border Gateway Protocol)', 'Autonomous Systems (AS)', 'Internet Routing', 'Longest Prefix Match']
       }
     });
 
@@ -613,7 +613,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'DNS server creates response packet with resolved IP address, destination set to original source',
         routingLogic: 'Response destination 98.76.54.32 is not local, route via default gateway back toward ISP',
-        networkingConcepts: ['DNS Response', 'A Record Resolution', 'Reverse Path Routing']
+        networkingConcepts: ['DNS', 'A Record Resolution', 'Reverse Path Routing']
       }
     });
 
@@ -638,7 +638,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'Response packet travels back through internet infrastructure to customer ISP',
         routingLogic: '98.76.54.32/32 belongs to customer ISP block, route via learned BGP path',
-        networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Routing']
+        networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Path Routing']
       }
     });
 
@@ -663,7 +663,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'Response packet travels back through internet infrastructure to customer ISP',
         routingLogic: '98.76.54.32/32 belongs to customer ISP block, route via learned BGP path',
-        networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Routing']
+        networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Path Routing']
       }
     });
     newStepData.push({
@@ -740,7 +740,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'Browser creates HTTPS request packet destined for resolved IP address',
         routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
-        networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
+        networkingConcepts: ['HTTPS', 'TCP', 'Default Gateway']
       }
     });
     newStepData.push({
@@ -815,7 +815,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'Browser creates HTTPS request packet destined for resolved IP address',
         routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
-        networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
+        networkingConcepts: ['HTTPS', 'TCP', 'Default Gateway']
       }
     });
     newStepData.push({
@@ -1068,7 +1068,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'CDN edge server creates response packet with CSS content, routes back via internet backbone',
         routingLogic: 'Destination 192.168.1.100 is not local, route via default gateway back through internet',
-        networkingConcepts: ['CDN Edge Servers', 'Content Caching', 'Optimized Delivery', 'Return Path Routing']
+        networkingConcepts: ['CDN Edge Servers', 'Content Caching', 'Optimized Delivery', 'Reverse Path Routing']
       }
     });
     newStepData.push({
@@ -1092,7 +1092,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'CSS response travels back through multiple internet routers using optimal path',
         routingLogic: 'BGP routing tables determine best path back to customer ISP network',
-        networkingConcepts: ['Internet Backbone', 'Return Path Optimization', 'BGP Path Selection']
+        networkingConcepts: ['Internet Backbone', 'Optimized Delivery', 'BGP Path Selection']
       }
     });
 
@@ -1117,7 +1117,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'Response enters customer ISP network from internet backbone',
         routingLogic: 'ISP border router receives response destined for customer IP block',
-        networkingConcepts: ['ISP Border Gateway', 'Customer IP Blocks', 'Last Mile Routing']
+        networkingConcepts: ['ISP Border Gateway', 'Customer IP Blocks', 'Last Mile Delivery']
       }
     });
 
@@ -1142,7 +1142,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       detailedExplanation: {
         packetJourney: 'ISP routes response to specific customer connection based on IP assignment',
         routingLogic: 'Customer IP 98.76.54.32 is assigned to this customer line',
-        networkingConcepts: ['Customer Premises Equipment', 'IP Assignment', 'Last Mile Delivery']
+        networkingConcepts: ['Customer Premises Equipment', 'Customer IP Assignment', 'Last Mile Delivery']
       }
     });
 

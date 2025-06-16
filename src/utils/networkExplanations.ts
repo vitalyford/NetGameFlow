@@ -824,7 +824,7 @@ export const NETWORK_EXPLANATIONS = {
     `
   },
 
-  'Autonomous Systems': {
+  'Autonomous Systems (AS)': {
     title: 'Autonomous Systems (AS)',
     content: `
       <div class="explanation-content">
@@ -1760,7 +1760,428 @@ export const NETWORK_EXPLANATIONS = {
         </ul>
       </div>
     `
-  }
+  },
+
+  'ISP Routing': {
+    title: 'ISP Routing',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A postal service delivering mail across the country!</p>
+        
+        <p>ISP routing is how Internet Service Providers direct data packets through their networks to reach the right destination.</p>
+        
+        <h4>📬 Real World Example:</h4>
+        <p>Postal service process:</p>
+        <ul>
+          <li><strong>Sender:</strong> You write a letter</li>
+          <li><strong>Post Office:</strong> Collects and sorts mail</li>
+          <li><strong>Delivery Routes:</strong> Determines best path to recipient</li>
+          <li><strong>Final Delivery:</strong> Mail carrier delivers to mailbox</li>
+        </ul>
+        
+        <h4>🌐 ISP Routing Steps:</h4>
+        <ol>
+          <li>Your device sends a request (like visiting a website)</li>
+          <li>Your ISP router checks its routing table</li>
+          <li>Router decides best path based on destination IP</li>
+          <li>Packet travels through multiple routers (hops)</li>
+          <li>Eventually reaches the destination server</li>
+        </ol>
+        
+        <h4>🗺️ Routing Table Example:</h4>
+        <ul>
+          <li><strong>Destination IP:</strong> 203.0.113.1</li>
+          <li><strong>Next Hop:</strong> 45.3.25.78</li>
+          <li><strong>Interface:</strong> eth0</li>
+        </ul>
+      </div>
+    `
+  },
+
+  'TTL Decrement': {
+    title: 'TTL Decrement',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A countdown timer for a game!</p>
+        
+        <p>TTL (Time To Live) is a value in IP packets that limits how long they can travel through the network before being discarded.</p>
+        
+        <h4>⏳ Real World Example:</h4>
+        <p>Game timer countdown:</p>
+        <ul>
+          <li>You have 60 seconds to complete a level</li>
+          <li>Every time you take an action, the timer decrements</li>
+          <li>If it reaches 0, you lose the game</li>
+          <li>TTL works similarly for data packets</li>
+        </ul>
+        
+        <h4>📦 How TTL Works:</h4>
+        <ol>
+          <li>Your device sends a packet with TTL set to 64</li>
+          <li>Each router that processes the packet decrements TTL by 1</li>
+          <li>If TTL reaches 0, the packet is discarded</li>
+          <li>This prevents packets from looping indefinitely in the network</li>
+        </ol>
+        
+        <h4>🛡️ Why It's Important:</h4>
+        <ul>
+          <li><strong>Prevents Loops:</strong> Stops packets from getting stuck</li>
+          <li><strong>Network Efficiency:</strong> Frees up resources</li>
+          <li><strong>Troubleshooting:</strong> Helps diagnose routing issues</li>
+        </ul>
+      </div>
+    `
+  },
+
+  'NAT (Network Address Translation)': {
+    title: 'NAT (Network Address Translation)',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A receptionist managing multiple phone lines!</p>
+        
+        <p>NAT allows multiple devices on a local network to share a single public IP address, translating their private IPs to the public one for internet access.</p>
+        
+        <h4>📞 Real World Example:</h4>
+        <p>Office phone system:</p>
+        <ul>
+          <li>Each employee has a desk phone with an internal extension</li>
+          <li>The receptionist has one public phone number</li>
+          <li>When customers call, receptionist routes calls to the right extension</li>
+          <li>When employees call out, receptionist uses the public number</li>
+        </ul>
+        
+        <h4>💻 How NAT Works:</h4>
+        <ol>
+          <li>Your laptop (192.168.1.10) wants to access a website</li>
+          <li>The NAT router receives the request and replaces the source IP with its own public IP (203.0.113.1)</li>
+          <li>The router keeps track of the original IP and port number</li>
+          <li>When the response comes back, the router forwards it to the correct internal device</li>
+        </ol>
+      </div>
+    `
+  },
+
+  'Internet Backbone Routing': {
+    title: 'Internet Backbone Routing',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> The main highways connecting cities across the country!</p>
+        
+        <p>Internet backbone routing is how data travels through the core of the internet, connecting major networks and data centers.</p>
+        
+        <h4>🛣️ Real World Example:</h4>
+        <p>National highway system:</p>
+        <ul>
+          <li>Major highways connect cities and states</li>
+          <li>Interstate highways handle long-distance traffic</li>
+          <li>Local roads connect neighborhoods to highways</li>
+          <li>Traffic flows efficiently on well-maintained routes</li>
+        </ul>
+        
+        <h4>🌐 Internet Backbone Routing:</h4>
+        <ul>
+          <li><strong>Tier 1 ISPs:</strong> Own large portions of the backbone (like AT&T, Verizon)</li>
+          <li><strong>Peering Agreements:</strong> ISPs exchange traffic without paying each other</li>
+          <li><strong>High Capacity Links:</strong> Fiber optic cables carry massive amounts of data</li>
+          <li><strong>Redundancy:</strong> Multiple paths ensure reliability and speed</li>
+        </ul>
+        
+        <h4>📡 How It Works:</h4>
+        <ol>
+          <li>Your request goes from your ISP to a regional router</li>
+          <li>The regional router finds the best path through the backbone</li>
+          <li>The request hops between multiple backbone routers</li>
+          <li>The destination server receives the request and sends a response back</li>
+        </ol>
+      </div>
+    `
+  },
+
+  'Public DNS Servers': {
+    title: 'Public DNS Servers',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A phone book for the internet!</p>
+        
+        <p>Public DNS servers translate human-friendly domain names (like google.com) into IP addresses that computers use to communicate.</p>
+        
+        <h4>📖 Real World Example:</h4>
+        <p>Using a phone book:</p>
+        <ul>
+          <li>You want to call your friend "Alice"</li>
+          <li>You look up "Alice" in the phone book</li>
+          <li>You find her number: 555-1234</li>
+          <li>You dial 555-1234 to reach Alice</li>
+        </ul>
+        
+        <h4>🌐 How DNS Works:</h4>
+        <ol>
+          <li>You type "google.com" in your browser</li>
+          <li>Your computer asks a DNS server for the IP address</li>
+          <li>The DNS server looks up "google.com" and finds its IP address (e.g., 172.217.0.46)</li>
+          <li>The DNS server returns the IP address to your computer</li>
+          <li>Your computer uses the IP address to connect to the Google server</li>
+        </ol>
+
+        <h4>🌍 Popular Public DNS Servers:</h4>
+        <ul>
+          <li><strong>Google DNS:</strong> 8.8.8.8</li>
+          <li><strong>Cloudflare DNS:</strong> 1.1.1.1</li>
+          <li><strong>OpenDNS:</strong> 208.67.222.222</li>
+          <li><strong>Quad9:</strong> 9.9.9.9</li>
+        </ul>
+      </div>
+    `
+  },
+
+  'Optimized Delivery': {
+    title: 'Optimized Delivery',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A delivery service that finds the fastest route to your house!</p>
+        
+        <p>Optimized delivery in networking refers to the use of techniques and technologies to ensure that data packets are transmitted efficiently, with minimal delay, congestion, or packet loss.</p>
+        
+        <h4>🚚 Real World Example:</h4>
+        <p>Package delivery optimization:</p>
+        <ul>
+          <li><strong>Normal route:</strong> May follow a static route regardless of traffic</li>
+          <li><strong>Optimized route:</strong> Uses real-time GPS and traffic data to avoid delays</li>
+          <li><strong>Result:</strong> Package arrives sooner, saving time and reducing costs</li>
+        </ul>
+        
+        <h4>🌐 How Network Optimization Works:</h4>
+        <ol>
+          <li>Your device sends a request (e.g., to load a website)</li>
+          <li>The network stack determines a path using routing protocols like OSPF or BGP</li>
+          <li>Network infrastructure (like CDNs and routers) may steer traffic based on performance data</li>
+          <li>Techniques like caching, peering, and intelligent routing improve delivery speed</li>
+          <li>You receive the data more quickly and reliably</li>
+        </ol>
+
+        <h4>📈 Techniques for Optimization:</h4>
+        <ul>
+          <li><strong>Load Balancing:</strong> Distributing requests across multiple servers or links</li>
+          <li><strong>Caching:</strong> Serving content from locations close to the user (e.g., CDNs)</li>
+          <li><strong>Traffic Shaping:</strong> Controlling data flow to prioritize critical traffic</li>
+          <li><strong>Dynamic Path Selection:</strong> Routing based on real-time performance metrics</li>
+        </ul>
+
+        <h4>⚡ Benefits of Optimized Delivery:</h4>
+        <ul>
+          <li><strong>Faster Load Times:</strong> Websites and services respond more quickly</li>
+          <li><strong>Reduced Latency:</strong> Lower round-trip times for data packets</li>
+          <li><strong>Improved Reliability:</strong> Fewer dropped or delayed packets</li>
+          <li><strong>Scalable Performance:</strong> Efficient handling of large amounts of traffic</li>
+        </ul>
+
+      </div>
+    `
+  },
+
+  'ISP Border Gateway': {
+    title: 'ISP Border Gateway',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> The border checkpoint for data entering and leaving a country!</p>
+        
+        <p>An ISP border gateway is the router or group of routers at the edge of the ISP's network that connects to external networks-such as other ISPs or internet exchange points (IXPs)-and uses BGP (Border Gateway Protocol) to exchange routing information.</p>
+        
+        <h4>🌍 Real World Example:</h4>
+        <p>Border checkpoint process:</p>
+        <ul>
+          <li><strong>Vehicles arrive:</strong> Cars from different countries</li>
+          <li><strong>Customs check:</strong> Inspect documents and cargo</li>
+          <li><strong>Traffic control:</strong> Direct vehicles to their destinations</li>
+          <li><strong>Exit/entry logs:</strong> Record who comes in and out</li>
+        </ul>
+        
+        <h4>🌐 How ISP Border Gateways Work:</h4>
+        <ol>
+          <li>Your data request passes through your ISP's internal routers toward the border gateway</li>
+          <li>The border gateway uses BGP to determine which external network to send your data to</li>
+          <li>It exchanges routing updates with other ISPs and networks to find optimal paths</li>
+          <li>It forwards packets toward their next-hop destination based on global routing policies</li>
+          <li>This enables communication with devices and services on the wider internet</li>
+        </ol>
+
+        <h4>🗺️ Key Functions of Border Gateways:</h4>
+        <ul>
+          <li><strong>BGP Routing:</strong> Determine best paths based on BGP announcements</li>
+          <li><strong>Traffic Engineering:</strong> Manage how and where traffic flows across peered links</li>
+          <li><strong>Route Filtering:</strong> Apply policies to control what routes are accepted or advertised</li>
+          <li><strong>Peering & Transit:</strong> Handle traffic based on agreements with other ISPs or carriers</li>
+        </ul>
+
+        <h4>🔒 Security Considerations:</h4>
+        <ul>
+          <li><strong>DDoS Mitigation:</strong> Use upstream filtering and scrubbing centers</li>
+          <li><strong>Access Control Lists (ACLs):</strong> Block malicious or unwanted traffic at the edge</li>
+          <li><strong>Route Validation:</strong> Use RPKI to prevent BGP hijacks</li>
+          <li><strong>Redundancy:</strong> Use multiple links and routers for failover and high availability</li>
+        </ul>
+
+      </div>
+    `
+  },
+
+  'Customer IP Blocks': {
+    title: 'Customer IP Blocks',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A neighborhood with assigned house numbers!</p>
+
+        <p>Customer IP blocks are ranges of public IP addresses allocated by ISPs to business or institutional customers. These blocks are globally routable on the internet and can be used to host services or assign to devices.</p>
+
+        <h4>🏡 Real World Example:</h4>
+        <p>Neighborhood address assignment:</p>
+        <ul>
+          <li><strong>Street name:</strong> Main Street</li>
+          <li><strong>House numbers:</strong> 100-199 assigned to one block</li>
+          <li><strong>Each house:</strong> Represents a unique IP address</li>
+          <li><strong>Mail delivery:</strong> Like internet traffic being routed to the correct IP</li>
+        </ul>
+
+        <h4>🌐 How Customer IP Blocks Work:</h4>
+        <ol>
+          <li>ISPs assign public IP blocks (e.g., 203.0.113.0/24) to customers, typically businesses or data centers</li>
+          <li>This block contains 256 IP addresses (203.0.113.0 to 203.0.113.255)</li>
+          <li>The customer can assign these IPs to their own servers, routers, or firewalls</li>
+          <li>Each IP in the block is unique and reachable from the public internet</li>
+          <li>Home users typically get just one dynamic IP, with private IPs managed internally by their router using NAT</li>
+        </ol>
+      </div>
+    `
+  },
+
+  'Multi-Vector Assault': {
+    title: 'Multi-Vector Assault',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A coordinated attack from multiple angles!</p>
+        
+        <p>A multi-vector assault is a cyber attack that uses multiple methods or vectors to overwhelm a target, making it harder to defend against.</p>
+        
+        <h4>🎯 Real World Example:</h4>
+        <p>Military strategy:</p>
+        <ul>
+          <li><strong>Frontline attack:</strong> Soldiers storm the front</li>
+          <li><strong>Air support:</strong> Planes bomb enemy positions</li>
+          <li><strong>Cyber attacks:</strong> Hackers disrupt communications</li>
+          <li><strong>Result:</strong> Enemy is overwhelmed on all fronts</li>
+        </ul>
+        
+        <h4>🌐 How Multi-Vector Assaults Work:</h4>
+        <ol>
+          <li>The attacker identifies multiple vulnerabilities in the target</li>
+          <li>They launch simultaneous attacks using different methods (e.g., DDoS, phishing, malware)</li>
+          <li>The target's defenses are stretched thin trying to respond to all threats</li>
+          <li>The attacker can exploit weaknesses in one vector while defenses are busy elsewhere</li>
+          <li>This increases the chances of a successful breach or disruption</li>
+        </ol>
+
+        <h4>🛡️ Defending Against Multi-Vector Assaults:</h4>
+        <ul>
+          <li><strong>Layered Security:</strong> Use multiple security measures (firewalls, IDS/IPS, DDoS protection)</li>
+          <li><strong>Incident Response Plans:</strong> Prepare for coordinated attacks with predefined actions</li>
+          <li><strong>Threat Intelligence:</strong> Monitor for emerging threats and vulnerabilities</li>
+          <li><strong>User Education:</strong> Train employees to recognize phishing and social engineering attempts</li>
+        </ul>
+
+      </div>
+    `
+  },
+
+  'Bandwidth Saturation': {
+    title: 'Bandwidth Saturation',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A water pipe that can't handle too much flow!</p>
+        
+        <p>Bandwidth saturation occurs when the amount of data being sent through a network connection exceeds its capacity, leading to slowdowns and dropped packets.</p>
+        
+        <h4>🚰 Real World Example:</h4>
+        <p>Water pipe analogy:</p>
+        <ul>
+          <li><strong>Normal flow:</strong> Water flows smoothly through a wide pipe</li>
+          <li><strong>Saturation:</strong> Too many faucets open at once</li>
+          <li><strong>Result:</strong> Low pressure, slow flow, and potential leaks</li>
+          <li><strong>Network equivalent:</strong> Slow internet speeds and dropped connections</li>
+        </ul>
+        
+        <h4>🌐 How Bandwidth Saturation Happens:</h4>
+        <ol>
+          <li>A network connection has a maximum capacity (e.g., 100 Mbps)</li>
+          <li>If too many devices or applications use the connection simultaneously, they compete for bandwidth</li>
+          <li>This leads to congestion, where packets are delayed or dropped</li>
+          <li>The user experiences slow loading times, buffering, and poor performance</li>
+        </ol>
+
+        <h4>📈 Signs of Bandwidth Saturation:</h4>
+        <ul>
+          <li><strong>Slow downloads/uploads:</strong> Files take longer than usual to transfer</li>
+          <li><strong>Video buffering:</strong> Streaming services pause frequently</li>
+          <li><strong>Gaming lag:</strong> High ping times and delayed responses</li>
+          <li><strong>Web page timeouts:</strong> Sites fail to load completely</li>
+        </ul>
+
+        <h4>🛠️ Solutions to Bandwidth Saturation:</h4>
+        <ul>
+          <li><strong>Upgrade Internet Plan:</strong> Increase available bandwidth from your ISP</li>
+          <li><strong>Quality of Service (QoS):</strong> Prioritize critical traffic (e.g., video calls over downloads)</li>
+          <li><strong>Caching:</strong> Store frequently accessed content locally to reduce bandwidth usage</li>
+          <li><strong>Network Monitoring:</strong> Use tools to identify bandwidth hogs and optimize usage</li>
+        </ul>
+      </div>
+    `
+  },
+
+  'Router Queue Management': {
+    title: 'Router Queue Management',
+    content: `
+      <div class="explanation-content">
+        <p><strong>Think of it like:</strong> A restaurant host managing a waiting list!</p>
+        
+        <p>Router queue management is how routers handle incoming data packets, prioritizing and organizing them to ensure efficient delivery without overwhelming the network.</p>
+        
+        <h4>🍽️ Real World Example:</h4>
+        <p>Restaurant host process:</p>
+        <ul>
+          <li><strong>Customers arrive:</strong> They are added to a waiting list</li>
+          <li><strong>Host prioritizes:</strong> Groups of 2 get seated before larger groups</li>
+          <li><strong>Wait times:</strong> Managed to keep customers happy</li>
+          <li><strong>Result:</strong> Smooth flow of diners through the restaurant</li>
+        </ul>
+        
+        <h4>🌐 How Router Queue Management Works:</h4>
+        <ol>
+          <li>A router receives incoming packets from various sources</li>
+          <li>It places packets in queues based on priority (e.g., voice traffic vs. file downloads)</li>
+          <li>The router processes packets in order, sending them out when the network is ready</li>
+          <li>This prevents packet loss and ensures timely delivery of critical data</li>
+        </ol>
+
+        <h4>📊 Types of Queues:</h4>
+        <ul>
+          <li><strong>FIFO (First In, First Out):</strong> Packets are processed in the order they arrive</li>
+          <li><strong>Priority Queuing:</strong> Higher priority packets are processed first</li>
+          <li><strong>Weighted Fair Queuing (WFQ):</strong> Allocates bandwidth fairly among different traffic types</li>
+          <li><strong>Custom Queues:</strong> User-defined rules for specific applications or protocols</li>
+        </ul>
+
+        <h4>🛡️ Benefits of Queue Management:</h4>
+        <ul>
+          <li><strong>Reduced Latency:</strong> Critical traffic gets through faster</li>
+          <li><strong>Improved Throughput:</strong> More efficient use of available bandwidth</li>
+          <li><strong>Better User Experience:</strong> Less buffering and delays for important applications</li>
+          <li><strong>Network Stability:</strong> Prevents congestion and packet loss during peak usage</li>
+        </ul>
+      </div>
+    `
+  },
+
+
+
 };
 
 export const getNetworkExplanation = (term: string) => {
