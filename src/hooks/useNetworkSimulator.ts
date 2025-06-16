@@ -34,13 +34,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   const [currentStep, setCurrentStep] = useState(0);
   const [stepData, setStepData] = useState<StepData[]>([]);
   const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
-  
-  // Logger state
+    // Logger state
   const [logEntries, setLogEntries] = useState<LogEntry[]>([
     {
       timestamp: Helpers.formatTimestamp(),
       message: 'Network Simulator initialized. Ready to learn!',
       type: 'info',
+      category: 'system',
     },
   ]);
   
@@ -190,23 +190,262 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   const clearConnectionHighlights = useCallback(() => {
     setActiveConnections(new Set());
   }, []);
-
-  // Logging
-  const addLogEntry = useCallback((message: string, type: LogEntry['type'] = 'info') => {
+  // Enhanced logging function with detailed network information
+  const addDetailedLogEntry = useCallback((
+    message: string, 
+    type: LogEntry['type'] = 'info',
+    category?: LogEntry['category'],
+    details?: LogEntry['details']
+  ) => {
     const entry: LogEntry = {
       timestamp: Helpers.formatTimestamp(),
       message,
       type,
+      category,
+      details,
     };
     
-    setLogEntries(prev => [...prev.slice(-49), entry]); // Keep last 50 entries
+    setLogEntries(prev => [...prev.slice(-99), entry]); // Keep last 100 entries
   }, []);
 
+  // Legacy simple logging function for backward compatibility
+  const addLogEntry = useCallback((message: string, type: LogEntry['type'] = 'info') => {
+    addDetailedLogEntry(message, type, 'system');
+  }, [addDetailedLogEntry]);
+
+  // Generate realistic network logs based on step data
+  const generateNetworkLogsForStep = useCallback((step: StepData) => {
+    const { packetInfo, fromDevice, toDevice, stepNumber, phase } = step;
+    
+    // Generate a realistic sequence of network events for each step
+    const deviceName = (id: string) => {
+      const names: Record<string, string> = {
+        client: 'Client PC (192.168.1.100)',
+        router1: 'Home Router (192.168.1.1)',
+        ispRouter: 'ISP Gateway (203.0.113.1)',
+        internetRouter1: 'Internet Router A (172.16.0.1)',
+        internetRouter2: 'Internet Router B (198.51.100.1)',
+        internetRouter3: 'Internet Router C (151.101.0.1)',
+        dnsServer: 'Google DNS (8.8.8.8)',
+        webServer: 'Web Server (93.184.216.34)',
+        cdnServer: 'CDN Edge (151.101.1.140)',
+        botnetCloud: 'Botnet C&C Infrastructure',
+        cloudflareEdge: 'Cloudflare Edge Server'
+      };
+      return names[id] || id;
+    };
+
+    // 1. Interface status log
+    addDetailedLogEntry(
+      `Interface eth0 on ${deviceName(fromDevice)} preparing packet transmission`,
+      'info',
+      'system',
+      {
+        performanceMetrics: {
+          latency: Math.floor(Math.random() * 50) + 1,
+          throughput: `${Math.floor(Math.random() * 900) + 100} Mbps`,
+          packetLoss: Math.floor(Math.random() * 3)
+        }
+      }
+    );
+
+    // 2. Packet creation/forwarding log
+    if (packetInfo) {
+      const logMessage = stepNumber <= 10 && phase === 'dns' 
+        ? `DNS query packet created: ${packetInfo.query}`
+        : stepNumber >= 11 && phase === 'request'
+        ? `HTTPS request packet created: ${packetInfo.query}`
+        : stepNumber >= 20 && phase === 'resources'
+        ? `Resource request packet: ${packetInfo.query}`
+        : phase === 'attack'
+        ? `⚠️ ATTACK TRAFFIC DETECTED: ${packetInfo.query}`
+        : phase === 'recovery'
+        ? `🛡️ Protection mechanism activated: ${packetInfo.query}`
+        : `Packet forwarded: ${packetInfo.protocol}`;
+
+      addDetailedLogEntry(
+        logMessage,
+        phase === 'attack' ? 'error' : phase === 'recovery' ? 'success' : 'info',
+        'packet',
+        {
+          packetInfo: {
+            protocol: packetInfo.protocol,
+            source: packetInfo.source,
+            destination: packetInfo.destination,
+            size: packetInfo.size,
+            ttl: packetInfo.ttl,
+            query: packetInfo.query,
+            originalSource: packetInfo.originalSource,
+            originalDestination: packetInfo.originalDestination,
+            translatedSource: packetInfo.translatedSource,
+            translatedDestination: packetInfo.translatedDestination,
+            natPerformed: packetInfo.natPerformed,
+            routingDecision: packetInfo.routingDecision,
+            nextHop: packetInfo.nextHop
+          }
+        }
+      );
+    }
+
+    // 3. Routing decision log
+    if (packetInfo?.routingDecision) {
+      addDetailedLogEntry(
+        `Routing table lookup: ${packetInfo.routingDecision}`,
+        'info',
+        'routing',
+        {
+          routingInfo: devices[fromDevice]?.routingTable || {},
+          packetInfo: {
+            protocol: packetInfo.protocol,
+            source: packetInfo.source,
+            destination: packetInfo.destination,
+            nextHop: packetInfo.nextHop,
+            routingDecision: packetInfo.routingDecision
+          }
+        }
+      );
+    }
+
+    // 4. NAT operation log
+    if (packetInfo?.natPerformed) {
+      addDetailedLogEntry(
+        `NAT translation performed: ${packetInfo.originalSource} → ${packetInfo.translatedSource}`,
+        'success',
+        'system',
+        {          packetInfo: {
+            protocol: packetInfo.protocol,
+            source: packetInfo.source || packetInfo.originalSource || '',
+            destination: packetInfo.destination || packetInfo.originalDestination || '',
+            originalSource: packetInfo.originalSource,
+            translatedSource: packetInfo.translatedSource,
+            originalDestination: packetInfo.originalDestination,
+            translatedDestination: packetInfo.translatedDestination,
+            natPerformed: true
+          }
+        }
+      );
+    }
+
+    // 5. Security events for attack phases
+    if (phase === 'attack') {
+      if (stepNumber === 31) {
+        addDetailedLogEntry(
+          `🚨 CRITICAL: Massive coordinated attack initiated from global botnet`,
+          'error',
+          'security',
+          {
+            securityInfo: {
+              threatLevel: 'critical',
+              protectionStatus: 'inactive',
+              blockReason: 'Volume exceeds detection thresholds'
+            },
+            performanceMetrics: {
+              latency: 2000,
+              throughput: '15 Gbps (attack traffic)',
+              packetLoss: 75
+            }
+          }
+        );
+      } else if (stepNumber === 32) {
+        addDetailedLogEntry(
+          `🚨 Infrastructure overwhelmed: Router queue buffers at 100% capacity`,
+          'error',
+          'security',
+          {
+            securityInfo: {
+              threatLevel: 'critical',
+              protectionStatus: 'degraded'
+            },
+            performanceMetrics: {
+              latency: 5000,
+              throughput: 'Saturated',
+              packetLoss: 90
+            }
+          }
+        );
+      }
+    } else if (phase === 'recovery') {
+      if (stepNumber === 34) {
+        addDetailedLogEntry(
+          `🛡️ Cloudflare DDoS protection: AI threat detection activated`,
+          'success',
+          'security',
+          {
+            securityInfo: {
+              threatLevel: 'high',
+              protectionStatus: 'active',
+              blockReason: 'ML pattern recognition: 99.7% confidence malicious'
+            },
+            performanceMetrics: {
+              latency: 25,
+              throughput: '800 Mbps (filtered)',
+              packetLoss: 2
+            }
+          }
+        );
+      }
+    }
+
+    // 6. Transmission completion log
+    const transmissionTime = Math.floor(Math.random() * 50) + 5;
+    addDetailedLogEntry(
+      `Packet transmitted to ${deviceName(toDevice)} (${transmissionTime}ms)`,
+      'success',
+      'system',
+      {
+        performanceMetrics: {
+          latency: transmissionTime,
+          throughput: `${Math.floor(Math.random() * 800) + 200} Mbps`,
+          packetLoss: 0
+        }
+      }
+    );
+
+    // 7. Special logs for key milestones
+    if (stepNumber === 5) {
+      addDetailedLogEntry(
+        `DNS query successfully delivered to Google's anycast infrastructure`,
+        'success',
+        'system'
+      );
+    } else if (stepNumber === 10) {
+      addDetailedLogEntry(
+        `🎉 DNS resolution complete! www.example.com → 93.184.216.34`,
+        'success',
+        'system'
+      );
+    } else if (stepNumber === 18) {
+      addDetailedLogEntry(
+        `🌐 HTTPS connection established with web server (TLS 1.3)`,
+        'success',
+        'system'
+      );
+    } else if (stepNumber === 30) {
+      addDetailedLogEntry(
+        `🎨 Website fully loaded with CSS styling!`,
+        'success',
+        'system'
+      );
+    } else if (stepNumber === 35) {
+      addDetailedLogEntry(
+        `✅ DDoS attack successfully mitigated - service restored`,
+        'success',
+        'security',
+        {
+          securityInfo: {
+            threatLevel: 'low',
+            protectionStatus: 'active'
+          }
+        }
+      );
+    }
+  }, [addDetailedLogEntry, devices]);
   const clearLog = useCallback(() => {
     setLogEntries([{
       timestamp: Helpers.formatTimestamp(),
       message: 'Log cleared. Network Simulator ready.',
       type: 'info',
+      category: 'system',
     }]);
   }, []);
 
@@ -1028,8 +1267,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         networkingConcepts: ['DDoS Mitigation Success', 'Traffic Scrubbing', 'Service Restoration', 'Security vs Performance Balance']
       }
     });
-    
-    setStepData(newStepData);
+      setStepData(newStepData);
     setCurrentStep(0);
     setIsStepMode(true);
     
@@ -1040,17 +1278,31 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       clearDeviceHighlights();
       activateDevice(firstStep.fromDevice);
       highlightConnection(firstStep.fromDevice, firstStep.toDevice);
+      
+      // Generate initial network logs for the first step
+      generateNetworkLogsForStep(firstStep);
     }
     
-    addLogEntry(`Started ${type} simulation - ${SCENARIO_NAMES[currentScenario]}`);
-  }, [
+    addDetailedLogEntry(
+      `🚀 Started ${type} simulation - ${SCENARIO_NAMES[currentScenario]}`,
+      'success',
+      'system',
+      {
+        performanceMetrics: {
+          latency: 0,
+          throughput: 'Ready',
+          packetLoss: 0
+        }
+      }
+    );  }, [
     currentScenario,
     devices,
     clearConnectionHighlights,
     clearDeviceHighlights,
     activateDevice,
     highlightConnection,
-    addLogEntry,
+    generateNetworkLogsForStep,
+    addDetailedLogEntry,
   ]);
   const nextStep = useCallback(() => {
     if (currentStep < stepData.length - 1) {
@@ -1094,11 +1346,14 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         // Normal operations - clear attack states and hide special devices
         clearAllAttackStates();
       }
-      
-      activateDevice(step.fromDevice);
+        activateDevice(step.fromDevice);
       highlightConnection(step.fromDevice, step.toDevice);
       
-      addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);    } else {
+      // Generate realistic network logs for this step
+      generateNetworkLogsForStep(step);
+      
+      addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
+    } else {
       // Complete simulation
       setIsStepMode(false);
       setIsAutoPlaying(false);
@@ -1111,8 +1366,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       clearAllAttackStates();
 
       addLogEntry('✅ Step-by-step simulation completed!', 'success');
-    }
-  }, [
+    }  }, [
     currentStep,
     stepData,
     clearConnectionHighlights,
@@ -1121,9 +1375,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     clearAllAttackStates,
     activateDevice,
     highlightConnection,
+    generateNetworkLogsForStep,
     addLogEntry,
   ]);
-
   const previousStep = useCallback(() => {
     if (currentStep > 0) {
       const newStep = currentStep - 1;
@@ -1135,6 +1389,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       activateDevice(step.fromDevice);
       highlightConnection(step.fromDevice, step.toDevice);
       
+      // Generate realistic network logs for this step
+      generateNetworkLogsForStep(step);
+      
       addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
     }
   }, [
@@ -1144,6 +1401,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     clearDeviceHighlights,
     activateDevice,
     highlightConnection,
+    generateNetworkLogsForStep,
     addLogEntry,
   ]);
   const startAutoPlay = useCallback(() => {
@@ -1193,9 +1451,11 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
             // Normal operations - clear attack states and hide special devices
             clearAllAttackStates();
           }
-          
-          activateDevice(step.fromDevice);
+            activateDevice(step.fromDevice);
           highlightConnection(step.fromDevice, step.toDevice);
+          
+          // Generate realistic network logs for this step
+          generateNetworkLogsForStep(step);
           
           addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
           
@@ -1216,8 +1476,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           return prev;
         }
       });
-    }, 3000);
-  }, [
+    }, 3000);  }, [
     stepData,
     clearConnectionHighlights,
     clearDeviceHighlights,
@@ -1225,6 +1484,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     clearAllAttackStates,
     activateDevice,
     highlightConnection,
+    generateNetworkLogsForStep,
     addLogEntry,
   ]);
 

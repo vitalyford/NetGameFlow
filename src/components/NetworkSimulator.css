@@ -401,6 +401,9 @@
   transition: width 0.3s ease;
   flex-shrink: 0;
   overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Smooth transitions for panel toggles */
@@ -1041,6 +1044,17 @@
 .control-panel-container.expanded,
 .log-panel-container.expanded {
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
+}
+
+/* Ensure Logger component uses full height in expanded log panel */
+.log-panel-container.expanded {
+  width: 350px;
+  height: 100%;
+}
+
+.log-panel-container.expanded .log-container {
+  height: 100%;
+  max-height: none;
 }
 
 /* Responsive behavior for smaller screens */
