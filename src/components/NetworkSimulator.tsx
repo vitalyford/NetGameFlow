@@ -562,6 +562,28 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             )}
           </div>
         )}{/* Network Topology */}        <div className="network-container">
+          {/* Show Control Panel Button - appears when control panel is hidden */}
+          {showControls && !showControlPanel && (
+            <button 
+              className="show-panel-btn show-control-panel-btn"
+              onClick={() => setShowControlPanel(true)}
+              title="Show control panel"
+            >
+              <i className="fas fa-sliders-h"></i>
+            </button>
+          )}
+
+          {/* Show Log Panel Button - appears when log panel is hidden */}
+          {showLogger && !showLogPanel && (
+            <button 
+              className="show-panel-btn show-log-panel-btn"
+              onClick={() => setShowLogPanel(true)}
+              title="Show activity log"
+            >
+              <i className="fas fa-list"></i>
+            </button>
+          )}
+
           <div 
             className={`network-topology ${isDragging ? 'dragging' : ''}`}
             ref={containerRef}

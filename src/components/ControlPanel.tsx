@@ -44,13 +44,30 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
         </button>
       </div>{/* Demo Flow Info */}
       <div className="demo-info">
-        <h3>Complete Network Journey</h3>
-        <ol>
+        <h3>Complete Network Journey</h3>        <ol>
           <li>DNS Resolution (Find website IP)</li>
           <li>Send HTTPS Request</li>
           <li>Receive Web Content</li>
           <li>Fetch Additional Resources</li>
-          <li>DDoS Attack & Recovery</li>        </ol>
+          <li>DDoS Attack & Recovery</li>
+        </ol>
+      </div>
+
+      {/* Footer */}
+      <div className="panel-footer">
+        <p>
+          <i className="fas fa-code"></i>
+          Contact{' '}
+          <a 
+            href="https://github.com/vitalyford/netgameflow" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            title="Visit GitHub repository"
+          >
+            Vitaly Ford - NetGameFlow Repo
+          </a>
+          {' '}for improvements & Q/A
+        </p>
       </div>
     </div>
   );

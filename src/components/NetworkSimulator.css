@@ -890,7 +890,7 @@
 /* Panel Collapse Buttons */
 .panel-collapse-btn {
   position: absolute;
-  top: 200px; /* Fixed position instead of percentage */
+  top: calc(50% - 16px); /* Half the button height for perfect centering */
   background: #ffffff;
   border: 1px solid #dee2e6;
   border-radius: 50%;
@@ -916,12 +916,59 @@
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Control panel collapse button - centered on right edge */
 .control-panel-collapse {
   right: -16px;
 }
 
+/* Log panel collapse button - centered on left edge */
 .log-panel-collapse {
   left: -16px;
+}
+
+/* Show panel buttons - appear on main area edges when panels are hidden */
+.show-panel-btn {
+  position: absolute;
+  top: calc(50% - 18px); /* Half the button height for perfect centering */
+  background: #667eea;
+  color: white;
+  border: 1px solid #667eea;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 15;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  opacity: 0.9;
+}
+
+.show-panel-btn:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
+  opacity: 1;
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.show-panel-btn:active {
+  background: #4c51bf;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Position show buttons on network container edges */
+.show-control-panel-btn {
+  left: 16px;
+}
+
+.show-log-panel-btn {
+  right: 16px;
+}
+
+.show-panel-btn i {
+  font-size: 0.875rem;
 }
 
 .panel-collapse-btn i {
