@@ -231,8 +231,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                  <p>• Sends back the requested web pages</p>
                  <p>• Handles thousands of visitors simultaneously</p>
                  <p><em>Think of it as: A library that gives you the exact book you ask for</em></p>`,
-            },
-            cdnServer: {
+            },            cdnServer: {
                 title: 'CDN Server (Content Delivery Network)',
                 content: `<p>A copy of popular websites stored closer to you for faster loading.</p>
                  <p><strong>What it does:</strong></p>
@@ -241,6 +240,41 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                  <p>• Makes websites load much faster</p>
                  <p>• Reduces load on the main web server</p>
                  <p><em>Think of it as: Local bookstores that stock popular books so you don't have to go to the main publisher</em></p>`,
+            },
+            botnetCloud: {
+                title: 'Botnet Army (Cybersecurity Threat)',
+                content: `<p>⚠️ A network of infected computers controlled by cybercriminals.</p>
+                 <p><strong>What it is:</strong></p>
+                 <p>• Thousands of hacked computers working together</p>
+                 <p>• Controlled remotely by criminals (called "bot herders")</p>
+                 <p>• Used for launching coordinated cyber attacks</p>
+                 <p>• Often the computers' owners don't even know they're infected</p>
+                 <p><strong>Common attacks:</strong></p>
+                 <p>• DDoS attacks (overwhelming websites with traffic)</p>
+                 <p>• Spreading malware and viruses</p>
+                 <p>• Cryptocurrency mining theft</p>
+                 <p>• Spam email campaigns</p>
+                 <p><em>Think of it as: A zombie army of computers doing the criminal's bidding</em></p>
+                 <p><strong>🛡️ Protection:</strong> Keep your software updated, use antivirus, and avoid clicking suspicious links!</p>`,
+            },
+            cloudflareEdge: {
+                title: 'Cloudflare Edge Protection',
+                content: `<p>🛡️ A protective shield that sits between you and websites to keep both safe.</p>
+                 <p><strong>What it does:</strong></p>
+                 <p>• Blocks malicious traffic and cyber attacks</p>
+                 <p>• Speeds up websites by caching content globally</p>
+                 <p>• Protects against DDoS attacks</p>
+                 <p>• Filters out bots and suspicious requests</p>
+                 <p><strong>Security features:</strong></p>
+                 <p>• Web Application Firewall (WAF)</p>
+                 <p>• Bot protection and challenge pages</p>
+                 <p>• SSL/TLS encryption</p>
+                 <p>• Rate limiting to prevent abuse</p>
+                 <p><strong>Performance benefits:</strong></p>
+                 <p>• Global CDN with 300+ data centers</p>
+                 <p>• Faster DNS resolution (1.1.1.1)</p>
+                 <p>• Image and code optimization</p>
+                 <p><em>Think of it as: A super-smart security guard and speed booster for websites</em></p>`,
             },
         };
 
