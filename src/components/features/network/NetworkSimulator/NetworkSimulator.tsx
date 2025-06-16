@@ -632,7 +632,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && !isDragging && (
                             <div className={styles.canvasDragHint}>
                                 <i className="fas fa-hand-paper"></i>
-                                Drag to pan around • Press R to reset
+                                &nbsp;Drag to pan around • Press R to reset
                             </div>
                         )}
 

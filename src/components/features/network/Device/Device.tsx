@@ -128,7 +128,7 @@ export const Device: React.FC<DeviceProps> = ({
       webServer: 'Web Server',
       cdnServer: 'CDN Server',
       botnetCloud: 'Botnet Army',
-      cloudflareEdge: 'Cloudflare Edge',
+      cloudflareEdge: 'Cloudflare',
     };
     return labels[deviceType] || deviceType;
   };

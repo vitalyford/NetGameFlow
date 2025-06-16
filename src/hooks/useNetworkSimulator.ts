@@ -231,7 +231,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         webServer: 'Web Server (93.184.216.34)',
         cdnServer: 'CDN Edge (151.101.1.140)',
         botnetCloud: 'Botnet C&C Infrastructure',
-        cloudflareEdge: 'Cloudflare Edge Server'
+        cloudflareEdge: 'Cloudflare Server'
       };
       return names[id] || id;
     };
