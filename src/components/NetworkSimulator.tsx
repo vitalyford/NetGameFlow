@@ -435,6 +435,18 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
           </div>          <div className="header-controls">
             {/* Panel toggle buttons */}
             <div className="panel-toggles">
+              {/* Canvas Reset Button - only show when canvas is moved */}
+              {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
+                <button
+                  className="toggle-btn reset-canvas-btn"
+                  onClick={resetCanvasPosition}
+                  title="Reset canvas position (R)"
+                >
+                  <i className="fas fa-home"></i>
+                  <span>Reset View</span>
+                </button>
+              )}
+              
               <button
                 className={`toggle-btn ${showControlPanel ? 'active' : ''}`}
                 onClick={() => setShowControlPanel(!showControlPanel)}
@@ -451,18 +463,6 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                 <i className="fas fa-list"></i>
                 <span>Log</span>
               </button>
-              
-              {/* Canvas Reset Button - only show when canvas is moved */}
-              {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
-                <button
-                  className="toggle-btn reset-canvas-btn"
-                  onClick={resetCanvasPosition}
-                  title="Reset canvas position (R)"
-                >
-                  <i className="fas fa-home"></i>
-                  <span>Reset View</span>
-                </button>
-              )}
             </div>
           </div>
         </div>
