@@ -144,22 +144,13 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
             <div className={styles.additional}>
               <h3>Additional Information</h3>
               <p>{popup.additionalInfo}</p>
-            </div>
-          )}
+            </div>          )}
         </div>
-        <div className={styles.footer}>
-          <button
-            className={styles.button}
-            onClick={onClose}
-          >
-            OK
-          </button>
-          <div
-            className={styles.resizeHandle}
-            title="Drag to resize window"
-            onMouseDown={handleResizeMouseDown}
-          />
-        </div>
+        <div
+          className={styles.resizeHandle}
+          title="Drag to resize window"
+          onMouseDown={handleResizeMouseDown}
+        />
       </div>
     </div>
   );
