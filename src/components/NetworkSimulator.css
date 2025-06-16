@@ -1,7 +1,6 @@
 .network-simulator {
-  width: 100%;
+  width: 100vw;
   height: 100vh;
-  min-height: 600px;
   position: relative;
   background: #f8f9fa;
   overflow: hidden;
@@ -136,7 +135,7 @@
   display: flex;
   flex: 1;
   overflow: hidden;
-  height: 100%;
+  height: calc(100vh - 80px); /* Subtract header height */
 }
 
 /* Network Container */
@@ -146,17 +145,16 @@
   flex-direction: column;
   position: relative;
   overflow: hidden;
-  min-width: 400px; /* Ensure minimum visibility */
-  min-height: 500px; /* Ensure minimum height */
-  background: #fafafa; /* Temporary background to see the container */
+  min-width: 0; /* Allow shrinking on mobile */
+  height: 100%;
 }
 
 /* Network Topology - Main simulation area */
 .network-topology {
   flex: 1;
   position: relative;
-  min-height: 500px;
   width: 100%;
+  height: 100%;
   background: #ffffff;
   border: 1px solid #dee2e6;
   border-radius: 8px;
@@ -183,27 +181,31 @@
 @media (max-width: 768px) {
   .network-layout {
     flex-direction: column;
+    height: calc(100vh - 60px); /* Smaller header on mobile */
   }
 
   .network-container {
     order: 1;
-    height: 60vh;
-    min-height: 400px;
+    flex: 1;
+    min-height: 0;
+    height: auto;
   }
 
   .network-topology {
     margin: 5px;
-    min-height: 400px;
-    min-width: 300px;
+    min-height: 300px;
+    height: 100%;
+  }
+    .network-header {
+    padding: 0.75rem 1rem;
+    height: 60px; /* Fixed header height on mobile */
   }
   
-  .network-header {
-    padding: 1rem;
-  }
-    .header-content {
-    flex-direction: column;
-    align-items: flex-start;
+  .header-content {
+    flex-direction: row; /* Keep horizontal on mobile */
+    align-items: center;
     gap: 1rem;
+    height: 100%;
   }
 
   .brand {
@@ -226,10 +228,8 @@
   .tagline {
     font-size: 0.8rem;
   }
-
   .header-controls {
-    align-self: stretch;
-    justify-content: space-between;
+    flex-shrink: 0;
   }
   
   .panel-toggles {

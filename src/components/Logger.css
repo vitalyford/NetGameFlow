@@ -98,3 +98,28 @@
   color: inherit;
   flex: 1;
 }
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+  .log-container {
+    min-width: 100%;
+    max-width: 100%;
+    max-height: 30vh;
+    order: 2;
+    border-radius: 8px 8px 0 0;
+    margin: 0;
+  }
+  
+  .log-entries {
+    max-height: calc(30vh - 80px);
+  }
+  
+  .timestamp {
+    min-width: 50px;
+    font-size: 0.7rem;
+  }
+  
+  .message {
+    font-size: 0.85rem;
+  }
+}

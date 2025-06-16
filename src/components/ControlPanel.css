@@ -11,6 +11,7 @@
   height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
+  flex-shrink: 0;
 }
 
 /* Custom scrollbar styling */
@@ -242,15 +243,25 @@
     padding: 16px;
     border-right: none;
     border-bottom: 1px solid #e0e0e0;
+    height: auto;
+    max-height: 40vh;
+    order: 0;
   }
   
   .main-control {
-    margin-bottom: 24px;
+    margin-bottom: 16px;
   }
   
-  .demo-info,
-  .mode-control,
-  .stats-panel {
-    margin-bottom: 24px;
+  .demo-info {
+    margin-bottom: 16px;
+  }
+  
+  .demo-info ol {
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0 1rem;
+  }
+  
+  .demo-info li {
+    margin-bottom: 0.25rem;
   }
 }
