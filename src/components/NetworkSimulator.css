@@ -98,7 +98,18 @@
   transition: all 0.15s ease;
   min-width: 90px;
   height: 40px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.toggle-btn.reset-canvas-btn {
+  background: #e8f4f8;
+  color: #0d7490;
+  border-color: #67e8f9;
+}
+
+.toggle-btn.reset-canvas-btn:hover {
+  background: #cff4fc;
+  border-color: #3dd5f3;
+  transform: translateY(-1px);
 }
 
 .help-btn:hover,
@@ -141,12 +152,11 @@
 /* Network Container */
 .network-container {
   flex: 1;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
+  min-height: 0;
   overflow: hidden;
-  min-width: 0; /* Allow shrinking on mobile */
-  height: 100%;
 }
 
 /* Network Topology - Main simulation area */
@@ -161,6 +171,36 @@
   margin: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  touch-action: none; /* Prevent default touch behaviors */
+  transition: none; /* Disable transitions during dragging for smooth performance */
+}
+
+.network-topology.dragging {
+  cursor: grabbing;
+}
+
+.network-topology:active {
+  cursor: grabbing;
+}
+
+/* Smooth transition when resetting position */
+.network-topology.resetting-position {
+  transition: transform 0.3s ease-out;
+}
+
+/* Prevent text selection during canvas drag */
+.network-topology.dragging * {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Re-enable pointer events for interactive elements during drag */
+.network-topology.dragging .device,
+.network-topology.dragging .step-controller,
+.network-topology.dragging .floating-step-details-button {
+  pointer-events: auto;
 }
 
 /* Layout modifications when panels are hidden */
@@ -195,6 +235,8 @@
     margin: 5px;
     min-height: 300px;
     height: 100%;
+    /* Improve touch responsiveness on mobile */
+    touch-action: pan-x pan-y;
   }
     .network-header {
     padding: 0.75rem 1rem;
@@ -556,4 +598,60 @@
     top: 65px;
     right: 10px;
   }
+}
+
+/* Canvas drag hint - only show when canvas hasn't been moved */
+.canvas-drag-hint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(52, 152, 219, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  animation: fadeInOut 4s ease-in-out;
+  animation-delay: 2s;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.canvas-drag-hint.hidden {
+  display: none;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .network-topology {
+    margin: 5px;
+    /* Improve touch responsiveness on mobile */
+    touch-action: pan-x pan-y;
+  }
+  
+  .canvas-drag-hint {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    top: 10px;
+  }
+  
+  .toggle-btn.reset-canvas-btn span {
+    display: none; /* Hide text on mobile, keep only icon */
+  }
+  
+  .toggle-btn.reset-canvas-btn {
+    min-width: 40px;
+  }
+}
+
+/* Canvas drag boundaries visual feedback */
+.network-topology.at-boundary {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 0 10px rgba(239, 68, 68, 0.2);
 }

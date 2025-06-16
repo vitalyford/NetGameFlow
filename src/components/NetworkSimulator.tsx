@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Device } from './Device.tsx';
 import { Connection } from './Connection.tsx';
 import { StepController } from './StepController.tsx';
@@ -29,6 +29,11 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
   // Panel visibility state
   const [showControlPanel, setShowControlPanel] = useState(true);
   const [showLogPanel, setShowLogPanel] = useState(true);
+  // Canvas dragging state
+  const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+  const [showDragHint, setShowDragHint] = useState(true);
 
   const {
     devices,
@@ -252,11 +257,151 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
             break;
         }
       }
+    };    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [showControlPanel, showLogPanel]);
+  // Constrain canvas offset to reasonable bounds
+  const constrainOffset = useCallback((offset: { x: number; y: number }) => {
+    const maxOffset = 500; // Maximum pixels the canvas can be dragged in any direction
+    const constrainedOffset = {
+      x: Math.max(-maxOffset, Math.min(maxOffset, offset.x)),
+      y: Math.max(-maxOffset, Math.min(maxOffset, offset.y))
+    };
+    
+    // Add visual feedback when at boundaries
+    const isAtBoundary = constrainedOffset.x !== offset.x || constrainedOffset.y !== offset.y;
+    if (containerRef.current) {
+      if (isAtBoundary) {
+        containerRef.current.classList.add('at-boundary');
+        // Remove the class after a short delay
+        setTimeout(() => {
+          containerRef.current?.classList.remove('at-boundary');
+        }, 200);
+      }
+    }
+    
+    return constrainedOffset;
+  }, []);
+
+  // Canvas dragging event handlers
+  const handleCanvasMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    // Only start dragging if not clicking on a device or other interactive element
+    if ((e.target as HTMLElement).closest('.device, .step-controller, .floating-step-details-button')) {
+      return;
+    }
+    
+    e.preventDefault();
+    setIsDragging(true);
+    setShowDragHint(false); // Hide hint once user starts interacting
+    setDragStart({
+      x: e.clientX - canvasOffset.x,
+      y: e.clientY - canvasOffset.y
+    });
+  }, [canvasOffset]);
+  const handleCanvasMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    
+    e.preventDefault();
+    const newOffset = constrainOffset({
+      x: e.clientX - dragStart.x,
+      y: e.clientY - dragStart.y
+    });
+    setCanvasOffset(newOffset);
+  }, [isDragging, dragStart, constrainOffset]);
+  const handleCanvasMouseUp = useCallback(() => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  }, [isDragging]);
+  // Touch handlers for mobile support
+  const handleCanvasTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if ((e.target as HTMLElement).closest('.device, .step-controller, .floating-step-details-button')) {
+      return;
+    }
+    
+    if (e.touches.length === 1) {
+      e.preventDefault();
+      const touch = e.touches[0];
+      setIsDragging(true);
+      setShowDragHint(false); // Hide hint once user starts interacting
+      setDragStart({
+        x: touch.clientX - canvasOffset.x,
+        y: touch.clientY - canvasOffset.y
+      });
+    }
+  }, [canvasOffset]);
+  const handleCanvasTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
+    if (!isDragging || e.touches.length !== 1) return;
+    
+    e.preventDefault();
+    const touch = e.touches[0];
+    const newOffset = constrainOffset({
+      x: touch.clientX - dragStart.x,
+      y: touch.clientY - dragStart.y
+    });
+    setCanvasOffset(newOffset);
+  }, [isDragging, dragStart, constrainOffset]);
+  const handleCanvasTouchEnd = useCallback(() => {
+    if (isDragging) {
+      setIsDragging(false);
+    }
+  }, [isDragging]);
+
+  // Global mouse event handlers to handle dragging outside the canvas
+  useEffect(() => {    const handleGlobalMouseMove = (e: MouseEvent) => {
+      if (!isDragging) return;
+      
+      e.preventDefault();
+      const newOffset = constrainOffset({
+        x: e.clientX - dragStart.x,
+        y: e.clientY - dragStart.y
+      });
+      setCanvasOffset(newOffset);
+    };const handleGlobalMouseUp = () => {
+      if (isDragging) {
+        setIsDragging(false);
+      }
+    };
+
+    if (isDragging) {
+      document.addEventListener('mousemove', handleGlobalMouseMove);
+      document.addEventListener('mouseup', handleGlobalMouseUp);
+    }    return () => {
+      document.removeEventListener('mousemove', handleGlobalMouseMove);
+      document.removeEventListener('mouseup', handleGlobalMouseUp);
+    };
+  }, [isDragging, dragStart, canvasOffset, constrainOffset]);// Reset canvas position
+  const resetCanvasPosition = useCallback(() => {
+    setCanvasOffset({ x: 0, y: 0 });
+    // Temporarily add a smooth transition class
+    if (containerRef.current) {
+      containerRef.current.classList.add('resetting-position');
+      setTimeout(() => {
+        containerRef.current?.classList.remove('resetting-position');
+      }, 300);
+    }
+  }, []);
+
+  // Add keyboard shortcut for resetting canvas position
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (document.activeElement?.tagName === 'INPUT' || 
+          document.activeElement?.tagName === 'TEXTAREA') {
+        return;
+      }
+      
+      // Reset canvas position with 'R' key
+      if (e.key.toLowerCase() === 'r' && !e.ctrlKey && !e.metaKey) {
+        e.preventDefault();
+        resetCanvasPosition();
+      }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [showControlPanel, showLogPanel]);  return (
+  }, [resetCanvasPosition]);
+
+  return (
     <div className={`network-simulator ${className}`}>
       {/* Header */}
       <header className="network-header">
@@ -282,8 +427,7 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                 <i className="fas fa-sliders-h"></i>
                 <span>Controls</span>
               </button>
-              
-              <button
+                <button
                 className={`toggle-btn ${showLogPanel ? 'active' : ''}`}
                 onClick={() => setShowLogPanel(!showLogPanel)}
                 title={`${showLogPanel ? "Hide" : "Show"} activity log (Ctrl+2)`}
@@ -291,6 +435,18 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                 <i className="fas fa-list"></i>
                 <span>Log</span>
               </button>
+              
+              {/* Canvas Reset Button - only show when canvas is moved */}
+              {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
+                <button
+                  className="toggle-btn reset-canvas-btn"
+                  onClick={resetCanvasPosition}
+                  title="Reset canvas position (R)"
+                >
+                  <i className="fas fa-home"></i>
+                  <span>Reset View</span>
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -302,9 +458,28 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
             onStartMessageSimulation={() => startStepMode('message')}
             onClearLog={clearLog}
           />
-        )}{/* Network Topology */}
-        <div className="network-container">
-          <div className="network-topology" ref={containerRef}>
+        )}{/* Network Topology */}        <div className="network-container">
+          <div 
+            className={`network-topology ${isDragging ? 'dragging' : ''}`}
+            ref={containerRef}
+            onMouseDown={handleCanvasMouseDown}
+            onMouseMove={handleCanvasMouseMove}
+            onMouseUp={handleCanvasMouseUp}
+            onTouchStart={handleCanvasTouchStart}
+            onTouchMove={handleCanvasTouchMove}
+            onTouchEnd={handleCanvasTouchEnd}
+            style={{
+              transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px)`,
+              cursor: isDragging ? 'grabbing' : 'grab'            }}
+          >
+            {/* Canvas Drag Hint */}
+            {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && !isDragging && (
+              <div className="canvas-drag-hint">
+                <i className="fas fa-hand-paper"></i>
+                Drag to pan around • Press R to reset
+              </div>
+            )}
+            
             {/* Devices */}
             {containerRect && Object.values(devices).map((device) => (
               <Device
