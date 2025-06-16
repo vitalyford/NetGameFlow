@@ -36,10 +36,12 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   };
 
   return (
-    <div className="control-panel">      {/* Header */}
+    <div className="control-panel">
+      {/* Header */}
       <div className="panel-header">
         <p className="text-center">Complete Internet Flow Demonstration</p>
-      </div>{/* Main Control */}
+      </div>
+      {/* Main Control */}
       <div className="main-control">
         <button 
           className={`start-btn ${isRunning ? 'running' : ''}`}
@@ -48,7 +50,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <i className={`fas ${isRunning ? 'fa-stop' : 'fa-play'}`}></i>
           {isRunning ? 'Stop' : 'Start'}
         </button>
-      </div>      {/* Demo Flow Info */}
+      </div>
+      {/* Demo Flow Info */}
       <div className="demo-info">
         <h3>🌐 Complete Network Journey</h3>
         <ol>
@@ -57,7 +60,8 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <li>📄 Receive Web Content</li>
           <li>🎯 Fetch CDN Resources</li>
           <li>⚡ DDoS Attack & Protection</li>
-        </ol>        <div className="journey-note">
+        </ol>
+        <div className="journey-note">
           <small>Watch 35+ detailed steps in action!</small>
         </div>
         

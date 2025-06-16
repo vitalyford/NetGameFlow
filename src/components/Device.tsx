@@ -17,62 +17,64 @@ export const Device: React.FC<DeviceProps> = ({
     startY: number;
     offsetX: number;
     offsetY: number;
-  }>({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  }>({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
+  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return; // Only left click
-    
+
     setIsDragging(true);
-    
+
     const rect = deviceRef.current?.getBoundingClientRect();
     if (!rect) return;
-    
+
     // Calculate the offset from the mouse position to the top-left of the device
     const offsetX = e.clientX - rect.left;
     const offsetY = e.clientY - rect.top;
-    
+
     dragData.current = {
       startX: e.clientX,
       startY: e.clientY,
       offsetX: offsetX,
       offsetY: offsetY,
     };
-    
+
     e.preventDefault();
-  }, []);const handleMouseMove = useCallback((e: MouseEvent) => {
+  }, []);
+  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !deviceRef.current) return;
-    
+
     // Get a fresh container rect to ensure we have the latest bounds
     const currentContainer = deviceRef.current.closest('.network-topology') as HTMLElement;
     if (!currentContainer) return;
-    
+
     const freshContainerRect = currentContainer.getBoundingClientRect();
-    
+
     const newX = e.clientX - freshContainerRect.left - dragData.current.offsetX;
     const newY = e.clientY - freshContainerRect.top - dragData.current.offsetY;
-    
+
     // Keep device within bounds
     const maxX = freshContainerRect.width - DEVICE_CONFIG.WIDTH;
     const maxY = freshContainerRect.height - DEVICE_CONFIG.HEIGHT;
-    
+
     const boundedX = Helpers.clamp(newX, 0, maxX);
     const boundedY = Helpers.clamp(newY, 0, maxY);
-    
+
     const newPosition: Position = {
       x: boundedX + DEVICE_CONFIG.WIDTH / 2,
       y: boundedY + DEVICE_CONFIG.HEIGHT / 2,
     };
-    
+
     onDeviceMove(device.id, newPosition);
   }, [isDragging, device.id, onDeviceMove]);
 
   const handleMouseUp = useCallback((e: MouseEvent) => {
     if (isDragging) {
       setIsDragging(false);
-      
+
       // Check if this was a click vs drag
       const { startX, startY } = dragData.current;
       const deltaX = Math.abs(e.clientX - startX);
       const deltaY = Math.abs(e.clientY - startY);
-      
+
       if (deltaX <= DEVICE_CONFIG.DRAG_THRESHOLD && deltaY <= DEVICE_CONFIG.DRAG_THRESHOLD) {
         onDeviceClick(device.id);
       }
@@ -84,7 +86,7 @@ export const Device: React.FC<DeviceProps> = ({
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
       document.addEventListener('mouseup', handleMouseUp);
-      
+
       return () => {
         document.removeEventListener('mousemove', handleMouseMove);
         document.removeEventListener('mouseup', handleMouseUp);
@@ -113,7 +115,8 @@ export const Device: React.FC<DeviceProps> = ({
       cloudflareEdge: 'fas fa-shield-alt',
     };
     return icons[deviceType] || 'fas fa-circle';
-  };  const getDeviceLabel = (deviceType: string) => {
+  };
+  const getDeviceLabel = (deviceType: string) => {
     const labels: Record<string, string> = {
       client: 'Your Computer',
       router1: 'Home Router',

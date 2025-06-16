@@ -112,6 +112,40 @@
   transform: translateY(-1px);
 }
 
+.toggle-btn.tour-header-btn {
+  background: #e8f4f8;
+  color: #007aff;
+  border-color: #007aff;
+  position: relative;
+}
+
+.toggle-btn.tour-header-btn:hover {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+  transform: translateY(-1px);
+}
+
+.toggle-btn.tour-header-btn.tour-new::after {
+  content: 'New!';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff3b30;
+  color: white;
+  font-size: 8px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 6px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
 .help-btn:hover,
 .toggle-btn:hover {
   background: #f8f9fa;

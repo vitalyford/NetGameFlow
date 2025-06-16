@@ -102,10 +102,12 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
             e.stopPropagation();
           }
         }}
-      >        <div className="educational-popup-header">
+      >
+        <div className="educational-popup-header">
           <h2 id="popup-title" className="educational-popup-title">
             {popup.title}
-          </h2>          <button
+          </h2>
+          <button
             className="educational-popup-close"
             onClick={onClose}
             aria-label="Close popup"
@@ -113,8 +115,9 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           >
             ✕
           </button>
-        </div>        <div 
-          className="educational-popup-content" 
+        </div>
+        <div
+          className="educational-popup-content"
           ref={contentRef}
           style={{
             flex: 1,
@@ -137,7 +140,8 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
                 loading="lazy"
               />
             </div>
-          )}          {popup.additionalInfo && (
+          )}
+          {popup.additionalInfo && (
             <div className="educational-popup-additional">
               <h3>Additional Information</h3>
               <p>{popup.additionalInfo}</p>

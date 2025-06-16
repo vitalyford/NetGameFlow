@@ -38,23 +38,5 @@ export type {
   StepControllerProps,
 } from './types';
 
-// Utility functions (commented out until implemented)
-// export { 
-//   getDeviceColor,
-//   getDeviceDisplayName,
-//   formatBytes,
-//   formatDuration,
-// } from './utils/helpers';
-
-// Constants (commented out until implemented)
-// export {
-//   DEVICE_POSITIONS,
-//   DEVICE_CONNECTIONS,
-//   DEVICE_INFO,
-//   NETWORK_SCENARIOS,
-//   PACKET_COLORS,
-//   ANIMATION_DURATION,
-// } from './utils/constants';
-
 // Main App component (for standalone usage)
 export { default as App } from './App';

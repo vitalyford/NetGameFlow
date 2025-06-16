@@ -1,19 +1,19 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import type { 
-  DeviceData, 
-  Position, 
-  ScenarioType, 
-  NetworkStats, 
+import type {
+  DeviceData,
+  Position,
+  ScenarioType,
+  NetworkStats,
   ChaosSettings,
   LogEntry,
   StepData,
   DeviceType
 } from '../types';
-import { 
-  DEVICE_IPS, 
-  ROUTING_TABLES, 
+import {
+  DEVICE_IPS,
+  ROUTING_TABLES,
   NETWORK_CONNECTIONS,
-  SCENARIO_NAMES 
+  SCENARIO_NAMES
 } from '../utils/constants';
 import { Helpers } from '../utils/helpers';
 
@@ -28,13 +28,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     networkDelay: false,
     congestion: false,
   });
-  
+
   // Step-by-step simulation state
   const [isStepMode, setIsStepMode] = useState(false);
   const [currentStep, setCurrentStep] = useState(0);
   const [stepData, setStepData] = useState<StepData[]>([]);
   const [activeConnections, setActiveConnections] = useState<Set<string>>(new Set());
-    // Logger state
+  // Logger state
   const [logEntries, setLogEntries] = useState<LogEntry[]>([
     {
       timestamp: Helpers.formatTimestamp(),
@@ -43,7 +43,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       category: 'system',
     },
   ]);
-  
+
   // Auto-play state
   const autoPlayInterval = useRef<number | null>(null);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);  // Initialize devices
@@ -53,47 +53,47 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     const minHeight = 500;
     const width = Math.max(containerRect.width, minWidth);
     const height = Math.max(containerRect.height, minHeight);
-    
+
     // Add padding to ensure devices don't get positioned at the very edge
     const padding = 80; // Enough for device size + some margin
     const usableWidth = width - (padding * 2);
     const usableHeight = height - (padding * 2);
-      const devicePositions: Record<string, Position> = {
-      client: { 
-        x: padding + usableWidth * 0.08, 
-        y: padding + usableHeight * 0.15 
+    const devicePositions: Record<string, Position> = {
+      client: {
+        x: padding + usableWidth * 0.08,
+        y: padding + usableHeight * 0.15
       },
-      router1: { 
-        x: padding + usableWidth * 0.30, 
-        y: padding + usableHeight * 0.15 
+      router1: {
+        x: padding + usableWidth * 0.30,
+        y: padding + usableHeight * 0.15
       },
-      ispRouter: { 
-        x: padding + usableWidth * 0.52, 
-        y: padding + usableHeight * 0.15 
+      ispRouter: {
+        x: padding + usableWidth * 0.52,
+        y: padding + usableHeight * 0.15
       },
-      internetRouter1: { 
-        x: padding + usableWidth * 0.74, 
-        y: padding + usableHeight * 0.08 
+      internetRouter1: {
+        x: padding + usableWidth * 0.74,
+        y: padding + usableHeight * 0.08
       },
-      internetRouter2: { 
-        x: padding + usableWidth * 0.20, 
-        y: padding + usableHeight * 0.35 
+      internetRouter2: {
+        x: padding + usableWidth * 0.20,
+        y: padding + usableHeight * 0.35
       },
-      internetRouter3: { 
-        x: padding + usableWidth * 0.74, 
-        y: padding + usableHeight * 0.35 
+      internetRouter3: {
+        x: padding + usableWidth * 0.74,
+        y: padding + usableHeight * 0.35
       },
-      dnsServer: { 
-        x: padding + usableWidth * 0.08, 
-        y: padding + usableHeight * 0.60 
+      dnsServer: {
+        x: padding + usableWidth * 0.08,
+        y: padding + usableHeight * 0.60
       },
-      webServer: { 
-        x: padding + usableWidth * 0.52, 
-        y: padding + usableHeight * 0.60 
+      webServer: {
+        x: padding + usableWidth * 0.52,
+        y: padding + usableHeight * 0.60
       },
-      cdnServer: { 
-        x: padding + usableWidth * 0.74, 
-        y: padding + usableHeight * 0.60 
+      cdnServer: {
+        x: padding + usableWidth * 0.74,
+        y: padding + usableHeight * 0.60
       },
       // Attack simulation nodes - initially hidden
       botnetCloud: {
@@ -108,10 +108,10 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
 
     setDevices(prevDevices => {
       const newDevices: Record<string, DeviceData> = {};
-      
+
       Object.entries(devicePositions).forEach(([id, position]) => {
         const existingDevice = prevDevices[id];
-        
+
         newDevices[id] = {
           id,
           position,
@@ -122,8 +122,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           ip: DEVICE_IPS[id as keyof typeof DEVICE_IPS] || '127.0.0.1',
           type: id as DeviceType,
           // Preserve attack states when preserveStates is true
-          attackState: preserveStates && existingDevice ? existingDevice.attackState : 
-                      (id === 'botnetCloud' || id === 'cloudflareEdge') ? 'normal' : 'normal',
+          attackState: preserveStates && existingDevice ? existingDevice.attackState :
+            (id === 'botnetCloud' || id === 'cloudflareEdge') ? 'normal' : 'normal',
         };
       });
 
@@ -192,7 +192,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   }, []);
   // Enhanced logging function with detailed network information
   const addDetailedLogEntry = useCallback((
-    message: string, 
+    message: string,
     type: LogEntry['type'] = 'info',
     category?: LogEntry['category'],
     details?: LogEntry['details']
@@ -204,7 +204,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       category,
       details,
     };
-    
+
     setLogEntries(prev => [...prev.slice(-99), entry]); // Keep last 100 entries
   }, []);
 
@@ -216,7 +216,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   // Generate realistic network logs based on step data
   const generateNetworkLogsForStep = useCallback((step: StepData) => {
     const { packetInfo, fromDevice, toDevice, stepNumber, phase } = step;
-    
+
     // Generate a realistic sequence of network events for each step
     const deviceName = (id: string) => {
       const names: Record<string, string> = {
@@ -251,17 +251,17 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
 
     // 2. Packet creation/forwarding log
     if (packetInfo) {
-      const logMessage = stepNumber <= 10 && phase === 'dns' 
+      const logMessage = stepNumber <= 10 && phase === 'dns'
         ? `DNS query packet created: ${packetInfo.query}`
         : stepNumber >= 11 && phase === 'request'
-        ? `HTTPS request packet created: ${packetInfo.query}`
-        : stepNumber >= 20 && phase === 'resources'
-        ? `Resource request packet: ${packetInfo.query}`
-        : phase === 'attack'
-        ? `⚠️ ATTACK TRAFFIC DETECTED: ${packetInfo.query}`
-        : phase === 'recovery'
-        ? `🛡️ Protection mechanism activated: ${packetInfo.query}`
-        : `Packet forwarded: ${packetInfo.protocol}`;
+          ? `HTTPS request packet created: ${packetInfo.query}`
+          : stepNumber >= 20 && phase === 'resources'
+            ? `Resource request packet: ${packetInfo.query}`
+            : phase === 'attack'
+              ? `⚠️ ATTACK TRAFFIC DETECTED: ${packetInfo.query}`
+              : phase === 'recovery'
+                ? `🛡️ Protection mechanism activated: ${packetInfo.query}`
+                : `Packet forwarded: ${packetInfo.protocol}`;
 
       addDetailedLogEntry(
         logMessage,
@@ -312,7 +312,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         `NAT translation performed: ${packetInfo.originalSource} → ${packetInfo.translatedSource}`,
         'success',
         'system',
-        {          packetInfo: {
+        {
+          packetInfo: {
             protocol: packetInfo.protocol,
             source: packetInfo.source || packetInfo.originalSource || '',
             destination: packetInfo.destination || packetInfo.originalDestination || '',
@@ -460,9 +461,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   // Step-by-step simulation
   const startStepMode = useCallback((type: 'packet' | 'message') => {
     const newStepData: StepData[] = [];
-    
+
     // Comprehensive demo sequence: DNS resolution → Packet journey → Resource fetching → DDoS simulation
-      // Phase 1: DNS Resolution with NAT (8 steps total)
+    // Phase 1: DNS Resolution with NAT (8 steps total)
     newStepData.push({
       stepNumber: 1,
       fromDevice: 'client',
@@ -538,7 +539,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         packetJourney: 'ISP router forwards packet from customer network toward Google\'s Autonomous System',
         routingLogic: 'BGP table lookup: 8.8.8.8/32 belongs to Google AS15169, best path via next-hop 172.16.0.1',
         networkingConcepts: ['BGP (Border Gateway Protocol)', 'Autonomous Systems', 'Internet Routing', 'Longest Prefix Match']
-      }    });
+      }
+    });
 
     newStepData.push({
       stepNumber: 4,
@@ -588,7 +590,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Direct connected route: 8.8.8.8/32 is directly reachable via local interface',
         networkingConcepts: ['DNS Resolution', 'Anycast Routing', 'Public DNS Servers']
       }
-    });    // DNS Response - Return journey (steps 6-10)
+    });
+    // DNS Response - Return journey (steps 6-10)
     newStepData.push({
       stepNumber: 6,
       fromDevice: 'dnsServer',
@@ -602,7 +605,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         ttl: 64,
         routingDecision: 'Return to source via reverse path',
         nextHop: '172.16.0.1'
-      },      
+      },
       routingInfo: devices.dnsServer?.routingTable || {},
       action: 'DNS server responds with IP address',
       phase: 'dns',
@@ -662,7 +665,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: '98.76.54.32/32 belongs to customer ISP block, route via learned BGP path',
         networkingConcepts: ['Internet Backbone', 'BGP Path Selection', 'Reverse Routing']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 9,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
@@ -713,7 +717,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'NAT state table lookup: session 98.76.54.32:12345 maps back to 192.168.1.100:54321',
         networkingConcepts: ['Reverse NAT', 'Stateful NAT Table', 'Session Tracking', 'Local Delivery']
       }
-    });    // Phase 2: Initial HTTP Request (6 steps)
+    });
+    // Phase 2: Initial HTTP Request (6 steps)
     newStepData.push({
       stepNumber: 11,
       fromDevice: 'client',
@@ -737,7 +742,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
         networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 12,
       fromDevice: 'router1',
       toDevice: 'ispRouter',
@@ -760,13 +766,14 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: '98.76.54.32 is assigned to this customer, forward via customer connection interface',
         networkingConcepts: ['ISP Routing', 'Customer IP Assignment', 'Last Mile Delivery']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 10,
       fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
         source: '8.8.8.8:53',
-        destination: '192.168.1.100:54321',        protocol: 'DNS (UDP)',
+        destination: '192.168.1.100:54321', protocol: 'DNS (UDP)',
         size: '128 bytes',
         query: 'www.example.com → 93.184.216.34',
         originalDestination: '98.76.54.32:12345',
@@ -784,7 +791,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         packetJourney: 'Router performs reverse NAT: 98.76.54.32:12345 → 192.168.1.100:54321, delivers to client',
         routingLogic: 'NAT state table lookup: session 98.76.54.32:12345 maps back to 192.168.1.100:54321',
         networkingConcepts: ['Reverse NAT', 'Stateful NAT Table', 'Session Tracking', 'Local Delivery']
-      }    });    // Phase 2: Initial HTTP Request (6 steps)
+      }
+    });
+    // Phase 2: Initial HTTP Request (6 steps)
     newStepData.push({
       stepNumber: 13,
       fromDevice: 'client',
@@ -808,12 +817,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Destination 93.184.216.34 is not in local subnet, route via default gateway',
         networkingConcepts: ['HTTPS Protocol', 'TCP Connection', 'Default Gateway Routing']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 14,
       fromDevice: 'router1',
       toDevice: 'ispRouter',
       packetInfo: {
-        source: '192.168.1.100:45678',        destination: '93.184.216.34:443',
+        source: '192.168.1.100:45678', destination: '93.184.216.34:443',
         protocol: 'HTTPS (TCP)',
         size: '1420 bytes',
         query: 'GET / HTTP/1.1',
@@ -822,7 +832,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Router forwards HTTPS request to ISP',
       phase: 'request',
       description: 'Home router forwards your HTTPS request to the ISP'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 13,
       fromDevice: 'ispRouter',
       toDevice: 'internetRouter1',
@@ -837,7 +848,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'ISP routes through internet',
       phase: 'request',
       description: 'ISP router determines the best path to the destination server'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 14,
       fromDevice: 'internetRouter1',
       toDevice: 'internetRouter3',
@@ -852,7 +864,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Routing through internet backbone',
       phase: 'request',
       description: 'Packet travels through multiple internet routers to reach destination'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 15,
       fromDevice: 'internetRouter3',
       toDevice: 'webServer',
@@ -867,7 +880,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Request reaches web server',
       phase: 'request',
       description: 'Your HTTPS request finally reaches the destination web server'
-    });    // Phase 3: Web Server Response (5 steps)
+    });
+    // Phase 3: Web Server Response (5 steps)
     newStepData.push({
       stepNumber: 16,
       fromDevice: 'webServer',
@@ -883,7 +897,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Server sends HTML response',
       phase: 'response',
       description: 'Web server processes request and sends back HTML page content'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 17,
       fromDevice: 'internetRouter3',
       toDevice: 'internetRouter1',
@@ -898,7 +913,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Response travels back through internet',
       phase: 'response',
       description: 'HTML response travels back through internet infrastructure'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 18,
       fromDevice: 'internetRouter1',
       toDevice: 'ispRouter',
@@ -913,7 +929,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Returning through ISP network',
       phase: 'response',
       description: 'Response packet returns through your ISP network'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 19,
       fromDevice: 'ispRouter',
       toDevice: 'router1',
@@ -928,7 +945,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Back to home network',
       phase: 'response',
       description: 'Response arrives back at your home router'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 20,
       fromDevice: 'router1',
       toDevice: 'client',
@@ -942,7 +960,9 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       routingInfo: devices.router1?.routingTable || {},
       action: 'HTML received by your computer',
       phase: 'response',
-      description: 'Your computer receives the HTML and starts rendering the webpage'    });    // Phase 4: CDN Resource Fetching (6 steps - through proper internet routing)
+      description: 'Your computer receives the HTML and starts rendering the webpage'
+    });
+    // Phase 4: CDN Resource Fetching (6 steps - through proper internet routing)
     newStepData.push({
       stepNumber: 21,
       fromDevice: 'client',
@@ -958,7 +978,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Requesting CSS from CDN',
       phase: 'resources',
       description: 'Browser needs CSS stylesheet and requests it from a Content Delivery Network'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 22,
       fromDevice: 'router1',
       toDevice: 'ispRouter',
@@ -973,7 +994,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       action: 'Router forwards CDN request to ISP',
       phase: 'resources',
       description: 'Home router routes request through ISP to reach CDN server'
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 23,
       fromDevice: 'ispRouter',
       toDevice: 'internetRouter1',
@@ -1021,7 +1043,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       routingInfo: devices.internetRouter3?.routingTable || {},
       action: 'Request reaches CDN server',
       phase: 'resources',
-      description: 'Request finally reaches the nearby CDN edge server for fast content delivery'    });
+      description: 'Request finally reaches the nearby CDN edge server for fast content delivery'
+    });
 
     // CDN Response Journey - proper routing back through internet infrastructure
     newStepData.push({
@@ -1047,7 +1070,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Destination 192.168.1.100 is not local, route via default gateway back through internet',
         networkingConcepts: ['CDN Edge Servers', 'Content Caching', 'Optimized Delivery', 'Return Path Routing']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 27,
       fromDevice: 'internetRouter3',
       toDevice: 'internetRouter1',
@@ -1123,7 +1147,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     });
 
     newStepData.push({
-      stepNumber: 30,      fromDevice: 'router1',
+      stepNumber: 30, fromDevice: 'router1',
       toDevice: 'client',
       packetInfo: {
         source: '151.101.1.140:443',
@@ -1147,7 +1171,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'NAT state table lookup and local network delivery to client',
         networkingConcepts: ['Reverse NAT', 'Content Delivery', 'Web Resource Loading', 'Browser Rendering']
       }
-    });    // Phase 5: Realistic DDoS Attack with Botnet and Cloudflare Protection
+    });
+    // Phase 5: Realistic DDoS Attack with Botnet and Cloudflare Protection
     newStepData.push({
       stepNumber: 31,
       fromDevice: 'botnetCloud',
@@ -1171,7 +1196,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         routingLogic: 'Distributed attack sources overwhelm multiple network entry points simultaneously',
         networkingConcepts: ['Distributed Denial of Service', 'Botnet Command & Control', 'Amplification Attacks', 'Multi-Vector Assault']
       }
-    });    newStepData.push({
+    });
+    newStepData.push({
       stepNumber: 32,
       fromDevice: 'internetRouter1',
       toDevice: 'webServer',
@@ -1256,7 +1282,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         query: 'HTTP/1.1 200 OK - Service Restored',
         request: 'Normal website operation resumed',
         protectionFeatures: ['Clean traffic only', 'Attack traffic filtered', 'Performance optimized', 'Security monitoring active']
-      },      
+      },
       routingInfo: devices.webServer?.routingTable || {},
       action: 'Service completely restored - clean traffic reaches server while attack is neutralized',
       phase: 'recovery',
@@ -1267,10 +1293,10 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         networkingConcepts: ['DDoS Mitigation Success', 'Traffic Scrubbing', 'Service Restoration', 'Security vs Performance Balance']
       }
     });
-      setStepData(newStepData);
+    setStepData(newStepData);
     setCurrentStep(0);
     setIsStepMode(true);
-    
+
     // Highlight first step
     if (newStepData.length > 0) {
       const firstStep = newStepData[0];
@@ -1278,11 +1304,11 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       clearDeviceHighlights();
       activateDevice(firstStep.fromDevice);
       highlightConnection(firstStep.fromDevice, firstStep.toDevice);
-      
+
       // Generate initial network logs for the first step
       generateNetworkLogsForStep(firstStep);
     }
-    
+
     addDetailedLogEntry(
       `🚀 Started ${type} simulation - ${SCENARIO_NAMES[currentScenario]}`,
       'success',
@@ -1294,7 +1320,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           packetLoss: 0
         }
       }
-    );  }, [
+    );
+  }, [
     currentScenario,
     devices,
     clearConnectionHighlights,
@@ -1308,10 +1335,11 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     if (currentStep < stepData.length - 1) {
       const newStep = currentStep + 1;
       setCurrentStep(newStep);
-      
+
       const step = stepData[newStep];
       clearConnectionHighlights();
-      clearDeviceHighlights();      // Handle special attack states for DDoS visualization
+      clearDeviceHighlights();
+      // Handle special attack states for DDoS visualization
       if (step.phase === 'attack') {
         if (step.stepNumber === 31) {
           // DDoS attack start - show botnet and mark infrastructure as under attack
@@ -1346,12 +1374,12 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         // Normal operations - clear attack states and hide special devices
         clearAllAttackStates();
       }
-        activateDevice(step.fromDevice);
+      activateDevice(step.fromDevice);
       highlightConnection(step.fromDevice, step.toDevice);
-      
+
       // Generate realistic network logs for this step
       generateNetworkLogsForStep(step);
-      
+
       addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
     } else {
       // Complete simulation
@@ -1366,7 +1394,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       clearAllAttackStates();
 
       addLogEntry('✅ Step-by-step simulation completed!', 'success');
-    }  }, [
+    }
+  }, [
     currentStep,
     stepData,
     clearConnectionHighlights,
@@ -1382,16 +1411,16 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     if (currentStep > 0) {
       const newStep = currentStep - 1;
       setCurrentStep(newStep);
-      
+
       const step = stepData[newStep];
       clearConnectionHighlights();
       clearDeviceHighlights();
       activateDevice(step.fromDevice);
       highlightConnection(step.fromDevice, step.toDevice);
-      
+
       // Generate realistic network logs for this step
       generateNetworkLogsForStep(step);
-      
+
       addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
     }
   }, [
@@ -1411,11 +1440,11 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
         if (prev < stepData.length - 1) {
           const newStep = prev + 1;
           const step = stepData[newStep];
-          
+
           // Apply the same highlighting logic as nextStep
           clearConnectionHighlights();
           clearDeviceHighlights();
-          
+
           // Handle special attack states for DDoS visualization
           if (step.phase === 'attack') {
             if (step.stepNumber === 31) {
@@ -1451,14 +1480,14 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
             // Normal operations - clear attack states and hide special devices
             clearAllAttackStates();
           }
-            activateDevice(step.fromDevice);
+          activateDevice(step.fromDevice);
           highlightConnection(step.fromDevice, step.toDevice);
-          
+
           // Generate realistic network logs for this step
           generateNetworkLogsForStep(step);
-          
+
           addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
-          
+
           return newStep;
         } else {
           // Complete simulation
@@ -1471,12 +1500,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           clearConnectionHighlights();
           clearDeviceHighlights();
           clearAllAttackStates();
-          
+
           addLogEntry('✅ Step-by-step simulation completed!', 'success');
           return prev;
         }
       });
-    }, 3000);  }, [
+    }, 3000);
+  }, [
     stepData,
     clearConnectionHighlights,
     clearDeviceHighlights,
@@ -1501,7 +1531,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     setCurrentStep(0);
     clearConnectionHighlights();
     clearDeviceHighlights();
-    
+
     if (stepData.length > 0) {
       const firstStep = stepData[0];
       activateDevice(firstStep.fromDevice);
@@ -1513,20 +1543,20 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   const stopSimulation = useCallback(() => {
     // Stop any auto-play
     stopAutoPlay();
-    
+
     // Exit step mode completely
     setIsStepMode(false);
     setCurrentStep(0);
     setStepData([]);
-    
+
     // Clear all visual highlights and states
     clearConnectionHighlights();
     clearDeviceHighlights();
     clearAllAttackStates();
-    
+
     // Reset active connections
     setActiveConnections(new Set());
-    
+
     // Clear the log with a fresh start message
     setLogEntries([{
       timestamp: Helpers.formatTimestamp(),
@@ -1534,7 +1564,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
       type: 'info',
       category: 'system',
     }]);
-    
+
     addLogEntry('🔄 Simulation stopped and reset to initial state', 'info');
   }, [
     stopAutoPlay,
@@ -1547,13 +1577,13 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   // Simulate DDoS attack
   const simulateDDoS = useCallback(async () => {
     addLogEntry('💥 Simulating DDoS attack - sending massive traffic!', 'error');
-    
+
     for (let i = 0; i < 10; i++) {
       setTimeout(() => {
         addLogEntry(`🚨 Attack packet ${i + 1} sent`, 'error');
       }, i * 100);
     }
-    
+
     setTimeout(() => {
       addLogEntry('🛡️ Server overwhelmed! This is why DDoS protection is important.', 'error');
     }, 2000);
@@ -1568,7 +1598,8 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
   useEffect(() => {
     return () => {
       if (autoPlayInterval.current) {
-        clearInterval(autoPlayInterval.current);      }
+        clearInterval(autoPlayInterval.current);
+      }
     };
   }, []);
 
@@ -1585,7 +1616,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     logEntries,
     isAutoPlaying,
     connections: NETWORK_CONNECTIONS,
-    
+
     // Actions
     initializeDevices,
     handleDeviceMove,
@@ -1598,7 +1629,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     changeScenario,
     startStepMode,
     nextStep,
-    previousStep,    startAutoPlay,
+    previousStep, startAutoPlay,
     stopAutoPlay,
     resetSteps,
     stopSimulation,

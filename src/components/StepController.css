@@ -7,7 +7,8 @@
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e1e5e9;  z-index: 500;
+  border: 1px solid #e1e5e9;
+  z-index: 500;
   min-width: 350px;
   max-width: 900px;
   min-height: 450px;

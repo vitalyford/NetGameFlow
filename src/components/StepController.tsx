@@ -15,21 +15,24 @@ export const StepController: React.FC<StepControllerProps> = ({
   onReset,
   stepData,
 }) => {
-  const [isMinimized, setIsMinimized] = useState(false);  const [isDetailed, setIsDetailed] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false);
+  const [isDetailed, setIsDetailed] = useState(false);
   const [isAutoPlaying, setIsAutoPlaying] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const [size, setSize] = useState({ width: 450, height: 600 });
   const [isResizing, setIsResizing] = useState(false);
-  const [resizeDirection, setResizeDirection] = useState<string | null>(null);  const dragRef = useRef<HTMLDivElement>(null);
-  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });  const resizeData = useRef({ 
-    startX: 0, 
-    startY: 0, 
-    startWidth: 0, 
+  const [resizeDirection, setResizeDirection] = useState<string | null>(null);
+  const dragRef = useRef<HTMLDivElement>(null);
+  const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
+  const resizeData = useRef({
+    startX: 0,
+    startY: 0,
+    startWidth: 0,
     startHeight: 0,
     startPosX: 0,
     startPosY: 0,
-    direction: '' 
+    direction: ''
   });
 
   // Reset auto-play state when reaching the end or when manually navigating
@@ -41,16 +44,16 @@ export const StepController: React.FC<StepControllerProps> = ({
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     // Always stop propagation to prevent canvas dragging
     e.stopPropagation();
-    
+
     if (e.target instanceof HTMLElement && e.target.closest('button')) {
       return; // Don't drag when clicking buttons
     }
-    
+
     // Don't drag if clicking on resize handles
     if (e.target instanceof HTMLElement && e.target.closest('.resize-handle')) {
       return;
     }
-    
+
     setIsDragging(true);
     dragData.current = {
       startX: e.clientX,
@@ -65,9 +68,10 @@ export const StepController: React.FC<StepControllerProps> = ({
   const handleResizeMouseDown = useCallback((e: React.MouseEvent, direction: string) => {
     e.stopPropagation();
     e.preventDefault();
-    
+
     setIsResizing(true);
-    setResizeDirection(direction);    resizeData.current = {
+    setResizeDirection(direction);
+    resizeData.current = {
       startX: e.clientX,
       startY: e.clientY,
       startWidth: size.width,
@@ -76,13 +80,13 @@ export const StepController: React.FC<StepControllerProps> = ({
       startPosY: position.y,
       direction
     };
-  }, [size, position]);  const handleMouseMove = useCallback((e: MouseEvent) => {
+  }, [size, position]); const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging && !isResizing) return;
-    
+
     if (isDragging) {
       const deltaX = e.clientX - dragData.current.startX;
       const deltaY = e.clientY - dragData.current.startY;
-      
+
       setPosition({
         x: dragData.current.startPosX + deltaX,
         y: dragData.current.startPosY + deltaY,
@@ -90,11 +94,11 @@ export const StepController: React.FC<StepControllerProps> = ({
     } else if (isResizing && resizeDirection) {
       const deltaX = e.clientX - resizeData.current.startX;
       const deltaY = e.clientY - resizeData.current.startY;
-        let newWidth = resizeData.current.startWidth;
+      let newWidth = resizeData.current.startWidth;
       let newHeight = resizeData.current.startHeight;
       let newX = resizeData.current.startPosX;
       let newY = resizeData.current.startPosY;
-      
+
       // Handle different resize directions
       if (resizeDirection.includes('e')) {
         newWidth = Math.max(350, Math.min(900, resizeData.current.startWidth + deltaX));
@@ -112,7 +116,7 @@ export const StepController: React.FC<StepControllerProps> = ({
         newHeight = potentialHeight;
         newY = resizeData.current.startPosY + (resizeData.current.startHeight - potentialHeight);
       }
-      
+
       setSize({ width: newWidth, height: newHeight });
       setPosition({ x: newX, y: newY });
     }
@@ -138,7 +142,9 @@ export const StepController: React.FC<StepControllerProps> = ({
   const handleAutoPlay = () => {
     setIsAutoPlaying(true);
     onAutoPlay();
-  };  const handlePause = () => {
+  };
+
+  const handlePause = () => {
     setIsAutoPlaying(false);
     onPause();
   };
@@ -182,8 +188,10 @@ export const StepController: React.FC<StepControllerProps> = ({
     } else {
       return "Data is being passed through the internet infrastructure";
     }
-  };  return (
-    <div 
+  };
+
+  return (
+    <div
       className={`step-tooltip ${isMinimized ? 'minimized' : ''} ${isDragging ? 'dragging' : ''} ${isResizing ? 'resizing' : ''}`}
       style={{
         transform: `translate(${position.x}px, ${position.y}px)`,
@@ -204,7 +212,8 @@ export const StepController: React.FC<StepControllerProps> = ({
           <p className="simple-explanation">{stepData.description || getSimpleExplanation(stepData)}</p>
         </div>
         <div className="header-controls">
-          <span className="step-counter">{currentStep + 1} / {totalSteps}</span>          <button 
+          <span className="step-counter">{currentStep + 1} / {totalSteps}</span>
+          <button
             className="minimize-btn"
             onClick={(e) => {
               e.stopPropagation();
@@ -215,13 +224,15 @@ export const StepController: React.FC<StepControllerProps> = ({
             <i className={`fas fa-chevron-${isMinimized ? 'up' : 'down'}`}></i>
           </button>
         </div>
-      </div>      {!isMinimized && (
+      </div>
+      {!isMinimized && (
         <div className="tooltip-content" onClick={(e) => e.stopPropagation()}>
           <div className="current-action">
             <strong>What's happening:</strong> {stepData.action}
           </div>
-          
-          <div className="toggle-details">            <button 
+
+          <div className="toggle-details">
+            <button
               className="details-toggle"
               onClick={(e) => {
                 e.stopPropagation();
@@ -230,7 +241,8 @@ export const StepController: React.FC<StepControllerProps> = ({
             >
               {isDetailed ? 'Hide' : 'Show'} Technical Details
             </button>
-          </div>          {isDetailed && (
+          </div>
+          {isDetailed && (
             <>
               {/* Packet Journey Information */}
               <div className="detail-section">
@@ -261,7 +273,7 @@ export const StepController: React.FC<StepControllerProps> = ({
                   <span>Destination:</span>
                   <span>{stepData.packetInfo.destination}</span>
                 </div>
-                
+
                 {/* NAT Information */}
                 {stepData.packetInfo.natPerformed && (
                   <div className="nat-info">
@@ -292,7 +304,7 @@ export const StepController: React.FC<StepControllerProps> = ({
                     )}
                   </div>
                 )}
-                
+
                 <div className="detail-item">
                   <span><TechTerm term="Protocol">Protocol</TechTerm>:</span>
                   <span>{stepData.packetInfo.protocol}</span>
@@ -374,20 +386,21 @@ export const StepController: React.FC<StepControllerProps> = ({
             </>
           )}
         </div>
-      )}      {/* Step Controls - always visible */}
+      )}
+      {/* Step Controls - always visible */}
       <div className="step-controls" onClick={(e) => e.stopPropagation()}><button
-          className="step-btn previous"
-          onClick={(e) => {
-            e.stopPropagation();
-            onPrevious();
-          }}
-          disabled={currentStep === 0}
-          title="Previous Step"
-          aria-label="Previous Step"
-        >
-          <i className="fas fa-chevron-left"></i>
-        </button>
-        
+        className="step-btn previous"
+        onClick={(e) => {
+          e.stopPropagation();
+          onPrevious();
+        }}
+        disabled={currentStep === 0}
+        title="Previous Step"
+        aria-label="Previous Step"
+      >
+        <i className="fas fa-chevron-left"></i>
+      </button>
+
         {!isAutoPlaying ? (
           <button
             className="step-btn auto-play"
@@ -413,7 +426,7 @@ export const StepController: React.FC<StepControllerProps> = ({
             <i className="fas fa-pause"></i>
           </button>
         )}
-        
+
         <button
           className="step-btn next"
           onClick={(e) => {
@@ -426,7 +439,7 @@ export const StepController: React.FC<StepControllerProps> = ({
         >
           <i className="fas fa-chevron-right"></i>
         </button>
-        
+
         <button
           className="step-btn reset"
           onClick={(e) => {
@@ -444,40 +457,41 @@ export const StepController: React.FC<StepControllerProps> = ({
       {!isMinimized && (
         <>
           {/* Corner handles */}
-          <div 
-            className="resize-handle resize-nw" 
+          <div
+            className="resize-handle resize-nw"
             onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
           />
-          <div 
-            className="resize-handle resize-ne" 
+          <div
+            className="resize-handle resize-ne"
             onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
           />
-          <div 
-            className="resize-handle resize-sw" 
+          <div
+            className="resize-handle resize-sw"
             onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
           />
-          <div 
-            className="resize-handle resize-se" 
+          <div
+            className="resize-handle resize-se"
             onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
           />
-          
+
           {/* Edge handles */}
-          <div 
-            className="resize-handle resize-n" 
+          <div
+            className="resize-handle resize-n"
             onMouseDown={(e) => handleResizeMouseDown(e, 'n')}
           />
-          <div 
-            className="resize-handle resize-s" 
+          <div
+            className="resize-handle resize-s"
             onMouseDown={(e) => handleResizeMouseDown(e, 's')}
           />
-          <div 
-            className="resize-handle resize-w" 
+          <div
+            className="resize-handle resize-w"
             onMouseDown={(e) => handleResizeMouseDown(e, 'w')}
-          />          <div 
-            className="resize-handle resize-e" 
+          />
+          <div
+            className="resize-handle resize-e"
             onMouseDown={(e) => handleResizeMouseDown(e, 'e')}
           />
-          
+
           {/* Resize indicator */}
           <div className="resize-indicator">
             <i className="fas fa-expand-arrows-alt"></i>

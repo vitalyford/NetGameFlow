@@ -10,11 +10,11 @@ interface TechTermProps {
 export const TechTerm: React.FC<TechTermProps> = ({ term, children }) => {
   const { showPopup } = useEducational();
   const explanation = getNetworkExplanation(term);
-  
+
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    
+
     if (explanation) {
       showPopup({
         id: `tech-term-${term}`,
@@ -30,12 +30,13 @@ export const TechTerm: React.FC<TechTermProps> = ({ term, children }) => {
   }
 
   return (
-    <span 
-      className="tech-term clickable" 
+    <span
+      className="tech-term clickable"
       onClick={handleClick}
       title={`Click to learn more about ${term}`}
       role="button"
-      tabIndex={0}      onKeyDown={(e) => {
+      tabIndex={0}
+      onKeyDown={(e) => {
         if (e.key === 'Enter' || e.key === ' ') {
           e.preventDefault();
           e.stopPropagation();

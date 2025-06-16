@@ -9,7 +9,8 @@ interface LoggerProps {
 
 export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
   const [isDetailed, setIsDetailed] = useState(false);
-  const [filter, setFilter] = useState<'all' | LogCategory>('all');  const [autoScroll, setAutoScroll] = useState(true);
+  const [filter, setFilter] = useState<'all' | LogCategory>('all');
+  const [autoScroll, setAutoScroll] = useState(true);
   const logContentRef = useRef<HTMLDivElement>(null);
   const isUserScrollingRef = useRef(false);
   const scrollTimeoutRef = useRef<number | null>(null);
@@ -30,28 +31,28 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
   // Improved scroll handling with debouncing and better user intent detection
   const handleScroll = () => {
     if (!logContentRef.current) return;
-    
+
     const scrollElement = logContentRef.current;
     const currentScrollTop = scrollElement.scrollTop;
     const scrollHeight = scrollElement.scrollHeight;
     const clientHeight = scrollElement.clientHeight;
     const isAtBottom = scrollHeight - currentScrollTop <= clientHeight + 5;
-    
+
     // Detect if user is actively scrolling up
     const isScrollingUp = currentScrollTop < lastScrollTopRef.current;
     lastScrollTopRef.current = currentScrollTop;
-    
+
     // If user scrolls up from any position, disable auto-scroll immediately
     if (isScrollingUp && !isUserScrollingRef.current) {
       isUserScrollingRef.current = true;
       setAutoScroll(false);
     }
-    
+
     // Clear any existing timeout
     if (scrollTimeoutRef.current) {
       clearTimeout(scrollTimeoutRef.current);
     }
-    
+
     // Set a timeout to check if user has stopped scrolling
     scrollTimeoutRef.current = window.setTimeout(() => {
       // If user is at bottom and hasn't scrolled for a while, re-enable auto-scroll
@@ -68,7 +69,7 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
     if (e.deltaY < 0 && autoScroll && logContentRef.current) {
       const scrollElement = logContentRef.current;
       const isAtBottom = scrollElement.scrollHeight - scrollElement.scrollTop <= scrollElement.clientHeight + 5;
-      
+
       if (isAtBottom) {
         isUserScrollingRef.current = true;
         setAutoScroll(false);
@@ -96,7 +97,7 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
         }
       }
     }, 100);
-    
+
     return () => clearTimeout(timer);
   }, [filteredEntries]);
 
@@ -112,11 +113,11 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
     if (details.packetInfo) {
       const { packetInfo } = details;
       formattedMessage += `\n  └─ Packet: ${packetInfo.protocol} | ${packetInfo.source} → ${packetInfo.destination}`;
-      
+
       if (packetInfo.size) {
         formattedMessage += ` | Size: ${packetInfo.size}`;
       }
-      
+
       if (packetInfo.ttl !== undefined) {
         formattedMessage += ` | TTL: ${packetInfo.ttl}`;
       }
@@ -163,7 +164,7 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
     if (entry.category === 'routing') return '🛤️';
     if (entry.category === 'security') return '🛡️';
     if (entry.category === 'system') return '⚙️';
-    
+
     switch (entry.type) {
       case 'success': return '✅';
       case 'warning': return '⚠️';
@@ -180,8 +181,8 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
           Network Activity Log
         </h3>
         <div className="log-controls">
-          <select 
-            value={filter} 
+          <select
+            value={filter}
             onChange={(e) => setFilter(e.target.value as 'all' | LogCategory)}
             className="log-filter"
             title="Filter log entries"
@@ -192,14 +193,14 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
             <option value="security">Security</option>
             <option value="system">System</option>
           </select>
-            <button 
+          <button
             className={`detail-toggle ${isDetailed ? 'active' : ''}`}
             onClick={() => setIsDetailed(!isDetailed)}
             title="Toggle detailed view"
           >
             <i className="fas fa-microscope"></i>
           </button>
-            <button 
+          <button
             className={`auto-scroll-toggle ${autoScroll ? 'active' : ''}`}
             onClick={() => {
               const newAutoScroll = !autoScroll;
@@ -213,13 +214,13 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
           >
             <i className="fas fa-arrow-down"></i>
           </button>
-          
+
           <button className="clear-log-btn" onClick={onClear} title="Clear Log">
             <i className="fas fa-trash"></i>
           </button>
         </div>
       </div>
-        <div 
+      <div
         className="log-content"
         ref={logContentRef}
         onScroll={handleScroll}
@@ -241,7 +242,7 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
             </div>
           </div>
         ))}
-        
+
         {filteredEntries.length === 0 && (
           <div className="log-entry info">
             <div className="log-message">
@@ -250,14 +251,15 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
           </div>
         )}
       </div>
-      
+
       <div className="log-footer">
         <div className="log-status">
           <small>
             {filteredEntries.length} of {entries.length} entries
             {isDetailed && ' (detailed view)'}
           </small>
-          {!autoScroll && (            <button 
+          {!autoScroll && (
+            <button
               className="scroll-to-bottom-btn"
               onClick={() => {
                 setAutoScroll(true);
