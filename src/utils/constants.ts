@@ -1,5 +1,5 @@
 // Constants and configuration for the Network Simulator
-import type { DeviceType, Connection, WebComponent, RoutingTable } from '../types';
+import type { DeviceType, Connection, WebComponent, RoutingTable } from '@/types';
 
 export const DEVICE_CONFIG = {
   WIDTH: 100,

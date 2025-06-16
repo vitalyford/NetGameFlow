@@ -1,6 +1,7 @@
 import React from 'react';
-import { useEducational } from '../hooks/useEducational';
-import { getNetworkExplanation } from '../utils/networkExplanations';
+import { useEducational } from '@/hooks/useEducational';
+import { getNetworkExplanation } from '@/utils/networkExplanations';
+import styles from './TechTerm.module.css';
 
 interface TechTermProps {
   term: string;
@@ -27,11 +28,9 @@ export const TechTerm: React.FC<TechTermProps> = ({ term, children }) => {
   // If no explanation exists, just render the children without interaction
   if (!explanation) {
     return <>{children}</>;
-  }
-
-  return (
+  }  return (
     <span
-      className="tech-term clickable"
+      className={`${styles.term} ${styles.clickable}`}
       onClick={handleClick}
       title={`Click to learn more about ${term}`}
       role="button"

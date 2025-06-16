@@ -1,4 +1,4 @@
-.educational-popup-overlay {
+.overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@
   padding: 20px;
 }
 
-.educational-popup {
+.popup {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: blur(10px);
   border-radius: 16px;
@@ -33,7 +33,7 @@
   transition: box-shadow 0.2s ease;
 }
 
-.educational-popup.resizing {
+.popup.resizing {
   transition: none;
   user-select: none;
   box-shadow: 0 25px 50px rgba(102, 126, 234, 0.3);
@@ -51,7 +51,7 @@
   }
 }
 
-.educational-popup-header {
+.header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -61,14 +61,14 @@
   color: white;
 }
 
-.educational-popup-title {
+.title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: 600;
   color: white;
 }
 
-.educational-popup-close {
+.closeButton {
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
   color: white;
@@ -85,19 +85,19 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.educational-popup-close:hover {
+.closeButton:hover {
   background: rgba(255, 255, 255, 0.4);
   border-color: rgba(255, 255, 255, 0.5);
   transform: scale(1.05);
 }
 
-.educational-popup-close:focus {
+.closeButton:focus {
   outline: 2px solid rgba(255, 255, 255, 0.8);
   outline-offset: 2px;
   background: rgba(255, 255, 255, 0.3);
 }
 
-.educational-popup-content {
+.content {
   padding: 24px;
   overflow-y: auto;
   overflow-x: hidden;
@@ -107,13 +107,13 @@
 }
 
 /* Force scrollbar to always be visible */
-.educational-popup-content {
+.content {
   scrollbar-width: auto !important;
   scrollbar-color: #667eea #f1f1f1 !important;
 }
 
 /* Fallback for browsers that don't support webkit scrollbar styling */
-.educational-popup-content {
+.content {
   scrollbar-3dlight-color: #f1f1f1;
   scrollbar-arrow-color: #667eea;
   scrollbar-base-color: #f1f1f1;
@@ -125,7 +125,7 @@
 }
 
 /* Scroll indicator for overflowing content */
-.educational-popup-content.has-overflow {
+.content.hasOverflow {
   background: 
     /* Shadow at top */
     linear-gradient(to bottom, rgba(255,255,255,1) 0%, rgba(255,255,255,0.7) 15px) top,
@@ -141,56 +141,56 @@
   background-attachment: local, local, local, local, scroll;
 }
 
-.educational-popup-content::-webkit-scrollbar {
+.content::-webkit-scrollbar {
   width: 20px !important;
   -webkit-appearance: auto !important;
 }
 
-.educational-popup-content::-webkit-scrollbar-track {
+.content::-webkit-scrollbar-track {
   background: #f1f1f1 !important;
   border-radius: 10px !important;
   border: 1px solid #ddd !important;
 }
 
-.educational-popup-content::-webkit-scrollbar-thumb {
+.content::-webkit-scrollbar-thumb {
   background: #667eea !important;
   border-radius: 10px !important;
   min-height: 50px !important;
   border: 2px solid #f1f1f1 !important;
 }
 
-.educational-popup-content::-webkit-scrollbar-thumb:hover {
+.content::-webkit-scrollbar-thumb:hover {
   background: #5a67d8 !important;
 }
 
-.educational-popup-description {
+.description {
   font-size: 16px;
   line-height: 1.6;
   color: #333;
   margin-bottom: 20px;
 }
 
-.educational-popup-description h3 {
+.description h3 {
   color: #2c3e50;
   margin-bottom: 12px;
   font-size: 1.2rem;
 }
 
-.educational-popup-description p {
+.description p {
   margin-bottom: 16px;
 }
 
-.educational-popup-description ul,
-.educational-popup-description ol {
+.description ul,
+.description ol {
   margin: 16px 0;
   padding-left: 24px;
 }
 
-.educational-popup-description li {
+.description li {
   margin-bottom: 8px;
 }
 
-.educational-popup-description code {
+.description code {
   background: #f8f9fa;
   padding: 2px 6px;
   border-radius: 4px;
@@ -199,19 +199,19 @@
   color: #e83e8c;
 }
 
-.educational-popup-image {
+.image {
   margin: 20px 0;
   text-align: center;
 }
 
-.educational-popup-image img {
+.image img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-.educational-popup-additional {
+.additional {
   background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
@@ -219,19 +219,19 @@
   border-left: 4px solid #667eea;
 }
 
-.educational-popup-additional h3 {
+.additional h3 {
   margin: 0 0 12px 0;
   color: #2c3e50;
   font-size: 1.1rem;
 }
 
-.educational-popup-additional p {
+.additional p {
   margin: 0;
   color: #666;
   line-height: 1.5;
 }
 
-.educational-popup-footer {
+.footer {
   padding: 12px 20px;
   border-top: 1px solid #e1e5e9;
   background: #f8f9fa;
@@ -241,7 +241,7 @@
   position: relative;
 }
 
-.educational-popup-resize-handle {
+.resizeHandle {
   position: absolute;
   bottom: 2px;
   right: 2px;
@@ -257,7 +257,7 @@
   z-index: 10;
 }
 
-.educational-popup-resize-handle:hover {
+.resizeHandle:hover {
   opacity: 1;
   background: 
     linear-gradient(-45deg, transparent 0%, transparent 40%, #667eea 40%, #667eea 50%, transparent 50%, transparent 90%, #667eea 90%),
@@ -265,27 +265,27 @@
   transform: scale(1.1);
 }
 
-.educational-popup.resizing .educational-popup-resize-handle {
+.popup.resizing .resizeHandle {
   opacity: 1;
   background: 
     linear-gradient(-45deg, transparent 0%, transparent 40%, #667eea 40%, #667eea 50%, transparent 50%, transparent 90%, #667eea 90%),
     linear-gradient(-135deg, transparent 0%, transparent 40%, #667eea 40%, #667eea 50%, transparent 50%, transparent 90%, #667eea 90%);
 }
 
-.educational-popup.resizing {
+.popup.resizing {
   user-select: none;
 }
 
-.educational-popup.resizing * {
+.popup.resizing * {
   user-select: none;
   pointer-events: none;
 }
 
-.educational-popup.resizing .educational-popup-resize-handle {
+.popup.resizing .resizeHandle {
   pointer-events: auto;
 }
 
-.educational-popup-button {
+.button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: 1px solid rgba(102, 126, 234, 0.3);
@@ -299,23 +299,23 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 
-.educational-popup-button:hover {
+.button:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 8px rgba(102, 126, 234, 0.4);
 }
 
-.educational-popup-button:active {
+.button:active {
   transform: translateY(0);
 }
 
-.educational-popup-button:focus {
+.button:focus {
   outline: 2px solid #667eea;
   outline-offset: 2px;
 }
 
 
 /* Scroll hint for when content overflows */
-.educational-popup-scroll-hint {
+.scrollHint {
   position: sticky;
   bottom: 0;
   background: linear-gradient(to top, rgba(102, 126, 234, 0.9) 0%, rgba(102, 126, 234, 0.7) 100%);
@@ -344,7 +344,7 @@
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .educational-popup {
+  .popup {
     width: calc(100vw - 30px);
     height: min(400px, calc(100vh - 60px));
     max-height: calc(100vh - 60px);
@@ -353,26 +353,26 @@
     resize: none;
   }
   
-  .educational-popup-content {
+  .content {
     padding: 16px;
   }
   
-  .educational-popup-header {
+  .header {
     padding: 16px 20px;
   }
   
-  .educational-popup-title {
+  .title {
     font-size: 1.3rem;
   }
-    .educational-popup-footer {
+    .footer {
     padding: 10px 16px;
-  }    .educational-popup-resize-handle {
+  }    .resizeHandle {
     display: none;
   }
 }
 
 @media (max-width: 480px) {
-  .educational-popup {
+  .popup {
     width: calc(100vw - 20px);
     height: min(300px, calc(100vh - 40px));
     max-height: calc(100vh - 40px);
@@ -380,22 +380,22 @@
     min-height: 180px;
   }
   
-  .educational-popup-content {
+  .content {
     padding: 12px;
   }
   
-  .educational-popup-header {
+  .header {
     padding: 12px 16px;
   }
   
-  .educational-popup-title {
+  .title {
     font-size: 1.2rem;
   }
-    .educational-popup-footer {
+    .footer {
     padding: 8px 12px;
   }
   
-  .educational-popup-button {
+  .button {
     padding: 10px 20px;
     font-size: 14px;
   }
@@ -403,7 +403,7 @@
 
 /* Special handling for small laptops/11" screens */
 @media (max-height: 800px) and (min-width: 769px) {
-  .educational-popup {
+  .popup {
     height: min(400px, calc(100vh - 100px));
     max-height: calc(100vh - 100px);
   }

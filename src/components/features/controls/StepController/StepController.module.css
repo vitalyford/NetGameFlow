@@ -1,5 +1,5 @@
 /* Step Controller styles - Modern, draggable design */
-.step-tooltip {
+.stepTooltip {
   position: absolute;
   bottom: 20px;
   left: 50%;
@@ -21,48 +21,47 @@
   resize: none; /* Disable default resize since we have custom handles */
 }
 
-.step-tooltip.dragging {
+.stepTooltip.dragging {
   transform: none;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
   z-index: 1000;
 }
 
-.step-tooltip.resizing {
+.stepTooltip.resizing {
   transition: none;
   user-select: none;
   box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
   border-color: rgba(102, 126, 234, 0.5);
 }
 
-.step-tooltip.resizing * {
+.stepTooltip.resizing * {
   user-select: none;
   pointer-events: none;
 }
 
-.step-tooltip.resizing .resize-handle::after {
+.stepTooltip.resizing .resizeHandle::after {
   opacity: 1 !important;
   background: rgba(102, 126, 234, 0.6) !important;
 }
 
-.step-tooltip.minimized {
+.stepTooltip.minimized {
   height: auto !important;
   min-height: auto !important;
-  max-height: none !important;
-  opacity: 0.9;
+  max-height: none !important;  opacity: 0.9;
   transform: translateX(-50%) scale(0.95);
 }
 
-.step-tooltip.minimized .tooltip-header {
+.stepTooltip.minimized .tooltipHeader {
   border-radius: 12px;
 }
 
-.step-tooltip.minimized:hover {
+.stepTooltip.minimized:hover {
   opacity: 1;
   transform: translateX(-50%) scale(1);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
 }
 
-.step-tooltip.minimized .minimize-btn {
+.stepTooltip.minimized .minimizeBtn {
   background: rgba(255, 255, 255, 0.4);
   animation: pulse-expand 2s infinite;
 }
@@ -78,7 +77,7 @@
   }
 }
 
-.tooltip-header {
+.tooltipHeader {
   display: flex;
   align-items: flex-start;
   padding: 1rem 1.5rem;
@@ -88,46 +87,46 @@
   cursor: grab;
 }
 
-.tooltip-header:active {
+.tooltipHeader:active {
   cursor: grabbing;
 }
 
-.drag-handle {
+.dragHandle {
   margin-right: 0.75rem;
   color: rgba(255, 255, 255, 0.7);
   cursor: grab;
 }
 
-.drag-handle:active {
+.dragHandle:active {
   cursor: grabbing;
 }
 
-.step-title-section {
+.stepTitleSection {
   flex: 1;
 }
 
-.tooltip-header h4 {
+.tooltipHeader h4 {
   margin: 0 0 0.5rem 0;
   color: white;
   font-size: 1.1rem;
   font-weight: 600;
 }
 
-.simple-explanation {
+.simpleExplanation {
   margin: 0;
   font-size: 0.9rem;
   opacity: 0.9;
   line-height: 1.4;
 }
 
-.header-controls {
+.headerControls {
   display: flex;
   align-items: center;
   gap: 1rem;
   margin-left: 1rem;
 }
 
-.step-counter {
+.stepCounter {
   background: rgba(255, 255, 255, 0.2);
   color: white;
   padding: 0.25rem 0.75rem;
@@ -137,7 +136,7 @@
   white-space: nowrap;
 }
 
-.minimize-btn {
+.minimizeBtn {
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
@@ -151,29 +150,29 @@
   transition: background-color 0.2s ease;
 }
 
-.minimize-btn:hover {
+.minimizeBtn:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
 /* Fallback for minimize button */
-.minimize-btn i:not([class*="fa-"]):not(.fa)::before {
+.minimizeBtn i:not([class*="fa-"]):not(.fa)::before {
   content: "▼";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.minimized .minimize-btn i:not([class*="fa-"]):not(.fa)::before {
+.minimized .minimizeBtn i:not([class*="fa-"]):not(.fa)::before {
   content: "▲";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
 /* Fallback for drag handle */
-.drag-handle i:not([class*="fa-"]):not(.fa)::before {
+.dragHandle i:not([class*="fa-"]):not(.fa)::before {
   content: "⋮⋮";
   font-family: system-ui, -apple-system, sans-serif;
   letter-spacing: 1px;
 }
 
-.tooltip-content {
+.tooltipContent {
   padding: 1.5rem;
   overflow-y: auto;
   overflow-x: hidden;
@@ -182,28 +181,28 @@
 }
 
 /* Add visible scrollbar styling for StepController */
-.tooltip-content::-webkit-scrollbar {
+.tooltipContent::-webkit-scrollbar {
   width: 16px;
 }
 
-.tooltip-content::-webkit-scrollbar-track {
+.tooltipContent::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 8px;
   border: 1px solid #ddd;
 }
 
-.tooltip-content::-webkit-scrollbar-thumb {
+.tooltipContent::-webkit-scrollbar-thumb {
   background: #667eea;
   border-radius: 8px;
   border: 2px solid #f1f1f1;
   min-height: 30px;
 }
 
-.tooltip-content::-webkit-scrollbar-thumb:hover {
+.tooltipContent::-webkit-scrollbar-thumb:hover {
   background: #5a67d8;
 }
 
-.current-action {
+.currentAction {
   margin-bottom: 1rem;
   padding: 1rem;
   background: #e8f4fd;
@@ -214,12 +213,12 @@
   line-height: 1.5;
 }
 
-.toggle-details {
+.toggleDetails {
   text-align: center;
   margin-bottom: 1rem;
 }
 
-.details-toggle {
+.detailsToggle {
   background: #f8f9fa;
   border: 1px solid #dee2e6;
   color: #495057;
@@ -230,12 +229,12 @@
   transition: all 0.2s ease;
 }
 
-.details-toggle:hover {
+.detailsToggle:hover {
   background: #e9ecef;
   border-color: #adb5bd;
 }
 
-.detail-section {
+.detailSection {
   background: #f8f9fa;
   border-radius: 8px;
   padding: 1rem;
@@ -243,7 +242,7 @@
   border: 1px solid #e9ecef;
 }
 
-.detail-section h5 {
+.detailSection h5 {
   margin: 0 0 0.75rem 0;
   color: #495057;
   font-size: 0.8rem;
@@ -252,7 +251,7 @@
   letter-spacing: 0.5px;
 }
 
-.detail-item {
+.detailItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -260,17 +259,17 @@
   font-size: 0.75rem;
 }
 
-.detail-item:last-child {
+.detailItem:last-child {
   margin-bottom: 0;
 }
 
-.detail-item span:first-child {
+.detailItem span:first-child {
   color: #6c757d;
   font-weight: 500;
   min-width: 70px;
 }
 
-.detail-item span:last-child {
+.detailItem span:last-child {
   color: #495057;
   font-family: 'Courier New', monospace;
   font-weight: 600;
@@ -279,13 +278,13 @@
   word-break: break-all;
 }
 
-.routing-table {
+.routingTable {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
 }
 
-.route-entry {
+.routeEntry {
   display: flex;
   justify-content: space-between;
   padding: 0.5rem;
@@ -295,19 +294,19 @@
   border: 1px solid #e9ecef;
 }
 
-.route-entry span:first-child {
+.routeEntry span:first-child {
   color: #6c757d;
   font-weight: 500;
 }
 
-.route-entry span:last-child {
+.routeEntry span:last-child {
   color: #495057;
   font-family: 'Courier New', monospace;
   font-weight: 600;
 }
 
 /* Step Controls */
-.step-controls {
+.stepControls {
   display: flex;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
@@ -318,7 +317,7 @@
 }
 
 /* Resize Handles */
-.resize-handle {
+.resizeHandle {
   position: absolute;
   background: transparent;
   z-index: 10;
@@ -326,7 +325,7 @@
 }
 
 /* Corner handles */
-.resize-handle.resize-nw {
+.resizeHandle.resizeNw {
   top: -8px;
   left: -8px;
   width: 20px;
@@ -334,7 +333,7 @@
   cursor: nw-resize;
 }
 
-.resize-handle.resize-ne {
+.resizeHandle.resizeNe {
   top: -8px;
   right: -8px;
   width: 20px;
@@ -342,7 +341,7 @@
   cursor: ne-resize;
 }
 
-.resize-handle.resize-sw {
+.resizeHandle.resizeSw {
   bottom: -8px;
   left: -8px;
   width: 20px;
@@ -350,7 +349,7 @@
   cursor: sw-resize;
 }
 
-.resize-handle.resize-se {
+.resizeHandle.resizeSe {
   bottom: -8px;
   right: -8px;
   width: 20px;
@@ -359,7 +358,7 @@
 }
 
 /* Edge handles */
-.resize-handle.resize-n {
+.resizeHandle.resizeN {
   top: -5px;
   left: 20px;
   right: 20px;
@@ -367,7 +366,7 @@
   cursor: n-resize;
 }
 
-.resize-handle.resize-s {
+.resizeHandle.resizeS {
   bottom: -5px;
   left: 20px;
   right: 20px;
@@ -375,7 +374,7 @@
   cursor: s-resize;
 }
 
-.resize-handle.resize-w {
+.resizeHandle.resizeW {
   left: -5px;
   top: 20px;
   bottom: 20px;
@@ -383,7 +382,7 @@
   cursor: w-resize;
 }
 
-.resize-handle.resize-e {
+.resizeHandle.resizeE {
   right: -5px;
   top: 20px;
   bottom: 20px;
@@ -392,7 +391,7 @@
 }
 
 /* Visual feedback for resize handles */
-.resize-handle::after {
+.resizeHandle::after {
   content: '';
   position: absolute;
   inset: 3px;
@@ -403,43 +402,43 @@
   transition: opacity 0.2s ease;
 }
 
-.resize-handle:hover::after,
-.step-tooltip:hover .resize-handle::after,
-.step-tooltip.resizing .resize-handle::after {
+.resizeHandle:hover::after,
+.stepTooltip:hover .resizeHandle::after,
+.stepTooltip.resizing .resizeHandle::after {
   opacity: 1;
 }
 
 /* Make corner handles more visible on hover */
-.resize-handle.resize-nw::after,
-.resize-handle.resize-ne::after,
-.resize-handle.resize-sw::after,
-.resize-handle.resize-se::after {
+.resizeHandle.resizeNw::after,
+.resizeHandle.resizeNe::after,
+.resizeHandle.resizeSw::after,
+.resizeHandle.resizeSe::after {
   background: rgba(102, 126, 234, 0.5);
   border: 1px solid rgba(102, 126, 234, 0.7);
 }
 
 /* Edge handles get a different visual treatment */
-.resize-handle.resize-n::after,
-.resize-handle.resize-s::after {
+.resizeHandle.resizeN::after,
+.resizeHandle.resizeS::after {
   background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.4), transparent);
   border: none;
   border-radius: 0;
 }
 
-.resize-handle.resize-w::after,
-.resize-handle.resize-e::after {
+.resizeHandle.resizeW::after,
+.resizeHandle.resizeE::after {
   background: linear-gradient(to bottom, transparent, rgba(102, 126, 234, 0.4), transparent);
   border: none;
   border-radius: 0;
 }
 
 /* Hide resize handles when minimized */
-.step-tooltip.minimized .resize-handle {
+.stepTooltip.minimized .resizeHandle {
   display: none;
 }
 
 /* Resize indicator */
-.resize-indicator {
+.resizeIndicator {
   position: absolute;
   bottom: 8px;
   right: 8px;
@@ -456,18 +455,18 @@
   z-index: 5;
 }
 
-.step-tooltip:hover .resize-indicator {
+.stepTooltip:hover .resizeIndicator {
   opacity: 0.8;
 }
 
 /* Fallback for resize indicator */
-.resize-indicator i:not([class*="fa-"]):not(.fa)::before {
+.resizeIndicator i:not([class*="fa-"]):not(.fa)::before {
   content: "⤡";
   font-family: system-ui, -apple-system, sans-serif;
   font-size: 14px;
 }
 
-.step-btn {
+.stepBtn {
   background: #ffffff;
   border: 1px solid #dee2e6;
   color: #495057;
@@ -486,41 +485,42 @@
   position: relative;
 }
 
-.step-btn i {
+.stepBtn i {
   font-size: 1.1rem;
   line-height: 1;
 }
 
 /* Fallback styles for when FontAwesome doesn't load */
-.step-btn i::before {
+.stepBtn i::before {
   display: inline-block;
 }
 
-.step-btn.previous i:not([class*="fa-"]):not(.fa)::before {
+.stepBtn.previous i:not([class*="fa-"]):not(.fa)::before {
   content: "⬅️";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn.next i:not([class*="fa-"]):not(.fa)::before {
+.stepBtn.next i:not([class*="fa-"]):not(.fa)::before {
   content: "➡️";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn.auto-play i:not([class*="fa-"]):not(.fa)::before {
+.stepBtn.autoPlay i:not([class*="fa-"]):not(.fa)::before {
   content: "▶️";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn.pause i:not([class*="fa-"]):not(.fa)::before {
+.stepBtn.pause i:not([class*="fa-"]):not(.fa)::before {
   content: "⏸️";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn.reset i:not([class*="fa-"]):not(.fa)::before {  content: "🔄";
+.stepBtn.reset i:not([class*="fa-"]):not(.fa)::before {  
+  content: "🔄";
   font-family: system-ui, -apple-system, sans-serif;
 }
 
-.step-btn:hover:not(:disabled) {
+.stepBtn:hover:not(:disabled) {
   background: #f8f9fa;
   border-color: #adb5bd;
   transform: translateY(-1px);
@@ -528,11 +528,11 @@
 }
 
 /* Enhanced tooltip styling for step buttons */
-.step-btn[title] {
+.stepBtn[title] {
   position: relative;
 }
 
-.step-btn[title]:hover::after {
+.stepBtn[title]:hover::after {
   content: attr(title);
   position: absolute;
   bottom: 100%;
@@ -553,7 +553,7 @@
   text-align: center;
 }
 
-.step-btn[title]:hover::before {
+.stepBtn[title]:hover::before {
   content: '';
   position: absolute;
   bottom: 100%;
@@ -570,14 +570,14 @@
 
 /* Adjust tooltip positioning on smaller screens */
 @media (max-width: 480px) {
-  .step-btn[title]:hover::after {
+  .stepBtn[title]:hover::after {
     bottom: auto;
     top: 100%;
     margin-bottom: 0;
     margin-top: 5px;
   }
   
-  .step-btn[title]:hover::before {
+  .stepBtn[title]:hover::before {
     bottom: auto;
     top: 100%;
     border-top-color: transparent;
@@ -598,7 +598,7 @@
   }
 }
 
-.step-btn:disabled {
+.stepBtn:disabled {
   background: #f8f9fa;
   color: #adb5bd;
   cursor: not-allowed;
@@ -606,57 +606,57 @@
   box-shadow: none;
 }
 
-.step-btn.previous {
+.stepBtn.previous {
   background: #6c757d;
   color: white;
   border-color: #6c757d;
 }
 
-.step-btn.previous:hover:not(:disabled) {
+.stepBtn.previous:hover:not(:disabled) {
   background: #5a6268;
   border-color: #545b62;
 }
 
-.step-btn.next {
+.stepBtn.next {
   background: #007bff;
   color: white;
   border-color: #007bff;
 }
 
-.step-btn.next:hover:not(:disabled) {
+.stepBtn.next:hover:not(:disabled) {
   background: #0056b3;
   border-color: #004085;
 }
 
-.step-btn.auto-play {
+.stepBtn.autoPlay {
   background: #28a745;
   color: white;
   border-color: #28a745;
 }
 
-.step-btn.auto-play:hover:not(:disabled) {
+.stepBtn.autoPlay:hover:not(:disabled) {
   background: #218838;
   border-color: #1e7e34;
 }
 
-.step-btn.pause {
+.stepBtn.pause {
   background: #fd7e14;
   color: white;
   border-color: #fd7e14;
 }
 
-.step-btn.pause:hover:not(:disabled) {
+.stepBtn.pause:hover:not(:disabled) {
   background: #e55c14;
   border-color: #d14610;
 }
 
-.step-btn.reset {
+.stepBtn.reset {
   background: #e9ecef;
   color: #495057;
   border-color: #dee2e6;
 }
 
-.step-btn.reset:hover:not(:disabled) {
+.stepBtn.reset:hover:not(:disabled) {
   background: #dee2e6;
   color: #212529;
   border-color: #adb5bd;
@@ -674,13 +674,13 @@
   }
 }
 
-.step-tooltip {
+.stepTooltip {
   animation: slide-up 0.3s ease-out;
 }
 
 /* Responsive design */
 @media (max-width: 768px) {
-  .step-tooltip {
+  .stepTooltip {
     max-width: calc(100vw - 40px);
     min-width: unset;
     left: 20px;
@@ -689,167 +689,33 @@
     bottom: 10px;
   }
   
-  .tooltip-header {
+  .tooltipHeader {
     padding: 0.75rem 1rem;
   }
   
-  .header-controls {
+  .headerControls {
     margin-left: 0.5rem;
     gap: 0.5rem;
   }
   
-  .step-controls {
+  .stepControls {
     gap: 0.5rem;
     padding: 0.75rem 1rem;
   }
   
-  .step-btn {
+  .stepBtn {
     padding: 0.6rem;
     min-width: 40px;
     min-height: 40px;
   }
   
-  .step-btn i {
+  .stepBtn i {
     font-size: 1rem;
   }
 }
 
-.routing-table {
-  font-size: 0.75rem;
-}
-
-.route-entry {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 0.4rem;
-  padding: 0.3rem 0;
-  border-bottom: 1px solid #dee2e6;
-}
-
-.route-entry:last-child {
-  border-bottom: none;
-  margin-bottom: 0;
-}
-
-.route-entry span:first-child {
-  color: #6c757d;
-  font-weight: 500;
-  min-width: 100px;
-}
-
-.route-entry span:last-child {
-  color: #495057;
-  font-family: 'Courier New', monospace;
-  text-align: right;
-  flex: 1;
-}
-
-.step-controls {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
-  padding: 0.75rem;
-  background: #f8f9fa;
-  border-radius: 8px;
-}
-
-.step-btn {
-  background: #fff;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  padding: 0.5rem 0.75rem;
-  color: #495057;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 36px;
-}
-
-.step-btn:hover:not(:disabled) {
-  background: #e9ecef;
-  border-color: #adb5bd;
-}
-
-.step-btn:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.step-indicator {
-  font-size: 0.8rem;
-  color: #6c757d;
-  font-weight: 500;
-  min-width: 60px;
-  text-align: center;
-}
-
-.tooltip-actions {
-  display: flex;
-  gap: 0.75rem;
-}
-
-.tooltip-actions .action-btn {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  border: 1px solid #dee2e6;
-  border-radius: 6px;
-  background: #fff;
-  color: #495057;
-  font-size: 0.8rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.tooltip-actions .action-btn:hover {
-  background: #f8f9fa;
-  border-color: #adb5bd;
-}
-
-.tooltip-actions .action-btn.auto-play {
-  background: #28a745;
-  border-color: #28a745;
-  color: white;
-}
-
-.tooltip-actions .action-btn.auto-play:hover {
-  background: #218838;
-  border-color: #1e7e34;
-}
-
-.tooltip-actions .action-btn.pause {
-  background: #ffc107;
-  border-color: #ffc107;
-  color: #212529;
-}
-
-.tooltip-actions .action-btn.pause:hover {
-  background: #e0a800;
-  border-color: #d39e00;
-}
-
-.tooltip-actions .action-btn.reset {
-  background: #6c757d;
-  border-color: #6c757d;
-  color: white;
-}
-
-.tooltip-actions .action-btn.reset:hover {
-  background: #5a6268;
-  border-color: #545b62;
-}
-
 /* Enhanced networking information styles */
-.explanation-text {
+.explanationText {
   background: #f8f9fa;
   border-left: 4px solid #4a90e2;
   padding: 0.75rem;
@@ -859,7 +725,7 @@
   border-radius: 0 4px 4px 0;
 }
 
-.nat-info {
+.natInfo {
   background: #e8f4f8;
   border: 1px solid #bee5eb;
   border-radius: 6px;
@@ -867,21 +733,21 @@
   margin: 0.5rem 0;
 }
 
-.nat-info h6 {
+.natInfo h6 {
   margin: 0 0 0.5rem 0;
   color: #0c5460;
   font-size: 0.9rem;
   font-weight: 600;
 }
 
-.concepts-list {
+.conceptsList {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-top: 0.5rem;
 }
 
-.concept-tag {
+.conceptTag {
   background: #e7f3ff;
   color: #0056b3;
   padding: 0.25rem 0.5rem;
@@ -891,13 +757,13 @@
   font-weight: 500;
 }
 
-.concept-tag:hover {
+.conceptTag:hover {
   background: #cce7ff;
   cursor: pointer;
 }
 
 /* Section headers with emojis */
-.detail-section h5 {
+.detailSection h5 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -907,7 +773,7 @@
   font-weight: 600;
 }
 
-.detail-section h6 {
+.detailSection h6 {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -916,7 +782,7 @@
 }
 
 /* Enhanced detail items */
-.detail-item {
+.detailItem {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -925,18 +791,18 @@
   font-size: 0.85rem;
 }
 
-.detail-item:last-child {
+.detailItem:last-child {
   border-bottom: none;
 }
 
-.detail-item span:first-child {
+.detailItem span:first-child {
   font-weight: 500;
   color: #495057;
   min-width: 120px;
   flex-shrink: 0;
 }
 
-.detail-item span:last-child {
+.detailItem span:last-child {
   color: #212529;
   text-align: right;
   word-break: break-all;
@@ -948,7 +814,7 @@
 }
 
 /* Route entry styling */
-.route-entry {
+.routeEntry {
   display: flex;
   justify-content: space-between;
   padding: 0.3rem 0;
@@ -960,11 +826,11 @@
   border-radius: 4px;
 }
 
-.route-entry span:first-child {
+.routeEntry span:first-child {
   font-weight: bold;
   color: #495057;
 }
 
-.route-entry span:last-child {
+.routeEntry span:last-child {
   color: #007bff;
 }

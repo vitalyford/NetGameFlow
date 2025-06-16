@@ -1,5 +1,5 @@
 /* Control Panel - Clean Professional Design */
-.control-panel {
+.controlPanel {
   width: 340px;
   background: #ffffff;
   border-right: 1px solid #e0e0e0;
@@ -15,32 +15,32 @@
 }
 
 /* Custom scrollbar styling */
-.control-panel::-webkit-scrollbar {
+.controlPanel::-webkit-scrollbar {
   width: 6px;
 }
 
-.control-panel::-webkit-scrollbar-track {
+.controlPanel::-webkit-scrollbar-track {
   background: #f1f1f1;
   border-radius: 3px;
 }
 
-.control-panel::-webkit-scrollbar-thumb {
+.controlPanel::-webkit-scrollbar-thumb {
   background: #c1c1c1;
   border-radius: 3px;
 }
 
-.control-panel::-webkit-scrollbar-thumb:hover {
+.controlPanel::-webkit-scrollbar-thumb:hover {
   background: #a8a8a8;
 }
 
 /* Header */
-.panel-header {
+.panelHeader {
   margin-bottom: 32px;
   border-bottom: 1px solid #f0f0f0;
   padding-bottom: 16px;
 }
 
-.panel-header h2 {
+.panelHeader h2 {
   margin: 0 0 8px 0;
   font-size: 20px;
   font-weight: 600;
@@ -48,7 +48,7 @@
   letter-spacing: -0.02em;
 }
 
-.panel-header p {
+.panelHeader p {
   margin: 0;
   font-size: 14px;
   color: #666666;
@@ -56,23 +56,23 @@
 }
 
 /* Simple Step Progress */
-.step-progress {
+.stepProgress {
   margin-top: 16px;
 }
 
-.progress-info {
+.progressInfo {
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
 }
 
-.progress-info span {
+.progressInfo span {
   font-size: 13px;
   color: #666666;
   font-weight: 500;
 }
 
-.progress-bar {
+.progressBar {
   width: 100%;
   height: 6px;
   background: #e9ecef;
@@ -80,7 +80,7 @@
   overflow: hidden;
 }
 
-.progress-fill {
+.progressFill {
   height: 100%;
   background: #007aff;
   border-radius: 3px;
@@ -88,11 +88,11 @@
 }
 
 /* Main Control */
-.main-control {
+.mainControl {
   margin-bottom: 32px;
 }
 
-.start-btn {
+.startBtn {
   width: 100%;
   height: 56px;
   background: #007aff;
@@ -110,22 +110,22 @@
   margin-bottom: 12px;
 }
 
-.start-btn:hover:not(:disabled) {
+.startBtn:hover:not(:disabled) {
   background: #0056cc;
   transform: translateY(-1px);
 }
 
-.start-btn:disabled {
+.startBtn:disabled {
   background: #b0b0b0;
   cursor: not-allowed;
   transform: none;
 }
 
-.start-btn.running {
+.startBtn.running {
   background: #34c759;
 }
 
-.stop-btn {
+.stopBtn {
   width: 100%;
   height: 44px;
   background: #ff3b30;
@@ -142,12 +142,12 @@
   transition: all 0.2s ease;
 }
 
-.stop-btn:hover {
+.stopBtn:hover {
   background: #d70015;
 }
 
 /* Demo Info */
-.demo-info {
+.demoInfo {
   margin-bottom: 32px;
   padding: 20px;
   background: #f8f9fa;
@@ -155,30 +155,30 @@
   border: 1px solid #e9ecef;
 }
 
-.demo-info h3 {
+.demoInfo h3 {
   margin: 0 0 16px 0;
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
 }
 
-.demo-info ol {
+.demoInfo ol {
   margin: 0;
   padding-left: 20px;
 }
 
-.demo-info li {
+.demoInfo li {
   font-size: 14px;
   color: #555555;
   margin-bottom: 8px;
   line-height: 1.4;
 }
 
-.demo-info li:last-child {
+.demoInfo li:last-child {
   margin-bottom: 0;
 }
 
-.journey-note {
+.journeyNote {
   margin-top: 12px;
   padding: 8px 12px;
   background: #e7f3ff;
@@ -187,14 +187,14 @@
   text-align: center;
 }
 
-.journey-note small {
+.journeyNote small {
   font-size: 12px;
   color: #666666;
   font-weight: 500;
 }
 
 /* Mode Control */
-.mode-control {
+.modeControl {
   margin-bottom: 32px;
   padding: 16px;
   background: #f8f9fa;
@@ -202,21 +202,21 @@
   border: 1px solid #e9ecef;
 }
 
-.mode-toggle {
+.modeToggle {
   display: flex;
   align-items: flex-start;
   gap: 12px;
   cursor: pointer;
 }
 
-.mode-toggle input[type="checkbox"] {
+.modeToggle input[type="checkbox"] {
   width: 18px;
   height: 18px;
   margin: 0;
   accent-color: #007aff;
 }
 
-.mode-toggle span {
+.modeToggle span {
   font-size: 14px;
   font-weight: 500;
   color: #1a1a1a;
@@ -224,7 +224,7 @@
   margin-bottom: 4px;
 }
 
-.mode-toggle small {
+.modeToggle small {
   font-size: 12px;
   color: #666666;
   line-height: 1.3;
@@ -232,21 +232,21 @@
 }
 
 /* Stats Panel */
-.stats-panel {
+.statsPanel {
   padding: 20px;
   background: #f8f9fa;
   border-radius: 8px;
   border: 1px solid #e9ecef;
 }
 
-.stats-panel h3 {
+.statsPanel h3 {
   margin: 0 0 16px 0;
   font-size: 16px;
   font-weight: 600;
   color: #1a1a1a;
 }
 
-.stats-grid {
+.statsGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
@@ -276,14 +276,14 @@
 }
 
 /* Footer */
-.panel-footer {
+.panelFooter {
   margin-top: auto;
   padding-top: 20px;
   border-top: 1px solid #f0f0f0;
   text-align: center;
 }
 
-.panel-footer p {
+.panelFooter p {
   margin: 0;
   font-size: 0.75rem;
   color: #6c757d;
@@ -294,24 +294,24 @@
   flex-wrap: wrap;
 }
 
-.panel-footer i {
+.panelFooter i {
   color: #667eea;
   font-size: 0.7rem;
 }
 
-.panel-footer a {
+.panelFooter a {
   color: #667eea;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
 }
 
-.panel-footer a:hover {
+.panelFooter a:hover {
   color: #5a67d8;
   text-decoration: underline;
 }
 
-.panel-footer a:focus {
+.panelFooter a:focus {
   outline: 2px solid #667eea;
   outline-offset: 2px;
   border-radius: 2px;
@@ -319,14 +319,14 @@
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .control-panel {
+  .controlPanel {
     width: 300px;
     padding: 20px;
   }
 }
 
 @media (max-width: 768px) {
-  .control-panel {
+  .controlPanel {
     width: 100%;
     max-width: none;
     padding: 16px;
@@ -337,20 +337,20 @@
     order: 0;
   }
   
-  .main-control {
+  .mainControl {
     margin-bottom: 16px;
   }
   
-  .demo-info {
+  .demoInfo {
     margin-bottom: 16px;
   }
   
-  .demo-info ol {
+  .demoInfo ol {
     font-size: 0.85rem;
     margin: 0.5rem 0 0 1rem;
   }
   
-  .demo-info li {
+  .demoInfo li {
     margin-bottom: 0.25rem;
   }
 }

@@ -9,7 +9,7 @@
   pointer-events: none;
 }
 
-.connection-line {
+.connectionLine {
   stroke: #bdc3c7;
   stroke-width: 2;
   fill: none;
@@ -18,7 +18,7 @@
   transition: all 0.3s ease;
 }
 
-.connection-line.active {
+.connectionLine.active {
   stroke: #e74c3c;
   stroke-width: 3;
   opacity: 1;
@@ -26,7 +26,7 @@
   animation: connectionPulse 1.5s infinite;
 }
 
-.connection-line.current-step {
+.connectionLine.currentStep {
   stroke: #3498db;
   stroke-width: 4;
   opacity: 1;
@@ -35,7 +35,7 @@
 }
 
 /* Attack traffic styling */
-.connection-line.attack-traffic {
+.connectionLine.attackTraffic {
   stroke: #e74c3c;
   stroke-width: 6;
   opacity: 1;
@@ -43,7 +43,7 @@
   animation: attackTrafficPulse 0.8s infinite;
 }
 
-.connection-line.protection-traffic {
+.connectionLine.protectionTraffic {
   stroke: #2ecc71;
   stroke-width: 4;
   opacity: 1;

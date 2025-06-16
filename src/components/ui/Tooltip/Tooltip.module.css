@@ -1,4 +1,4 @@
-.tooltip-container {
+.container {
   position: relative;
   display: inline-block;
 }
@@ -15,14 +15,14 @@
   max-width: 250px;
   word-wrap: break-word;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  animation: tooltip-appear 0.15s ease-out;
+  animation: appear 0.15s ease-out;
   pointer-events: none;
   font-weight: 400;
   white-space: normal;
 }
 
 /* Special styling for tooltips within step controller */
-.tooltip.step-controller-tooltip {
+.tooltip.stepController {
   max-width: 350px;
   padding: 1px 3px;
   font-size: 14px;
@@ -35,7 +35,7 @@
   z-index: 1002;
 }
 
-.tooltip.step-controller-tooltip .tooltip-content {
+.tooltip.stepController .content {
   text-align: left;
   text-transform: none;
   word-break: break-word;
@@ -44,26 +44,26 @@
 }
 
 /* Scrollable tooltip styling */
-.tooltip.step-controller-tooltip::-webkit-scrollbar {
+.tooltip.stepController::-webkit-scrollbar {
   width: 3px;
 }
 
-.tooltip.step-controller-tooltip::-webkit-scrollbar-track {
+.tooltip.stepController::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
   border-radius: 2px;
 }
 
-.tooltip.step-controller-tooltip::-webkit-scrollbar-thumb {
+.tooltip.stepController::-webkit-scrollbar-thumb {
   background: rgba(255, 255, 255, 0.4);
   border-radius: 2px;
 }
 
-.tooltip.step-controller-tooltip::-webkit-scrollbar-thumb:hover {
+.tooltip.stepController::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.6);
 }
 
 /* Better positioning for step controller tooltips */
-.tooltip.step-controller-tooltip.tooltip-left {
+.tooltip.stepController.left {
   right: calc(100% + 2px);
   top: 50%;
   transform: translateY(-50%);
@@ -71,7 +71,7 @@
   overflow-y: auto;
 }
 
-.tooltip.step-controller-tooltip.tooltip-right {
+.tooltip.stepController.right {
   left: calc(100% + 2px);
   top: 50%;
   transform: translateY(-50%);
@@ -79,14 +79,14 @@
   overflow-y: auto;
 }
 
-.tooltip.step-controller-tooltip.tooltip-top {
+.tooltip.stepController.top {
   bottom: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
   max-width: 85%;
 }
 
-.tooltip.step-controller-tooltip.tooltip-bottom {
+.tooltip.stepController.bottom {
   top: calc(100% + 2px);
   left: 50%;
   transform: translateX(-50%);
@@ -94,12 +94,12 @@
 }
 
 /* Ensure tooltips stay within step controller bounds */
-.step-tooltip {
+.stepTooltip {
   overflow: visible;
   position: relative;
 }
 
-.step-tooltip .tooltip {
+.stepTooltip .tooltip {
   /* Constrain tooltips to step controller boundaries */
   max-width: min(450px, 60vw);
   word-wrap: break-word;
@@ -107,35 +107,35 @@
 }
 
 /* Smaller arrows for step controller tooltips */
-.tooltip.step-controller-tooltip .tooltip-arrow {
+.tooltip.stepController .arrow {
   border-width: 3px;
 }
 
-.tooltip.step-controller-tooltip .tooltip-arrow-top {
+.tooltip.stepController .arrowTop {
   border-top-color: rgba(0, 0, 0, 0.95);
   border-left-width: 3px;
   border-right-width: 3px;
 }
 
-.tooltip.step-controller-tooltip .tooltip-arrow-bottom {
+.tooltip.stepController .arrowBottom {
   border-bottom-color: rgba(0, 0, 0, 0.95);
   border-left-width: 3px;
   border-right-width: 3px;
 }
 
-.tooltip.step-controller-tooltip .tooltip-arrow-left {
+.tooltip.stepController .arrowLeft {
   border-left-color: rgba(0, 0, 0, 0.95);
   border-top-width: 3px;
   border-bottom-width: 3px;
 }
 
-.tooltip.step-controller-tooltip .tooltip-arrow-right {
+.tooltip.stepController .arrowRight {
   border-right-color: rgba(0, 0, 0, 0.95);
   border-top-width: 3px;
   border-bottom-width: 3px;
 }
 
-@keyframes tooltip-appear {
+@keyframes appear {
   from {
     opacity: 0;
     transform: scale(0.9) translateY(5px);
@@ -146,44 +146,44 @@
   }
 }
 
-.tooltip-content {
+.content {
   text-align: left;
   text-transform: none;
 }
 
 /* Positioning */
-.tooltip-top {
+.top {
   bottom: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
 }
 
-.tooltip-bottom {
+.bottom {
   top: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
 }
 
-.tooltip-left {
+.left {
   right: calc(100% + 6px);
   top: 50%;
   transform: translateY(-50%);
 }
 
-.tooltip-right {
+.right {
   left: calc(100% + 6px);
   top: 50%;
   transform: translateY(-50%);
 }
 
 /* Arrows */
-.tooltip-arrow {
+.arrow {
   position: absolute;
   width: 0;
   height: 0;
 }
 
-.tooltip-arrow-top {
+.arrowTop {
   top: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -192,7 +192,7 @@
   border-top: 5px solid rgba(0, 0, 0, 0.9);
 }
 
-.tooltip-arrow-bottom {
+.arrowBottom {
   bottom: 100%;
   left: 50%;
   transform: translateX(-50%);
@@ -201,7 +201,7 @@
   border-bottom: 5px solid rgba(0, 0, 0, 0.9);
 }
 
-.tooltip-arrow-left {
+.arrowLeft {
   left: 100%;
   top: 50%;
   transform: translateY(-50%);
@@ -210,7 +210,7 @@
   border-left: 5px solid rgba(0, 0, 0, 0.9);
 }
 
-.tooltip-arrow-right {
+.arrowRight {
   right: 100%;
   top: 50%;
   transform: translateY(-50%);
@@ -234,7 +234,7 @@
   font-weight: normal !important;
 }
 
-.tooltip-content {
+.content {
   display: block;
   text-transform: none;
   font-style: normal;

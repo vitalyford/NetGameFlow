@@ -1,4 +1,4 @@
-import { NetworkSimulator } from './components/NetworkSimulator';
+import { NetworkSimulator } from './components/features/network/NetworkSimulator/NetworkSimulator';
 import './App.css';
 
 function App() {

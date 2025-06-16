@@ -1,0 +1,1 @@
+export { TechTerm } from './TechTerm';

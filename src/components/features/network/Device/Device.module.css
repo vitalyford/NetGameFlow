@@ -42,16 +42,16 @@
   /* Don't apply any transforms while dragging to avoid position conflicts */
 }
 
-.device-icon {
+.deviceIcon {
   font-size: 1.5rem;
   margin-bottom: 0.3rem;
 }
 
-.device-icon i {
+.deviceIcon i {
   color: #7f8c8d;
 }
 
-.device-label {
+.deviceLabel {
   font-weight: 600;
   color: #2c3e50;
   margin-bottom: 0.2rem;
@@ -59,56 +59,56 @@
   line-height: 1.1;
 }
 
-.device-ip {
+.deviceIp {
   font-size: 0.65rem;
   color: #7f8c8d;
   font-family: 'Courier New', monospace;
 }
 
 /* Device-specific colors */
-.device.client .device-icon i {
+.device.client .deviceIcon i {
   color: #3498db;
 }
 
-.device.router1 .device-icon i {
+.device.router1 .deviceIcon i {
   color: #e67e22;
 }
 
-.device.ispRouter .device-icon i {
+.device.ispRouter .deviceIcon i {
   color: #9b59b6;
 }
 
-.device.internetRouter1 .device-icon i {
+.device.internetRouter1 .deviceIcon i {
   color: #8e44ad;
 }
 
-.device.internetRouter2 .device-icon i {
+.device.internetRouter2 .deviceIcon i {
   color: #e67e22;
 }
 
-.device.internetRouter3 .device-icon i {
+.device.internetRouter3 .deviceIcon i {
   color: #16a085;
 }
 
-.device.dnsServer .device-icon i {
+.device.dnsServer .deviceIcon i {
   color: #e74c3c;
 }
 
-.device.webServer .device-icon i {
+.device.webServer .deviceIcon i {
   color: #27ae60;
 }
 
-.device.cdnServer .device-icon i {
+.device.cdnServer .deviceIcon i {
   color: #f39c12;
 }
 
 /* Attack simulation devices */
-.device.botnetCloud .device-icon i {
+.device.botnetCloud .deviceIcon i {
   color: #c0392b;
   animation: malicious-pulse 2s infinite;
 }
 
-.device.cloudflareEdge .device-icon i {
+.device.cloudflareEdge .deviceIcon i {
   color: #f4900c;
   animation: protection-glow 3s infinite;
 }
@@ -167,7 +167,7 @@
   box-shadow: 0 8px 30px rgba(231, 76, 60, 0.6) !important;
 }
 
-.device.under-attack .device-icon i {
+.device.under-attack .deviceIcon i {
   color: #c62828 !important;
   animation: attack-shake 0.5s infinite;
 }
@@ -179,7 +179,7 @@
   box-shadow: 0 8px 30px rgba(39, 174, 96, 0.6) !important;
 }
 
-.device.recovery .device-icon i {
+.device.recovery .deviceIcon i {
   color: #2e7d32 !important;
 }
 
@@ -189,7 +189,7 @@
   box-shadow: 0 8px 30px rgba(33, 150, 243, 0.6) !important;
 }
 
-.device.protected .device-icon i {
+.device.protected .deviceIcon i {
   color: #1565c0 !important;
 }
 

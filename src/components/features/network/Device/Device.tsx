@@ -1,8 +1,8 @@
 import React, { useRef, useCallback, useState } from 'react';
-import type { DeviceProps, Position } from '../types';
-import { DEVICE_CONFIG } from '../utils/constants';
-import { Helpers } from '../utils/helpers';
-import './Device.css';
+import type { DeviceProps, Position } from '@/types';
+import { DEVICE_CONFIG } from '@/utils/constants';
+import { Helpers } from '@/utils/helpers';
+import styles from './Device.module.css';
 
 export const Device: React.FC<DeviceProps> = ({
   device,
@@ -136,20 +136,19 @@ export const Device: React.FC<DeviceProps> = ({
   // Don't render if containerRect is invalid
   if (!containerRect || containerRect.width === 0 || containerRect.height === 0) {
     return null;
-  }
-  return (
+  }  return (
     <div
       ref={deviceRef}
-      className={`device ${device.type} ${device.active ? 'active' : ''} ${isDragging ? 'dragging' : ''} ${device.attackState || ''}`}
+      className={`${styles.device} ${styles[device.type]} ${device.active ? styles.active : ''} ${isDragging ? styles.dragging : ''} ${device.attackState ? styles[device.attackState] : ''}`}
       style={deviceStyle}
       onMouseDown={handleMouseDown}
       data-device-id={device.id}
     >
-      <div className="device-icon">
+      <div className={styles.deviceIcon}>
         <i className={getDeviceIcon(device.type)} />
       </div>
-      <div className="device-label">{getDeviceLabel(device.type)}</div>
-      <div className="device-ip">{device.ip}</div>
+      <div className={styles.deviceLabel}>{getDeviceLabel(device.type)}</div>
+      <div className={styles.deviceIp}>{device.ip}</div>
     </div>
   );
 };

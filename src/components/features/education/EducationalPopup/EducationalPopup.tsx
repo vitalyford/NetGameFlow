@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback } from 'react';
-import type { EducationalPopup as EducationalPopupType } from '../types';
-import './EducationalPopup.css';
+import type { EducationalPopup as EducationalPopupType } from '../../../../types';
+import styles from './EducationalPopup.module.css';
 
 interface EducationalPopupProps {
   popup: EducationalPopupType | null;
@@ -82,11 +82,9 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
     if (e.key === 'Escape') {
       onClose();
     }
-  };
-
-  return (
+  };  return (
     <div
-      className="educational-popup-overlay"
+      className={styles.overlay}
       onClick={handleBackdropClick}
       onKeyDown={handleKeyDown}
       role="dialog"
@@ -95,7 +93,7 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
       tabIndex={-1}
     >
       <div
-        className={`educational-popup ${isResizing ? 'resizing' : ''}`}
+        className={`${styles.popup} ${isResizing ? styles.resizing : ''}`}
         style={{ width: size.width, height: size.height }}
         onClick={(e) => {
           // Prevent backdrop click during or just after resizing
@@ -104,12 +102,12 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           }
         }}
       >
-        <div className="educational-popup-header">
-          <h2 id="popup-title" className="educational-popup-title">
+        <div className={styles.header}>
+          <h2 id="popup-title" className={styles.title}>
             {popup.title}
           </h2>
           <button
-            className="educational-popup-close"
+            className={styles.closeButton}
             onClick={onClose}
             aria-label="Close popup"
             title="Close (ESC)"
@@ -118,7 +116,7 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           </button>
         </div>
         <div
-          className="educational-popup-content"
+          className={styles.content}
           ref={contentRef}
           style={{
             flex: 1,
@@ -129,12 +127,12 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
           }}
         >
           <div
-            className="educational-popup-description"
+            className={styles.description}
             dangerouslySetInnerHTML={{ __html: popup.content }}
           />
 
           {popup.imageUrl && (
-            <div className="educational-popup-image">
+            <div className={styles.image}>
               <img
                 src={popup.imageUrl}
                 alt={popup.imageAlt || popup.title}
@@ -143,21 +141,21 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
             </div>
           )}
           {popup.additionalInfo && (
-            <div className="educational-popup-additional">
+            <div className={styles.additional}>
               <h3>Additional Information</h3>
               <p>{popup.additionalInfo}</p>
             </div>
           )}
         </div>
-        <div className="educational-popup-footer">
+        <div className={styles.footer}>
           <button
-            className="educational-popup-button"
+            className={styles.button}
             onClick={onClose}
           >
             OK
           </button>
           <div
-            className="educational-popup-resize-handle"
+            className={styles.resizeHandle}
             title="Drag to resize window"
             onMouseDown={handleResizeMouseDown}
           />

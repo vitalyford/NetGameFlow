@@ -8,14 +8,14 @@ import type {
   LogEntry,
   StepData,
   DeviceType
-} from '../types';
+} from '@/types';
 import {
   DEVICE_IPS,
   ROUTING_TABLES,
   NETWORK_CONNECTIONS,
   SCENARIO_NAMES
-} from '../utils/constants';
-import { Helpers } from '../utils/helpers';
+} from '@/utils/constants';
+import { Helpers } from '@/utils/helpers';
 
 export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => {
   // Core state

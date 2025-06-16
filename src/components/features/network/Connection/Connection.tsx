@@ -1,7 +1,7 @@
 import React from 'react';
-import type { ConnectionProps, DeviceData } from '../types';
-import { Helpers } from '../utils/helpers';
-import './Connection.css';
+import type { ConnectionProps, DeviceData } from '@/types';
+import { Helpers } from '@/utils/helpers';
+import styles from './Connection.module.css';
 
 // Helper function to determine if a device should be considered visible for connection rendering
 const isDeviceVisible = (deviceId: string, deviceData: DeviceData): boolean => {
@@ -28,9 +28,8 @@ export const Connection: React.FC<ConnectionProps> = ({
   devices,
   activeConnections,
   currentStepConnection,
-}) => {
-  return (
-    <svg className="connections" width="100%" height="100%">
+}) => {  return (
+    <svg className={styles.connections} width="100%" height="100%">
       <defs>
         <marker
           id="arrowhead"
@@ -109,14 +108,13 @@ export const Connection: React.FC<ConnectionProps> = ({
         const markerType = (isCurrentStep || isCurrentStepReverse) ? 'arrowhead-current' :
           isActive ? 'arrowhead-active' : 'arrowhead';
 
-        return (
-          <line
+        return (          <line
             key={`connection-${index}`}
             x1={actualStartX}
             y1={actualStartY}
             x2={actualEndX}
             y2={actualEndY}
-            className={`connection-line ${isActive ? 'active' : ''} ${(isCurrentStep || isCurrentStepReverse) ? 'current-step' : ''}`}
+            className={`${styles.connectionLine} ${isActive ? styles.active : ''} ${(isCurrentStep || isCurrentStepReverse) ? styles.currentStep : ''}`}
             markerEnd={showArrow ? `url(#${markerType})` : undefined}
           />
         );

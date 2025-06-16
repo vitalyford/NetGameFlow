@@ -1,4 +1,4 @@
-.network-simulator {
+.networkSimulator {
   width: 100vw;
   height: 100vh;
   position: relative;
@@ -11,7 +11,7 @@
 }
 
 /* Header */
-.network-header {
+.networkHeader {
   background: #ffffff;
   padding: 1rem 2rem;
   border-bottom: 1px solid #e1e5e9;
@@ -19,7 +19,7 @@
   z-index: 100;
 }
 
-.header-content {
+.headerContent {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -27,7 +27,7 @@
   margin: 0 auto;
 }
 
-.header-title {
+.headerTitle {
   flex: 1;
 }
 
@@ -37,7 +37,7 @@
   gap: 1rem;
 }
 
-.brand-icon {
+.brandIcon {
   width: 48px;
   height: 48px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -48,12 +48,12 @@
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.brand-icon i {
+.brandIcon i {
   color: white;
   font-size: 1.5rem;
 }
 
-.brand-text h1 {
+.brandText h1 {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 700;
@@ -69,20 +69,20 @@
   margin-top: 2px;
 }
 
-.header-controls {
+.headerControls {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.panel-toggles {
+.panelToggles {
   display: flex;
   gap: 0.5rem;
 }
 
 /* Professional button styling - all buttons same size and style */
-.help-btn,
-.toggle-btn {
+.helpBtn,
+.toggleBtn {
   background: #ffffff;
   color: #495057;
   border: 1px solid #dee2e6;
@@ -100,33 +100,33 @@
   height: 40px;
 }
 
-.toggle-btn.reset-canvas-btn {
+.toggleBtn.resetCanvasBtn {
   background: #e8f4f8;
   color: #0d7490;
   border-color: #67e8f9;
 }
 
-.toggle-btn.reset-canvas-btn:hover {
+.toggleBtn.resetCanvasBtn:hover {
   background: #cff4fc;
   border-color: #3dd5f3;
   transform: translateY(-1px);
 }
 
-.toggle-btn.tour-header-btn {
+.toggleBtn.tourHeaderBtn {
   background: #e8f4f8;
   color: #007aff;
   border-color: #007aff;
   position: relative;
 }
 
-.toggle-btn.tour-header-btn:hover {
+.toggleBtn.tourHeaderBtn:hover {
   background: #007aff;
   color: white;
   border-color: #007aff;
   transform: translateY(-1px);
 }
 
-.toggle-btn.tour-header-btn.tour-new::after {
+.toggleBtn.tourHeaderBtn.tourNew::after {
   content: 'New!';
   position: absolute;
   top: -6px;
@@ -146,37 +146,37 @@
   100% { opacity: 1; }
 }
 
-.help-btn:hover,
-.toggle-btn:hover {
+.helpBtn:hover,
+.toggleBtn:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.toggle-btn.active {
+.toggleBtn.active {
   background: #3498db;
   color: white;
   border-color: #3498db;
 }
 
-.toggle-btn.active:hover {
+.toggleBtn.active:hover {
   background: #2980b9;
   border-color: #2980b9;
 }
 
-.toggle-btn i,
-.help-btn i {
+.toggleBtn i,
+.helpBtn i {
   font-size: 0.875rem;
 }
 
-.toggle-btn span,
-.help-btn span {
+.toggleBtn span,
+.helpBtn span {
   font-size: 0.875rem;
   font-weight: 500;
 }
 
 /* Main Layout */
-.network-layout {
+.networkLayout {
   display: flex;
   flex: 1;
   overflow: hidden;
@@ -184,7 +184,7 @@
 }
 
 /* Network Container */
-.network-container {
+.networkContainer {
   flex: 1;
   position: relative;
   display: flex;
@@ -194,7 +194,7 @@
 }
 
 /* Network Topology - Main simulation area */
-.network-topology {
+.networkTopology {
   flex: 1;
   position: relative;
   width: 100%;
@@ -211,34 +211,34 @@
   transition: none; /* Disable transitions during dragging for smooth performance */
 }
 
-.network-topology.dragging {
+.networkTopology.dragging {
   cursor: grabbing;
 }
 
-.network-topology:active {
+.networkTopology:active {
   cursor: grabbing;
 }
 
 /* Smooth transition when resetting position */
-.network-topology.resetting-position {
+.networkTopology.resettingPosition {
   transition: transform 0.3s ease-out;
 }
 
 /* Prevent text selection during canvas drag */
-.network-topology.dragging * {
+.networkTopology.dragging * {
   user-select: none;
   pointer-events: none;
 }
 
 /* Re-enable pointer events for interactive elements during drag */
-.network-topology.dragging .device,
-.network-topology.dragging .step-controller,
-.network-topology.dragging .floating-step-details-button {
+.networkTopology.dragging .device,
+.networkTopology.dragging .stepController,
+.networkTopology.dragging .floatingStepDetailsButton {
   pointer-events: auto;
 }
 
 /* Layout modifications when panels are hidden */
-.keyboard-hint {
+.keyboardHint {
   font-size: 0.7rem;
   color: #7f8c8d;
   margin-top: 0.25rem;
@@ -246,7 +246,7 @@
 }
 
 @media (max-width: 768px) {
-  .keyboard-hint {
+  .keyboardHint {
     display: none;
   }
 }
@@ -341,12 +341,12 @@
 }
 
 /* Loading state */
-.network-simulator.loading {
+.networkSimulator.loading {
   opacity: 0.7;
   pointer-events: none;
 }
 
-.network-simulator.loading::after {
+.networkSimulator.loading::after {
   content: '';
   position: absolute;
   top: 50%;
@@ -367,11 +367,11 @@
 }
 
 /* Error state */
-.network-simulator.error {
+.networkSimulator.error {
   background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
 }
 
-.error-message {
+.errorMessage {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -385,17 +385,17 @@
   width: 90%;
 }
 
-.error-message h3 {
+.errorMessage h3 {
   color: #e74c3c;
   margin: 0 0 15px 0;
 }
 
-.error-message p {
+.errorMessage p {
   color: #666;
   margin: 0 0 20px 0;
 }
 
-.error-message button {
+.errorMessage button {
   background: #667eea;
   color: white;
   border: none;
@@ -406,32 +406,32 @@
   transition: background-color 0.3s ease;
 }
 
-.error-message button:hover {
+.errorMessage button:hover {
   background: #5a6fd8;
 }
 
 /* Layout modifications when panels are hidden */
-.network-layout.no-control-panel .control-panel-container {
+.networkLayout.noControlPanel .controlPanelContainer {
   width: 0;
 }
 
-.network-layout.no-log-panel .log-panel-container {
+.networkLayout.noLogPanel .logPanelContainer {
   width: 0;
 }
 
-.network-layout.no-control-panel.no-log-panel .network-container {
+.networkLayout.noControlPanel.noLogPanel .networkContainer {
   flex: 1;
   width: 100%;
 }
 
 /* Smooth transitions for panel containers */
-.control-panel-container {
+.controlPanelContainer {
   transition: width 0.3s ease;
   flex-shrink: 0;
   overflow: hidden;
 }
 
-.log-panel-container {
+.logPanelContainer {
   transition: width 0.3s ease;
   flex-shrink: 0;
   overflow: hidden;
@@ -441,27 +441,27 @@
 }
 
 /* Smooth transitions for panel toggles */
-.control-panel {
+.controlPanel {
   transition: transform 0.3s ease, opacity 0.3s ease;
   flex-shrink: 0; /* Prevent affecting container size during transitions */
   will-change: transform, opacity; /* Optimize for animations */
 }
 
-.log-container {
+.logContainer {
   transition: transform 0.3s ease, opacity 0.3s ease;
   flex-shrink: 0; /* Prevent affecting container size during transitions */
   will-change: transform, opacity; /* Optimize for animations */
 }
 
 /* When panels are being hidden - keep them in layout to prevent size changes */
-.network-layout.no-control-panel .control-panel {
+.networkLayout.noControlPanel .controlPanel {
   transform: translateX(-100%);
   opacity: 0;
   pointer-events: none; /* Disable interactions when hidden */
   overflow: hidden; /* Ensure no content spills out during animation */
 }
 
-.network-layout.no-log-panel .log-container {
+.networkLayout.noLogPanel .logContainer {
   transform: translateX(100%);
   opacity: 0;
   pointer-events: none; /* Disable interactions when hidden */
@@ -469,7 +469,7 @@
 }
 
 /* Floating Help Button */
-.floating-help-button {
+.floatingHelpButton {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -491,23 +491,23 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.floating-help-button:hover {
+.floatingHelpButton:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
   background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
 }
 
-.floating-help-button:active {
+.floatingHelpButton:active {
   transform: scale(0.95);
 }
 
-.floating-help-button:focus {
+.floatingHelpButton:focus {
   outline: 3px solid rgba(102, 126, 234, 0.5);
   outline-offset: 2px;
 }
 
 /* Floating Step Details Button */
-.floating-step-details-button {
+.floatingStepDetailsButton {
   position: absolute;
   top: 80px;
   right: 20px;
@@ -529,23 +529,23 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-.floating-step-details-button:hover {
+.floatingStepDetailsButton:hover {
   transform: scale(1.1);
   box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
   background: linear-gradient(135deg, #219a52 0%, #1bb584 100%);
 }
 
-.floating-step-details-button:active {
+.floatingStepDetailsButton:active {
   transform: scale(0.95);
 }
 
-.floating-step-details-button:focus {
+.floatingStepDetailsButton:focus {
   outline: 3px solid rgba(40, 167, 69, 0.5);
   outline-offset: 2px;
 }
 
 /* Floating Header Controls */
-.floating-header-controls {
+.floatingHeaderControls {
   position: absolute;
   top: 20px;
   right: 20px;
@@ -561,7 +561,7 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.floating-header-controls .help-btn {
+.floatingHeaderControls .helpBtn {
   background: #667eea;
   color: white;
   border: none;
@@ -576,18 +576,18 @@
   transition: all 0.2s ease;
 }
 
-.floating-header-controls .help-btn:hover {
+.floatingHeaderControls .helpBtn:hover {
   background: #5a67d8;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-.floating-header-controls .panel-toggles {
+.floatingHeaderControls .panelToggles {
   display: flex;
   gap: 0.5rem;
 }
 
-.floating-header-controls .toggle-btn {
+.floatingHeaderControls .toggleBtn {
   background: transparent;
   border: 1px solid #e2e8f0;
   color: #64748b;
@@ -601,19 +601,19 @@
   transition: all 0.2s ease;
 }
 
-.floating-header-controls .toggle-btn:hover {
+.floatingHeaderControls .toggleBtn:hover {
   background: #f1f5f9;
   border-color: #cbd5e1;
   color: #475569;
 }
 
-.floating-header-controls .toggle-btn.active {
+.floatingHeaderControls .toggleBtn.active {
   background: #3b82f6;
   border-color: #3b82f6;
   color: white;
 }
 
-.floating-header-controls .toggle-btn.active:hover {
+.floatingHeaderControls .toggleBtn.active:hover {
   background: #2563eb;
   border-color: #2563eb;
 }
@@ -659,7 +659,7 @@
 }
 
 /* Canvas drag hint - only show when canvas hasn't been moved */
-.canvas-drag-hint {
+.canvasDragHint {
   position: absolute;
   top: 20px;
   left: 50%;
@@ -682,7 +682,7 @@
   20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
 }
 
-.canvas-drag-hint.hidden {
+.canvasDragHint.hidden {
   display: none;
 }
 
@@ -710,16 +710,16 @@
 }
 
 /* Canvas drag boundaries visual feedback */
-.network-topology.at-boundary {
+.networkTopology.atBoundary {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 0 10px rgba(239, 68, 68, 0.2);
 }
 
 /* Panel Manager Dropdown */
-.panel-manager {
+.panelManager {
   position: relative;
 }
 
-.panel-manager-btn {
+.panelManagerBtn {
   background: #ffffff;
   color: #495057;
   border: 1px solid #dee2e6;
@@ -737,23 +737,19 @@
   height: 40px;
 }
 
-.panel-manager-btn:hover {
+.panelManagerBtn:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.panel-manager-btn .fa-chevron-down {
+.panelManagerBtn .faChevronDown {
   font-size: 0.75rem;
   transition: transform 0.2s ease;
 }
 
-.panel-dropdown.show .panel-manager-btn .fa-chevron-down {
-  transform: rotate(180deg);
-}
-
-.panel-dropdown {
+.panelDropdown {
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
@@ -769,13 +765,19 @@
   transition: all 0.2s ease;
 }
 
-.panel-dropdown.show {
+.panelDropdown.show {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
 }
 
-.panel-option {
+.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.panelOption {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -784,15 +786,15 @@
   transition: background-color 0.15s ease;
 }
 
-.panel-option:last-of-type {
+.panelOption:last-of-type {
   border-bottom: none;
 }
 
-.panel-option:hover {
+.panelOption:hover {
   background: #f8f9fa;
 }
 
-.panel-option label {
+.panelOption label {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -801,7 +803,7 @@
   margin: 0;
 }
 
-.panel-option input[type="checkbox"] {
+.panelOption input[type="checkbox"] {
   position: absolute;
   opacity: 0;
   pointer-events: none;
@@ -817,12 +819,12 @@
   background: #ffffff;
 }
 
-.panel-option input:checked + .checkmark {
+.panelOption input:checked + .checkmark {
   background: #667eea;
   border-color: #667eea;
 }
 
-.panel-option input:checked + .checkmark::after {
+.panelOption input:checked + .checkmark::after {
   content: '';
   position: absolute;
   left: 5px;
@@ -834,37 +836,37 @@
   transform: rotate(45deg);
 }
 
-.option-content {
+.optionContent {
   display: flex;
   align-items: center;
   gap: 12px;
   flex: 1;
 }
 
-.option-content i {
+.optionContent i {
   color: #6c757d;
   width: 16px;
   text-align: center;
 }
 
-.option-content div {
+.optionContent div {
   display: flex;
   flex-direction: column;
 }
 
-.option-title {
+.optionTitle {
   font-weight: 500;
   color: #2c3e50;
   font-size: 0.875rem;
 }
 
-.option-desc {
+.optionDesc {
   font-size: 0.75rem;
   color: #6c757d;
   margin-top: 2px;
 }
 
-.panel-option kbd {
+.panelOption kbd {
   background: #f8f9fa;
   border: 1px solid #dee2e6;
   border-radius: 3px;
@@ -874,26 +876,26 @@
   font-family: monospace;
 }
 
-.panel-dropdown hr {
+.panelDropdown hr {
   margin: 8px 0;
   border: none;
   border-top: 1px solid #f1f3f4;
 }
 
-.panel-presets {
+.panelPresets {
   padding: 12px 16px;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.preset-label {
+.presetLabel {
   font-size: 0.75rem;
   color: #6c757d;
   font-weight: 500;
 }
 
-.preset-btn {
+.presetBtn {
   background: #667eea;
   color: #ffffff;
   border: 1px solid #667eea;
@@ -908,24 +910,24 @@
   gap: 4px;
 }
 
-.preset-btn:hover {
+.presetBtn:hover {
   background: #5a67d8;
   border-color: #5a67d8;
   transform: translateY(-1px);
   box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
 }
 
-.preset-btn:active {
+.presetBtn:active {
   transform: translateY(0);
   box-shadow: 0 1px 2px rgba(102, 126, 234, 0.2);
 }
 
-.preset-btn i {
+.presetBtn i {
   font-size: 0.7rem;
 }
 
 /* Panel Collapse Buttons */
-.panel-collapse-btn {
+.panelCollapseBtn {
   position: absolute;
   top: calc(50% - 16px); /* Half the button height for perfect centering */
   background: #ffffff;
@@ -942,29 +944,29 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.panel-collapse-btn:hover {
+.panelCollapseBtn:hover {
   background: #f8f9fa;
   border-color: #adb5bd;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.panel-collapse-btn:active {
+.panelCollapseBtn:active {
   background: #e9ecef;
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Control panel collapse button - centered on right edge */
-.control-panel-collapse {
+.controlPanelCollapse {
   right: -16px;
 }
 
 /* Log panel collapse button - centered on left edge */
-.log-panel-collapse {
+.logPanelCollapse {
   left: -16px;
 }
 
 /* Show panel buttons - appear on main area edges when panels are hidden */
-.show-panel-btn {
+.showPanelBtn {
   position: absolute;
   top: calc(50% - 18px); /* Half the button height for perfect centering */
   background: #667eea;
@@ -983,63 +985,63 @@
   opacity: 0.9;
 }
 
-.show-panel-btn:hover {
+.showPanelBtn:hover {
   background: #5a67d8;
   border-color: #5a67d8;
   opacity: 1;
   box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
 }
 
-.show-panel-btn:active {
+.showPanelBtn:active {
   background: #4c51bf;
   box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
 }
 
 /* Position show buttons on network container edges */
-.show-control-panel-btn {
+.showControlPanelBtn {
   left: 16px;
 }
 
-.show-log-panel-btn {
+.showLogPanelBtn {
   right: 16px;
 }
 
-.show-panel-btn i {
+.showPanelBtn i {
   font-size: 0.875rem;
 }
 
-.panel-collapse-btn i {
+.panelCollapseBtn i {
   font-size: 0.75rem;
   color: #6c757d;
 }
 
 /* Panel Container Styling */
-.control-panel-container,
-.log-panel-container {
+.controlPanelContainer,
+.logPanelContainer {
   position: relative;
   transition: all 0.3s ease;
 }
 
-.control-panel-container.collapsed,
-.log-panel-container.collapsed {
+.controlPanelContainer.collapsed,
+.logPanelContainer.collapsed {
   width: 0;
   overflow: hidden;
 }
 
-.control-panel-container.collapsed .panel-collapse-btn,
-.log-panel-container.collapsed .panel-collapse-btn {
+.controlPanelContainer.collapsed .panelCollapseBtn,
+.logPanelContainer.collapsed .panelCollapseBtn {
   background: #667eea;
   border-color: #667eea;
   color: white;
 }
 
-.control-panel-container.collapsed .panel-collapse-btn i,
-.log-panel-container.collapsed .panel-collapse-btn i {
+.controlPanelContainer.collapsed .panelCollapseBtn i,
+.logPanelContainer.collapsed .panelCollapseBtn i {
   color: white;
 }
 
 /* Visual indicators for collapsed panels */
-.control-panel-container.collapsed::before {
+.controlPanelContainer.collapsed::before {
   content: '';
   position: absolute;
   left: 0;
@@ -1051,7 +1053,7 @@
   z-index: 5;
 }
 
-.log-panel-container.collapsed::before {
+.logPanelContainer.collapsed::before {
   content: '';
   position: absolute;
   right: 0;
@@ -1064,50 +1066,50 @@
 }
 
 /* Hover effects for collapsed panels */
-.control-panel-container.collapsed:hover::before {
+.controlPanelContainer.collapsed:hover::before {
   opacity: 1;
   width: 6px;
 }
 
-.log-panel-container.collapsed:hover::before {
+.logPanelContainer.collapsed:hover::before {
   opacity: 1;
   width: 6px;
 }
 
 /* Add subtle shadow to active panels */
-.control-panel-container.expanded,
-.log-panel-container.expanded {
+.controlPanelContainer.expanded,
+.logPanelContainer.expanded {
   box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
 }
 
 /* Ensure Logger component uses full height in expanded log panel */
-.log-panel-container.expanded {
+.logPanelContainer.expanded {
   width: 350px;
   height: 100%;
 }
 
-.log-panel-container.expanded .log-container {
+.logPanelContainer.expanded .logContainer {
   height: 100%;
   max-height: none;
 }
 
 /* Responsive behavior for smaller screens */
 @media (max-width: 768px) {
-  .panel-manager-btn span {
+  .panelManagerBtn span {
     display: none;
   }
   
-  .panel-manager-btn {
+  .panelManagerBtn {
     min-width: 40px;
   }
   
-  .panel-dropdown {
+  .panelDropdown {
     right: auto;
     left: 0;
     min-width: 260px;
   }
   
-  .panel-collapse-btn {
+  .panelCollapseBtn {
     display: none;
   }
 }

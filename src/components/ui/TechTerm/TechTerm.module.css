@@ -1,4 +1,4 @@
-.tech-term {
+.term {
   color: #3498db;
   border-bottom: 1px dotted #3498db;
   text-decoration: none;
@@ -6,12 +6,12 @@
   display: inline;
 }
 
-.tech-term.clickable {
+.term.clickable {
   cursor: pointer;
   font-weight: 500;
 }
 
-.tech-term.clickable:hover {
+.term.clickable:hover {
   color: #2980b9;
   border-bottom-color: #2980b9;
   background-color: rgba(52, 152, 219, 0.1);
@@ -19,7 +19,7 @@
   padding: 1px 3px;
 }
 
-.tech-term.clickable:focus {
+.term.clickable:focus {
   outline: 2px solid #3498db;
   outline-offset: 2px;
   border-radius: 3px;

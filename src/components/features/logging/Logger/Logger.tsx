@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import type { LogEntry, LogCategory } from '../types';
-import './Logger.css';
+import type { LogEntry, LogCategory } from '../../../../types';
+import styles from './Logger.module.css';
 
 interface LoggerProps {
   entries: LogEntry[];
@@ -172,19 +172,18 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
       default: return 'ℹ️';
     }
   };
-
   return (
-    <div className="log-container">
-      <div className="log-header">
+    <div className={styles.logContainer}>
+      <div className={styles.logHeader}>
         <h3>
           <i className="fas fa-list"></i>
           Network Activity Log
         </h3>
-        <div className="log-controls">
+        <div className={styles.logControls}>
           <select
             value={filter}
             onChange={(e) => setFilter(e.target.value as 'all' | LogCategory)}
-            className="log-filter"
+            className={styles.logFilter}
             title="Filter log entries"
           >
             <option value="all">All Logs</option>
@@ -194,14 +193,14 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
             <option value="system">System</option>
           </select>
           <button
-            className={`detail-toggle ${isDetailed ? 'active' : ''}`}
+            className={`${styles.detailToggle} ${isDetailed ? styles.active : ''}`}
             onClick={() => setIsDetailed(!isDetailed)}
             title="Toggle detailed view"
           >
             <i className="fas fa-microscope"></i>
           </button>
           <button
-            className={`auto-scroll-toggle ${autoScroll ? 'active' : ''}`}
+            className={`${styles.autoScrollToggle} ${autoScroll ? styles.active : ''}`}
             onClick={() => {
               const newAutoScroll = !autoScroll;
               setAutoScroll(newAutoScroll);
@@ -215,52 +214,52 @@ export const Logger: React.FC<LoggerProps> = ({ entries, onClear }) => {
             <i className="fas fa-arrow-down"></i>
           </button>
 
-          <button className="clear-log-btn" onClick={onClear} title="Clear Log">
+          <button className={styles.clearLogBtn} onClick={onClear} title="Clear Log">
             <i className="fas fa-trash"></i>
           </button>
         </div>
       </div>
       <div
-        className="log-content"
+        className={styles.logContent}
         ref={logContentRef}
         onScroll={handleScroll}
         onWheel={handleWheel}
       >
         {filteredEntries.map((entry, index) => (
-          <div key={index} className={`log-entry ${entry.type} ${entry.category || ''}`}>
-            <div className="log-entry-header">
-              <span className="log-icon">{getLogIcon(entry)}</span>
-              <span className="timestamp">{entry.timestamp}</span>
+          <div key={index} className={`${styles.logEntry} ${styles[entry.type]} ${entry.category ? styles[entry.category] : ''}`}>
+            <div className={styles.logEntryHeader}>
+              <span className={styles.logIcon}>{getLogIcon(entry)}</span>
+              <span className={styles.timestamp}>{entry.timestamp}</span>
               {entry.category && (
-                <span className={`category-badge ${entry.category}`}>
+                <span className={`${styles.categoryBadge} ${styles[entry.category]}`}>
                   {entry.category.toUpperCase()}
                 </span>
               )}
             </div>
-            <div className="log-message">
+            <div className={styles.logMessage}>
               <pre>{formatLogMessage(entry)}</pre>
             </div>
           </div>
         ))}
 
         {filteredEntries.length === 0 && (
-          <div className="log-entry info">
-            <div className="log-message">
+          <div className={`${styles.logEntry} ${styles.info}`}>
+            <div className={styles.logMessage}>
               No {filter !== 'all' ? filter : ''} logs to display
             </div>
           </div>
         )}
       </div>
 
-      <div className="log-footer">
-        <div className="log-status">
+      <div className={styles.logFooter}>
+        <div className={styles.logStatus}>
           <small>
             {filteredEntries.length} of {entries.length} entries
             {isDetailed && ' (detailed view)'}
           </small>
           {!autoScroll && (
             <button
-              className="scroll-to-bottom-btn"
+              className={styles.scrollToBottomBtn}
               onClick={() => {
                 setAutoScroll(true);
                 isUserScrollingRef.current = false;

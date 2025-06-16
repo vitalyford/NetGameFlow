@@ -1,6 +1,6 @@
 import React, { createContext, useState } from 'react';
 import type { ReactNode } from 'react';
-import type { EducationalPopup } from '../types';
+import type { EducationalPopup } from '@/types';
 
 interface EducationalContextType {
   showPopup: (content: EducationalPopup) => void;

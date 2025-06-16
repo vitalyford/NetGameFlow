@@ -1,5 +1,5 @@
 import React from 'react';
-import './ControlPanel.css';
+import styles from './ControlPanel.module.css';
 
 interface ControlPanelProps {
   onStartPacketSimulation: () => void;
@@ -33,26 +33,22 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       // 4. Show packet behavior during attack
       onStartMessageSimulation();
     }
-  };
-
-  return (
-    <div className="control-panel">
-      {/* Header */}
-      <div className="panel-header">
-        <p className="text-center">Complete Internet Flow Demonstration</p>
+  }; return (
+    <div className={styles.controlPanel}>
+      {/* Header */}      <div className={styles.panelHeader}>
+        <p>Complete Internet Flow Demonstration</p>
       </div>
       {/* Main Control */}
-      <div className="main-control">
-        <button 
-          className={`start-btn ${isRunning ? 'running' : ''}`}
+      <div className={styles.mainControl}>
+        <button
+          className={`${styles.startBtn} ${isRunning ? styles.running : ''}`}
           onClick={handleStartDemo}
         >
           <i className={`fas ${isRunning ? 'fa-stop' : 'fa-play'}`}></i>
           {isRunning ? 'Stop' : 'Start'}
-        </button>
-      </div>
+        </button>      </div>
       {/* Demo Flow Info */}
-      <div className="demo-info">
+      <div className={styles.demoInfo}>
         <h3>🌐 Complete Network Journey</h3>
         <ol>
           <li>🔍 DNS Resolution (Find website IP)</li>
@@ -61,19 +57,18 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <li>🎯 Fetch CDN Resources</li>
           <li>⚡ DDoS Attack & Protection</li>
         </ol>
-        <div className="journey-note">
+        <div className={styles.journeyNote}>
           <small>Watch 35+ detailed steps in action!</small>
         </div>
-        
         {/* Simple Progress Bar - moved here to reduce DOM movement */}
         {isStepMode && totalSteps > 0 && (
-          <div className="step-progress">
-            <div className="progress-info">
+          <div className={styles.stepProgress}>
+            <div className={styles.progressInfo}>
               <span>Step {currentStep + 1} of {totalSteps}</span>
             </div>
-            <div className="progress-bar">
-              <div 
-                className="progress-fill" 
+            <div className={styles.progressBar}>
+              <div
+                className={styles.progressFill}
                 style={{ width: `${((currentStep + 1) / totalSteps) * 100}%` }}
               ></div>
             </div>
@@ -82,13 +77,13 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
       </div>
 
       {/* Footer */}
-      <div className="panel-footer">
+      <div className={styles.panelFooter}>
         <p>
           <i className="fas fa-code"></i>
           Contact{' '}
-          <a 
-            href="https://github.com/vitalyford/netgameflow" 
-            target="_blank" 
+          <a
+            href="https://github.com/vitalyford/netgameflow"
+            target="_blank"
             rel="noopener noreferrer"
             title="Visit GitHub repository"
           >

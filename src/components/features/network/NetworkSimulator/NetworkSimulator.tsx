@@ -1,16 +1,16 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Device } from './Device.tsx';
-import { Connection } from './Connection.tsx';
-import { StepController } from './StepController.tsx';
-import { Logger } from './Logger.tsx';
-import { ControlPanel } from './ControlPanel.tsx';
-import { EducationalPopup } from './EducationalPopup.tsx';
-import { WelcomeGuide } from './WelcomeGuide.tsx';
-import { EducationalProvider } from '../contexts/EducationalContext';
-import { useEducational } from '../hooks/useEducational';
-import { useNetworkSimulator } from '../hooks/useNetworkSimulator';
-import type { NetworkSimulatorProps } from '../types';
-import './NetworkSimulator.css';
+import { Device } from '../Device/Device.tsx';
+import { Connection } from '../Connection/Connection.tsx';
+import { StepController } from '../../controls/StepController/StepController.tsx';
+import { Logger } from '../../logging/Logger/Logger.tsx';
+import { ControlPanel } from '../../controls/ControlPanel/ControlPanel.tsx';
+import { EducationalPopup } from '../../education/EducationalPopup/EducationalPopup.tsx';
+import { WelcomeGuide } from '../../education/WelcomeGuide/WelcomeGuide.tsx';
+import { EducationalProvider } from '@/contexts/EducationalContext.tsx';
+import { useEducational } from '@/hooks/useEducational.ts';
+import { useNetworkSimulator } from '@/hooks/useNetworkSimulator.ts';
+import type { NetworkSimulatorProps } from '@/types/index.ts';
+import styles from './NetworkSimulator.module.css';
 
 export const NetworkSimulator: React.FC<NetworkSimulatorProps> = (props) => {
     return (
@@ -30,6 +30,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     autoStart = false,
 }) => {
     const containerRef = useRef<HTMLDivElement>(null);
+    const stepControllerRef = useRef<HTMLDivElement>(null);
     const [containerRect, setContainerRect] = useState<DOMRect | null>(null);
     const [showEducational, setShowEducational] = useState(false);
     const [educationalContent, setEducationalContent] = useState({ title: '', content: '' });
@@ -40,11 +41,10 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     });
 
     // Get educational context for tech terms
-    const { currentPopup, hidePopup } = useEducational();
-
-    // Panel visibility state
+    const { currentPopup, hidePopup } = useEducational();    // Panel visibility state
     const [showControlPanel, setShowControlPanel] = useState(true);
     const [showLogPanel, setShowLogPanel] = useState(true);
+    const [showPanelDropdown, setShowPanelDropdown] = useState(false);
     // Canvas dragging state
     const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
@@ -286,13 +286,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         break;
                 }
             }
-        };
-
-        const handleClickOutside = (e: MouseEvent) => {
+        };        const handleClickOutside = (e: MouseEvent) => {
             // Close panel dropdown when clicking outside
-            const dropdown = document.querySelector('.panel-dropdown.show');
-            if (dropdown && !dropdown.closest('.panel-manager')?.contains(e.target as Node)) {
-                dropdown.classList.remove('show');
+            if (showPanelDropdown && 
+                !document.querySelector(`.${styles.panelManager}`)?.contains(e.target as Node)) {
+                setShowPanelDropdown(false);
             }
         };
 
@@ -302,23 +300,21 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             window.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('click', handleClickOutside);
         };
-    }, [showControlPanel, showLogPanel]);
+    }, [showControlPanel, showLogPanel, showPanelDropdown]);
     // Constrain canvas offset to reasonable bounds
     const constrainOffset = useCallback((offset: { x: number; y: number }) => {
         const maxOffset = 500; // Maximum pixels the canvas can be dragged in any direction
         const constrainedOffset = {
             x: Math.max(-maxOffset, Math.min(maxOffset, offset.x)),
             y: Math.max(-maxOffset, Math.min(maxOffset, offset.y))
-        };
-
-        // Add visual feedback when at boundaries
+        };        // Add visual feedback when at boundaries
         const isAtBoundary = constrainedOffset.x !== offset.x || constrainedOffset.y !== offset.y;
         if (containerRef.current) {
             if (isAtBoundary) {
-                containerRef.current.classList.add('at-boundary');
+                containerRef.current.classList.add(styles.atBoundary);
                 // Remove the class after a short delay
                 setTimeout(() => {
-                    containerRef.current?.classList.remove('at-boundary');
+                    containerRef.current?.classList.remove(styles.atBoundary);
                 }, 200);
             }
         }
@@ -416,12 +412,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         };
     }, [isDragging, dragStart, canvasOffset, constrainOffset]);// Reset canvas position
     const resetCanvasPosition = useCallback(() => {
-        setCanvasOffset({ x: 0, y: 0 });
-        // Temporarily add a smooth transition class
+        setCanvasOffset({ x: 0, y: 0 });        // Temporarily add a smooth transition class
         if (containerRef.current) {
-            containerRef.current.classList.add('resetting-position');
+            containerRef.current.classList.add(styles.resettingPosition);
             setTimeout(() => {
-                containerRef.current?.classList.remove('resetting-position');
+                containerRef.current?.classList.remove(styles.resettingPosition);
             }, 300);
         }
     }, []);
@@ -443,29 +438,26 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
 
         window.addEventListener('keydown', handleKeyDown);
         return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [resetCanvasPosition]);
-
-    return (
-        <div className={`network-simulator ${className}`}>
+    }, [resetCanvasPosition]); return (
+        <div className={`${styles.networkSimulator} ${className}`}>
             {/* Header */}
-            <header className="network-header">
-                <div className="header-content">
-                    <div className="header-title">
-                        <div className="brand">
-                            <div className="brand-icon">
+            <header className={styles.networkHeader}>
+                <div className={styles.headerContent}>
+                    <div className={styles.headerTitle}>
+                        <div className={styles.brand}>
+                            <div className={styles.brandIcon}>
                                 <i className="fas fa-network-wired"></i>
                             </div>
-                            <div className="brand-text">
+                            <div className={styles.brandText}>
                                 <h1>NetworkFlow</h1>
-                                <span className="tagline">Interactive Network Learning</span>
+                                <span className={styles.tagline}>Interactive Network Learning</span>
                             </div>
                         </div>
                     </div>
-                    <div className="header-controls">
-                        {/* Canvas Reset Button - only show when canvas is moved */}
+                    <div className={styles.headerControls}>                        {/* Canvas Reset Button - only show when canvas is moved */}
                         {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
                             <button
-                                className="toggle-btn reset-canvas-btn"
+                                className={`${styles.toggleBtn} ${styles.resetCanvasBtn}`}
                                 onClick={resetCanvasPosition}
                                 title="Reset canvas position (R)"
                             >
@@ -475,22 +467,19 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         )}
                         {/* Tour Button */}
                         <button
-                            className={`toggle-btn tour-header-btn ${!hasAccessedTour ? 'tour-new' : ''}`}
+                            className={`${styles.toggleBtn} ${styles.tourHeaderBtn} ${!hasAccessedTour ? styles.tourNew : ''}`}
                             onClick={handleShowTour}
                             title="Take an interactive tour to learn how the platform works"
                         >
                             <i className="fas fa-question-circle"></i>
                             <span>Tour</span>
-                        </button>
-
-                        {/* Panel Manager Dropdown */}
-                        <div className="panel-manager">
+                        </button>                        {/* Panel Manager Dropdown */}
+                        <div className={styles.panelManager}>
                             <button
-                                className="panel-manager-btn"
+                                className={styles.panelManagerBtn}
                                 onClick={(e) => {
                                     e.stopPropagation();
-                                    const dropdown = e.currentTarget.nextElementSibling as HTMLElement;
-                                    dropdown.classList.toggle('show');
+                                    setShowPanelDropdown(!showPanelDropdown);
                                 }}
                                 title="Manage panels"
                             >
@@ -498,53 +487,51 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                 <span>Panels</span>
                                 <i className="fas fa-chevron-down"></i>
                             </button>
-                            <div className="panel-dropdown">
-                                <div className="panel-option">
+                            <div className={`${styles.panelDropdown} ${showPanelDropdown ? styles.show : ''}`}>
+                                <div className={styles.panelOption}>
                                     <label>
                                         <input
                                             type="checkbox"
                                             checked={showControlPanel}
                                             onChange={() => setShowControlPanel(!showControlPanel)}
                                         />
-                                        <span className="checkmark"></span>
-                                        <div className="option-content">
+                                        <span className={styles.checkmark}></span>
+                                        <div className={styles.optionContent}>
                                             <i className="fas fa-sliders-h"></i>
                                             <div>
-                                                <span className="option-title">Control Panel</span>
-                                                <span className="option-desc">Simulation controls & scenarios</span>
+                                                <span className={styles.optionTitle}>Control Panel</span>
+                                                <span className={styles.optionDesc}>Simulation controls & scenarios</span>
                                             </div>
                                         </div>
                                     </label>
                                     <kbd>Ctrl+1</kbd>
                                 </div>
-                                <div className="panel-option">
+                                <div className={styles.panelOption}>
                                     <label>
                                         <input
                                             type="checkbox"
                                             checked={showLogPanel}
                                             onChange={() => setShowLogPanel(!showLogPanel)}
                                         />
-                                        <span className="checkmark"></span>
-                                        <div className="option-content">
+                                        <span className={styles.checkmark}></span>
+                                        <div className={styles.optionContent}>
                                             <i className="fas fa-list"></i>
                                             <div>
-                                                <span className="option-title">Activity Log</span>
-                                                <span className="option-desc">Network traffic & events</span>
+                                                <span className={styles.optionTitle}>Activity Log</span>
+                                                <span className={styles.optionDesc}>Network traffic & events</span>
                                             </div>
                                         </div>
                                     </label>
                                     <kbd>Ctrl+2</kbd>
                                 </div>
                                 <hr />
-                                <div className="panel-presets">
-                                    <span className="preset-label">Quick Layouts:</span>
-                                    <button
-                                        className="preset-btn"
-                                        onClick={() => {
+                                <div className={styles.panelPresets}>
+                                    <span className={styles.presetLabel}>Quick Layouts:</span>                                    <button
+                                        className={styles.presetBtn} onClick={() => {
                                             setShowControlPanel(true);
                                             setShowLogPanel(true);
                                             // Close dropdown
-                                            document.querySelector('.panel-dropdown.show')?.classList.remove('show');
+                                            setShowPanelDropdown(false);
                                         }}
                                         title="Show all panels"
                                     >
@@ -552,12 +539,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                         All
                                     </button>
                                     <button
-                                        className="preset-btn"
-                                        onClick={() => {
+                                        className={styles.presetBtn} onClick={() => {
                                             setShowControlPanel(false);
                                             setShowLogPanel(false);
                                             // Close dropdown
-                                            document.querySelector('.panel-dropdown.show')?.classList.remove('show');
+                                            setShowPanelDropdown(false);
                                         }}
                                         title="Hide all panels for focused view"
                                     >
@@ -568,14 +554,13 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             </div>
                         </div>
                     </div>
-                </div>
-            </header>
-            <div className={`network-layout ${!showControlPanel ? 'no-control-panel' : ''} ${!showLogPanel ? 'no-log-panel' : ''}`}>
+                </div>            </header>
+            <div className={`${styles.networkLayout} ${!showControlPanel ? styles.noControlPanel : ''} ${!showLogPanel ? styles.noLogPanel : ''}`}>
                 {/* Control Panel */}
                 {showControls && (
-                    <div className={`control-panel-container ${showControlPanel ? 'expanded' : 'collapsed'}`}>
+                    <div className={`${styles.controlPanelContainer} ${showControlPanel ? styles.expanded : styles.collapsed}`}>
                         <button
-                            className="panel-collapse-btn control-panel-collapse"
+                            className={`${styles.panelCollapseBtn} ${styles.controlPanelCollapse}`}
                             onClick={() => setShowControlPanel(!showControlPanel)}
                             title={showControlPanel ? "Collapse control panel" : "Expand control panel"}
                         >
@@ -591,14 +576,13 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                 totalSteps={stepData.length}
                             />
                         )}
-                    </div>
-                )}
+                    </div>)}
                 {/* Network Topology */}
-                <div className="network-container">
+                <div className={styles.networkContainer}>
                     {/* Show Control Panel Button - appears when control panel is hidden */}
                     {showControls && !showControlPanel && (
                         <button
-                            className="show-panel-btn show-control-panel-btn"
+                            className={`${styles.showPanelBtn} ${styles.showControlPanelBtn}`}
                             onClick={() => setShowControlPanel(true)}
                             title="Show control panel"
                         >
@@ -609,7 +593,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                     {/* Show Log Panel Button - appears when log panel is hidden */}
                     {showLogger && !showLogPanel && (
                         <button
-                            className="show-panel-btn show-log-panel-btn"
+                            className={`${styles.showPanelBtn} ${styles.showLogPanelBtn}`}
                             onClick={() => setShowLogPanel(true)}
                             title="Show activity log"
                         >
@@ -618,7 +602,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                     )}
 
                     <div
-                        className={`network-topology ${isDragging ? 'dragging' : ''}`}
+                        className={`${styles.networkTopology} ${isDragging ? styles.dragging : ''}`}
                         ref={containerRef}
                         onMouseDown={handleCanvasMouseDown}
                         onMouseMove={handleCanvasMouseMove}
@@ -630,10 +614,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px)`,
                             cursor: isDragging ? 'grabbing' : 'grab'
                         }}
-                    >
-                        {/* Canvas Drag Hint */}
+                    >                        {/* Canvas Drag Hint */}
                         {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && !isDragging && (
-                            <div className="canvas-drag-hint">
+                            <div className={styles.canvasDragHint}>
                                 <i className="fas fa-hand-paper"></i>
                                 Drag to pan around • Press R to reset
                             </div>
@@ -662,34 +645,29 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             connections={connections}
                             devices={devices}
                             activeConnections={activeConnections}
-                            currentStepConnection={currentStepConnection} />
-
-                        {/* Step Details Button - only shown during step mode */}
-                        {isStepMode && (
-                            <button
-                                className="floating-step-details-button"
-                                onClick={() => {
-                                    // Force show the step controller by scrolling to it and expanding if minimized
-                                    const stepTooltip = document.querySelector('.step-tooltip');
-                                    if (stepTooltip) {
-                                        stepTooltip.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                        // If it's minimized, click the minimize button to expand it
-                                        const minimizeBtn = stepTooltip.querySelector('.minimize-btn') as HTMLButtonElement;
-                                        if (minimizeBtn && stepTooltip.classList.contains('minimized')) {
-                                            minimizeBtn.click();
+                            currentStepConnection={currentStepConnection} />                        {/* Step Details Button - only shown during step mode */}                        {isStepMode && (
+                                <button
+                                    className={styles.floatingStepDetailsButton}
+                                    onClick={() => {
+                                        // Force show the step controller by scrolling to it and expanding if minimized
+                                        if (stepControllerRef.current) {
+                                            stepControllerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                                            // If it's minimized, click the minimize button to expand it
+                                            const minimizeBtn = stepControllerRef.current.querySelector('button[title*="Expand"]') as HTMLButtonElement;
+                                            if (minimizeBtn) {
+                                                minimizeBtn.click();
+                                            }
                                         }
-                                    }
-                                }}
-                                title="Show current step details"
-                                aria-label="Show current step details"
-                            >
-                                📋
-                            </button>
-                        )}
-
-                        {/* Step Controller Overlay */}
+                                    }}
+                                    title="Show current step details"
+                                    aria-label="Show current step details"
+                                >
+                                    📋
+                                </button>
+                            )}                        {/* Step Controller Overlay */}
                         {isStepMode && currentStepData && (
                             <StepController
+                                ref={stepControllerRef}
                                 isStepMode={isStepMode}
                                 currentStep={currentStep}
                                 totalSteps={stepData.length}
@@ -702,12 +680,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             />
                         )}
                     </div>
-                </div>
-                {/* Activity Logger */}
+                </div>                {/* Activity Logger */}
                 {showLogger && (
-                    <div className={`log-panel-container ${showLogPanel ? 'expanded' : 'collapsed'}`}>
+                    <div className={`${styles.logPanelContainer} ${showLogPanel ? styles.expanded : styles.collapsed}`}>
                         <button
-                            className="panel-collapse-btn log-panel-collapse"
+                            className={`${styles.panelCollapseBtn} ${styles.logPanelCollapse}`}
                             onClick={() => setShowLogPanel(!showLogPanel)}
                             title={showLogPanel ? "Collapse activity log" : "Expand activity log"}
                         >
