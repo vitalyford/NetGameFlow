@@ -16,7 +16,7 @@ export default defineConfig({
       '@/assets': '/src/assets',
     },
   },
-  // @ts-ignore - Vitest extends Vite config
+  // @ts-expect-error - Vitest extends Vite config
   test: {
     globals: true,
     environment: 'jsdom',

@@ -15,12 +15,11 @@ export class Helpers {
     const scenario = currentScenario === 'dns' ? 'dns' : 'https';
     const port = scenario === 'dns' ? PORT_MAP.dns : PORT_MAP.https;
     const protocol = PROTOCOL_MAP[scenario === 'dns' ? 'dns' : 'basic'] || 'HTTPS (TCP)';
-    
-    return {
-      source: '192.168.1.100:' + (54321 + Math.floor(Math.random() * 1000)),
-      destination: this.getDeviceIP(toDevice as DeviceType) + ':' + port,
-      protocol: protocol,
-      size: Math.floor(Math.random() * 1400 + 100) + ' bytes',
+      return {
+      source: `192.168.1.100:${54321 + Math.floor(Math.random() * 1000)}`,
+      destination: `${this.getDeviceIP(toDevice as DeviceType)}:${port}`,
+      protocol,
+      size: `${Math.floor(Math.random() * 1400 + 100)} bytes`,
     };
   }
 
@@ -32,9 +31,8 @@ export class Helpers {
     
     const lastDevice = component.route[component.route.length - 1];
     const destination = destinations[lastDevice as keyof typeof destinations] || '93.184.216.34:443';
-    
-    return {
-      source: '192.168.1.100:' + (54321 + Math.floor(Math.random() * 1000)),
+      return {
+      source: `192.168.1.100:${54321 + Math.floor(Math.random() * 1000)}`,
       destination,
       protocol: 'HTTPS (TCP)',
       size: component.size || '10 KB',

@@ -11,16 +11,15 @@ vi.mock('./components/features/network/NetworkSimulator/NetworkSimulator', () =>
   )
 }))
 
-describe('App', () => {
-  it('renders the main app structure', () => {
+describe('App', () => {  it('renders the main app structure', () => {
     render(<App />)
     
     // Check if the app container exists
-    const appElement = document.querySelector('.app')
+    const appElement = screen.getByTestId('app-container')
     expect(appElement).toBeInTheDocument()
     
     // Check if the main element exists
-    const mainElement = document.querySelector('.app-main')
+    const mainElement = screen.getByRole('main')
     expect(mainElement).toBeInTheDocument()
     
     // Check if NetworkSimulator is rendered

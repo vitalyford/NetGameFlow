@@ -28,13 +28,11 @@ export const Device: React.FC<DeviceProps> = ({
 
     // Calculate the offset from the mouse position to the top-left of the device
     const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;
-
-    dragData.current = {
+    const offsetY = e.clientY - rect.top;    dragData.current = {
       startX: e.clientX,
       startY: e.clientY,
-      offsetX: offsetX,
-      offsetY: offsetY,
+      offsetX,
+      offsetY,
     };
 
     e.preventDefault();

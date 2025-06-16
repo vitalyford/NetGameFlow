@@ -3,7 +3,7 @@ import './App.css';
 
 function App() {
   return (
-    <div className="app">
+    <div className="app" data-testid="app-container">
       <main className="app-main">
         <NetworkSimulator
           className="network-simulator-container"

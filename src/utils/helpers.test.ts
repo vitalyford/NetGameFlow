@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { Helpers } from './helpers'
-import type { WebComponent } from '../types'
+import type { WebComponent, DeviceType } from '../types'
 
-describe('Helpers', () => {  describe('getDeviceIP', () => {
+describe('Helpers', () => {
+  describe('getDeviceIP', () => {
     it('returns correct IP for known device types', () => {
       expect(Helpers.getDeviceIP('router1')).toBe('192.168.1.1')
       expect(Helpers.getDeviceIP('client')).toBe('192.168.1.100')
@@ -11,7 +12,7 @@ describe('Helpers', () => {  describe('getDeviceIP', () => {
     })
 
     it('returns default IP for unknown device types', () => {
-      expect(Helpers.getDeviceIP('unknown' as any)).toBe('127.0.0.1')
+      expect(Helpers.getDeviceIP('unknown' as DeviceType)).toBe('127.0.0.1')
     })
   })
 
