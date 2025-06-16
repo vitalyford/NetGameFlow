@@ -1140,25 +1140,87 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
     highlightConnection,
     addLogEntry,
   ]);
-
   const startAutoPlay = useCallback(() => {
     setIsAutoPlaying(true);
     autoPlayInterval.current = setInterval(() => {
       setCurrentStep(prev => {
         if (prev < stepData.length - 1) {
-          return prev + 1;
+          const newStep = prev + 1;
+          const step = stepData[newStep];
+          
+          // Apply the same highlighting logic as nextStep
+          clearConnectionHighlights();
+          clearDeviceHighlights();
+          
+          // Handle special attack states for DDoS visualization
+          if (step.phase === 'attack') {
+            if (step.stepNumber === 31) {
+              // DDoS attack start - show botnet and mark infrastructure as under attack
+              setDeviceAttackState('botnetCloud', 'under-attack');
+              setDeviceAttackState('internetRouter1', 'under-attack');
+              setDeviceAttackState('internetRouter2', 'under-attack');
+              setDeviceAttackState('internetRouter3', 'under-attack');
+            } else if (step.stepNumber === 32) {
+              // Traffic flooding through infrastructure
+              setDeviceAttackState('ispRouter', 'under-attack');
+              setDeviceAttackState('webServer', 'under-attack');
+            } else if (step.stepNumber === 33) {
+              // Server overwhelmed - focus attack state on web server
+              setDeviceAttackState('webServer', 'under-attack');
+            }
+          } else if (step.phase === 'recovery') {
+            if (step.stepNumber === 34) {
+              // Cloudflare protection activates
+              setDeviceAttackState('cloudflareEdge', 'recovery');
+              setDeviceAttackState('botnetCloud', 'normal');
+              // Clear attack states from infrastructure
+              setDeviceAttackState('internetRouter1', 'normal');
+              setDeviceAttackState('internetRouter2', 'normal');
+              setDeviceAttackState('internetRouter3', 'normal');
+              setDeviceAttackState('ispRouter', 'normal');
+            } else if (step.stepNumber === 35) {
+              // Service fully restored
+              setDeviceAttackState('cloudflareEdge', 'protected');
+              setDeviceAttackState('webServer', 'protected');
+            }
+          } else {
+            // Normal operations - clear attack states and hide special devices
+            clearAllAttackStates();
+          }
+          
+          activateDevice(step.fromDevice);
+          highlightConnection(step.fromDevice, step.toDevice);
+          
+          addLogEntry(`📍 Step ${step.stepNumber}: ${step.action}`);
+          
+          return newStep;
         } else {
+          // Complete simulation
           setIsAutoPlaying(false);
           setIsStepMode(false);
           if (autoPlayInterval.current) {
             clearInterval(autoPlayInterval.current);
             autoPlayInterval.current = null;
           }
+          clearConnectionHighlights();
+          clearDeviceHighlights();
+          clearAllAttackStates();
+          
+          addLogEntry('✅ Step-by-step simulation completed!', 'success');
           return prev;
         }
       });
     }, 3000);
-  }, [stepData.length]);
+  }, [
+    stepData,
+    clearConnectionHighlights,
+    clearDeviceHighlights,
+    setDeviceAttackState,
+    clearAllAttackStates,
+    activateDevice,
+    highlightConnection,
+    addLogEntry,
+  ]);
 
   const stopAutoPlay = useCallback(() => {
     setIsAutoPlaying(false);
