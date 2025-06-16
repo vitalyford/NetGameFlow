@@ -13,13 +13,6 @@ function App() {
           autoStart={false}
         />
       </main>
-
-      <footer className="app-footer">
-        <p>
-          Built with React, TypeScript, and Vite. 
-          Use this as a standalone app or embed the NetworkSimulator component in your own projects.
-        </p>
-      </footer>
     </div>
   );
 }

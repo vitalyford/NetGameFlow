@@ -271,20 +271,7 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
                 <span className="tagline">Interactive Network Learning</span>
               </div>
             </div>
-          </div>
-
-          <div className="header-controls">
-            {hasStartedTour && (
-              <button
-                className="help-btn"
-                onClick={() => setShowWelcome(true)}
-                title="Show welcome guide"
-              >
-                <i className="fas fa-question-circle"></i>
-                <span>Help</span>
-              </button>
-            )}
-            
+          </div>          <div className="header-controls">
             {/* Panel toggle buttons */}
             <div className="panel-toggles">
               <button
@@ -335,68 +322,12 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
               devices={devices}
               activeConnections={activeConnections}
               currentStepConnection={currentStepConnection}
-            />
-
-            {/* Help Button */}
-            <button
-              className="floating-help-button"
-              onClick={() => {
-                setEducationalContent({
-                  title: 'Device Information',
-                  content: `<p><strong>💡 How to learn more:</strong></p>
-                           <p>• <strong>Click on any device</strong> to see detailed information about it</p>
-                           <p>• <strong>Drag devices</strong> to move them around</p>
-                           <p>• <strong>Use step mode</strong> to see how data travels through the network</p>
-                           <p><strong>Available devices:</strong></p>
-                           <ul>
-                             <li>🖥️ <strong>Your Computer</strong> - Where requests start</li>
-                             <li>🏠 <strong>Home Router</strong> - Your local network gateway</li>
-                             <li>🌐 <strong>ISP Router</strong> - Internet Service Provider</li>
-                             <li>🔍 <strong>DNS Server</strong> - Translates website names to addresses</li>
-                             <li>🖥️ <strong>Web Server</strong> - Hosts the website</li>
-                             <li>⚡ <strong>CDN Server</strong> - Fast content delivery</li>
-                           </ul>`
-                });
-                setShowEducational(true);
-              }}
-              title="Click to learn about devices"
-              aria-label="Help - Learn about network devices"
-            >
-              ❓
-            </button>            {/* Connections */}
+            />            {/* Connections */}
             <Connection
               connections={connections}
               devices={devices}
               activeConnections={activeConnections}
-              currentStepConnection={currentStepConnection}
-            />
-
-            {/* Help Button */}
-            <button
-              className="floating-help-button"
-              onClick={() => {
-                setEducationalContent({
-                  title: 'Device Information',
-                  content: `<p><strong>💡 How to learn more:</strong></p>
-                           <p>• <strong>Click on any device</strong> to see detailed information about it</p>
-                           <p>• <strong>Drag devices</strong> to move them around</p>
-                           <p>• <strong>Use step mode</strong> to see how data travels through the network</p>
-                           <p><strong>Available devices:</strong></p>
-                           <ul>
-                             <li>🖥️ <strong>Your Computer</strong> - Where requests start</li>
-                             <li>🏠 <strong>Home Router</strong> - Your local network gateway</li>
-                             <li>🌐 <strong>ISP Router</strong> - Internet Service Provider</li>
-                             <li>🔍 <strong>DNS Server</strong> - Translates website names to addresses</li>
-                             <li>🖥️ <strong>Web Server</strong> - Hosts the website</li>
-                             <li>⚡ <strong>CDN Server</strong> - Fast content delivery</li>
-                           </ul>`
-                });
-                setShowEducational(true);
-              }}
-              title="Click to learn about devices"
-              aria-label="Help - Learn about network devices"            >
-              ❓
-            </button>
+              currentStepConnection={currentStepConnection}            />
 
             {/* Step Details Button - only shown during step mode */}
             {isStepMode && (

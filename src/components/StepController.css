@@ -44,10 +44,15 @@
 }
 
 .step-tooltip.minimized {
-  max-height: 120px;
-  overflow: hidden;
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
   opacity: 0.9;
   transform: translateX(-50%) scale(0.95);
+}
+
+.step-tooltip.minimized .tooltip-header {
+  border-radius: 12px;
 }
 
 .step-tooltip.minimized:hover {

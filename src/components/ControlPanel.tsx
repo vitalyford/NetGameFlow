@@ -11,8 +11,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
   onStartMessageSimulation,
   onClearLog,
 }) => {
-  const [isRunning, setIsRunning] = useState(false);
-  const [autoMode, setAutoMode] = useState(true);  const handleStartDemo = () => {
+  const [isRunning, setIsRunning] = useState(false);const handleStartDemo = () => {
     if (isRunning) {
       // Stop the demo
       setIsRunning(false);
@@ -51,19 +50,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <li>Send HTTPS Request</li>
           <li>Receive Web Content</li>
           <li>Fetch Additional Resources</li>
-          <li>DDoS Attack & Recovery</li>
-        </ol>
-      </div>      {/* Mode Toggle */}
-      <div className="mode-control">
-        <label className="mode-toggle">
-          <input 
-            type="checkbox" 
-            checked={autoMode}
-            onChange={(e) => setAutoMode(e.target.checked)}
-          />
-          <span>Auto Mode</span>
-          <small>Automatic progression through steps</small>
-        </label>
+          <li>DDoS Attack & Recovery</li>        </ol>
       </div>
     </div>
   );
