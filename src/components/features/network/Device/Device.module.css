@@ -136,7 +136,7 @@
 }
 
 .device::after {
-  content: "ℹ️";
+  content: "i";
   position: absolute;
   top: -8px;
   right: -8px;
@@ -148,7 +148,9 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: italic;
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
