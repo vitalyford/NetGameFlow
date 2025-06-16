@@ -1,15 +1,15 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Device } from '../Device/Device.tsx';
-import { Connection } from '../Connection/Connection.tsx';
-import { StepController } from '../../controls/StepController/StepController.tsx';
-import { Logger } from '../../logging/Logger/Logger.tsx';
-import { ControlPanel } from '../../controls/ControlPanel/ControlPanel.tsx';
-import { EducationalPopup } from '../../education/EducationalPopup/EducationalPopup.tsx';
-import { WelcomeGuide } from '../../education/WelcomeGuide/WelcomeGuide.tsx';
-import { EducationalProvider } from '@/contexts/EducationalContext.tsx';
-import { useEducational } from '@/hooks/useEducational.ts';
-import { useNetworkSimulator } from '@/hooks/useNetworkSimulator.ts';
-import type { NetworkSimulatorProps } from '@/types/index.ts';
+import { Device } from '../Device/Device';
+import { Connection } from '../Connection/Connection';
+import { StepController } from '../../controls/StepController/StepController';
+import { Logger } from '../../logging/Logger/Logger';
+import { ControlPanel } from '../../controls/ControlPanel/ControlPanel';
+import { EducationalPopup } from '../../education/EducationalPopup/EducationalPopup';
+import { WelcomeGuide } from '../../education/WelcomeGuide/WelcomeGuide';
+import { EducationalProvider } from '@/contexts/EducationalContext';
+import { useEducational } from '@/hooks/useEducational';
+import { useNetworkSimulator } from '@/hooks/useNetworkSimulator';
+import type { NetworkSimulatorProps } from '@/types';
 import styles from './NetworkSimulator.module.css';
 
 export const NetworkSimulator: React.FC<NetworkSimulatorProps> = (props) => {
