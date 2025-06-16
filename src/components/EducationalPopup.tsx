@@ -11,6 +11,7 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
   const contentRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 650, height: 400 });
   const [isResizing, setIsResizing] = useState(false);
+  const justFinishedResizing = useRef(false);
   const resizeData = useRef({ 
     startX: 0, 
     startY: 0, 
@@ -42,10 +43,16 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
     
     setSize({ width: newWidth, height: newHeight });
   }, [isResizing]);
-
   const handleMouseUp = useCallback(() => {
+    if (isResizing) {
+      justFinishedResizing.current = true;
+      // Clear the flag after a short delay to allow for any pending click events
+      setTimeout(() => {
+        justFinishedResizing.current = false;
+      }, 100);
+    }
     setIsResizing(false);
-  }, []);
+  }, [isResizing]);
 
   React.useEffect(() => {
     if (isResizing) {
@@ -59,8 +66,12 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
   if (!popup) return null;
-
   const handleBackdropClick = (e: React.MouseEvent) => {
+    // Don't close if we just finished resizing
+    if (justFinishedResizing.current) {
+      return;
+    }
+    
     if (e.target === e.currentTarget) {
       onClose();
     }
@@ -82,7 +93,16 @@ export const EducationalPopup: React.FC<EducationalPopupProps> = ({ popup, onClo
       aria-labelledby="popup-title"
       tabIndex={-1}
     >
-      <div className={`educational-popup ${isResizing ? 'resizing' : ''}`} style={{ width: size.width, height: size.height }}>        <div className="educational-popup-header">
+      <div 
+        className={`educational-popup ${isResizing ? 'resizing' : ''}`} 
+        style={{ width: size.width, height: size.height }}
+        onClick={(e) => {
+          // Prevent backdrop click during or just after resizing
+          if (isResizing || justFinishedResizing.current) {
+            e.stopPropagation();
+          }
+        }}
+      >        <div className="educational-popup-header">
           <h2 id="popup-title" className="educational-popup-title">
             {popup.title}
           </h2>          <button
