@@ -37,9 +37,11 @@ export const StepController: React.FC<StepControllerProps> = ({
     if (currentStep === totalSteps - 1) {
       setIsAutoPlaying(false);
     }
-  }, [currentStep, totalSteps]);
-  // Drag functionality
+  }, [currentStep, totalSteps]);  // Drag functionality
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
+    // Always stop propagation to prevent canvas dragging
+    e.stopPropagation();
+    
     if (e.target instanceof HTMLElement && e.target.closest('button')) {
       return; // Don't drag when clicking buttons
     }
@@ -190,6 +192,7 @@ export const StepController: React.FC<StepControllerProps> = ({
         cursor: isDragging ? 'grabbing' : 'grab'
       }}
       onMouseDown={handleMouseDown}
+      onClick={(e) => e.stopPropagation()}
       ref={dragRef}
     >
       <div className="tooltip-header">
@@ -201,27 +204,29 @@ export const StepController: React.FC<StepControllerProps> = ({
           <p className="simple-explanation">{stepData.description || getSimpleExplanation(stepData)}</p>
         </div>
         <div className="header-controls">
-          <span className="step-counter">{currentStep + 1} / {totalSteps}</span>
-          <button 
+          <span className="step-counter">{currentStep + 1} / {totalSteps}</span>          <button 
             className="minimize-btn"
-            onClick={() => setIsMinimized(!isMinimized)}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMinimized(!isMinimized);
+            }}
             title={isMinimized ? "Expand details" : "Minimize"}
           >
             <i className={`fas fa-chevron-${isMinimized ? 'up' : 'down'}`}></i>
           </button>
         </div>
-      </div>
-
-      {!isMinimized && (
-        <div className="tooltip-content">
+      </div>      {!isMinimized && (
+        <div className="tooltip-content" onClick={(e) => e.stopPropagation()}>
           <div className="current-action">
             <strong>What's happening:</strong> {stepData.action}
           </div>
           
-          <div className="toggle-details">
-            <button 
+          <div className="toggle-details">            <button 
               className="details-toggle"
-              onClick={() => setIsDetailed(!isDetailed)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDetailed(!isDetailed);
+              }}
             >
               {isDetailed ? 'Hide' : 'Show'} Technical Details
             </button>
@@ -370,9 +375,12 @@ export const StepController: React.FC<StepControllerProps> = ({
           )}
         </div>
       )}      {/* Step Controls - always visible */}
-      <div className="step-controls">        <button
+      <div className="step-controls" onClick={(e) => e.stopPropagation()}><button
           className="step-btn previous"
-          onClick={onPrevious}
+          onClick={(e) => {
+            e.stopPropagation();
+            onPrevious();
+          }}
           disabled={currentStep === 0}
           title="Previous Step"
           aria-label="Previous Step"
@@ -383,7 +391,10 @@ export const StepController: React.FC<StepControllerProps> = ({
         {!isAutoPlaying ? (
           <button
             className="step-btn auto-play"
-            onClick={handleAutoPlay}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleAutoPlay();
+            }}
             title="Auto Play All Steps"
             aria-label="Auto Play"
           >
@@ -392,7 +403,10 @@ export const StepController: React.FC<StepControllerProps> = ({
         ) : (
           <button
             className="step-btn pause"
-            onClick={handlePause}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePause();
+            }}
             title="Pause Auto Play"
             aria-label="Pause"
           >
@@ -402,7 +416,10 @@ export const StepController: React.FC<StepControllerProps> = ({
         
         <button
           className="step-btn next"
-          onClick={onNext}
+          onClick={(e) => {
+            e.stopPropagation();
+            onNext();
+          }}
           disabled={currentStep === totalSteps - 1}
           title="Next Step"
           aria-label="Next Step"
@@ -412,7 +429,10 @@ export const StepController: React.FC<StepControllerProps> = ({
         
         <button
           className="step-btn reset"
-          onClick={onReset}
+          onClick={(e) => {
+            e.stopPropagation();
+            onReset();
+          }}
           title="Restart Demo from Beginning"
           aria-label="Restart Demo"
         >

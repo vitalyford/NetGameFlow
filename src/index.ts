@@ -12,6 +12,10 @@ export { EducationalPopup } from './components/EducationalPopup';
 
 // Custom hooks
 export { useNetworkSimulator } from './hooks/useNetworkSimulator';
+export { useEducational } from './hooks/useEducational';
+
+// Context providers
+export { EducationalProvider } from './contexts/EducationalContext';
 
 // Types
 export type {

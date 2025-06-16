@@ -6,11 +6,21 @@ import { Logger } from './Logger.tsx';
 import { ControlPanel } from './ControlPanel.tsx';
 import { EducationalPopup } from './EducationalPopup.tsx';
 import { WelcomeGuide } from './WelcomeGuide.tsx';
+import { EducationalProvider } from '../contexts/EducationalContext';
+import { useEducational } from '../hooks/useEducational';
 import { useNetworkSimulator } from '../hooks/useNetworkSimulator';
 import type { NetworkSimulatorProps } from '../types';
 import './NetworkSimulator.css';
 
-export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
+export const NetworkSimulator: React.FC<NetworkSimulatorProps> = (props) => {
+  return (
+    <EducationalProvider>
+      <NetworkSimulatorInner {...props} />
+    </EducationalProvider>
+  );
+};
+
+const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
   className = '',
   onStatsChange,
   onScenarioChange,
@@ -25,6 +35,9 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
   const [educationalContent, setEducationalContent] = useState({ title: '', content: '' });
   const [showWelcome, setShowWelcome] = useState(!autoStart);
   const [hasStartedTour, setHasStartedTour] = useState(autoStart);
+  
+  // Get educational context for tech terms
+  const { currentPopup, hidePopup } = useEducational();
   
   // Panel visibility state
   const [showControlPanel, setShowControlPanel] = useState(true);
@@ -282,11 +295,10 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
     
     return constrainedOffset;
   }, []);
-
   // Canvas dragging event handlers
   const handleCanvasMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     // Only start dragging if not clicking on a device or other interactive element
-    if ((e.target as HTMLElement).closest('.device, .step-controller, .floating-step-details-button')) {
+    if ((e.target as HTMLElement).closest('.device, .step-tooltip, .step-controller, .floating-step-details-button, .step-controls, button, .resize-handle, .tech-term')) {
       return;
     }
     
@@ -551,16 +563,20 @@ export const NetworkSimulator: React.FC<NetworkSimulatorProps> = ({
             onClear={clearLog}
           />
         )}
-      </div>
-
-      {/* Educational Popup */}
+      </div>      {/* Educational Popup */}
       <EducationalPopup
-        popup={showEducational ? {
-          id: 'current',
+        popup={(showEducational && educationalContent.title) ? {
+          id: 'device-info',
           title: educationalContent.title,
           content: educationalContent.content
-        } : null}
-        onClose={() => setShowEducational(false)}
+        } : currentPopup}
+        onClose={() => {
+          if (showEducational) {
+            setShowEducational(false);
+          } else {
+            hidePopup();
+          }
+        }}
       />
 
       {/* Welcome Guide */}
