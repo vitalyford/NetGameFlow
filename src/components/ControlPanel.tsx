@@ -42,15 +42,19 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
           <i className={`fas ${isRunning ? 'fa-stop' : 'fa-play'}`}></i>
           {isRunning ? 'Stop' : 'Start'}
         </button>
-      </div>{/* Demo Flow Info */}
+      </div>      {/* Demo Flow Info */}
       <div className="demo-info">
-        <h3>Complete Network Journey</h3>        <ol>
-          <li>DNS Resolution (Find website IP)</li>
-          <li>Send HTTPS Request</li>
-          <li>Receive Web Content</li>
-          <li>Fetch Additional Resources</li>
-          <li>DDoS Attack & Recovery</li>
+        <h3>🌐 Complete Network Journey</h3>
+        <ol>
+          <li>🔍 DNS Resolution (Find website IP)</li>
+          <li>📡 Send HTTPS Request</li>
+          <li>📄 Receive Web Content</li>
+          <li>🎯 Fetch CDN Resources</li>
+          <li>⚡ DDoS Attack & Protection</li>
         </ol>
+        <div className="journey-note">
+          <small>Watch 35+ detailed steps in action!</small>
+        </div>
       </div>
 
       {/* Footer */}
