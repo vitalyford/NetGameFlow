@@ -55,7 +55,8 @@
   background: rgba(255, 255, 255, 0.2);
   border: none;
   color: white;
-  font-size: 24px;
+  font-size: 20px;
+  font-weight: 300;
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -63,11 +64,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background-color 0.2s ease;
+  transition: all 0.2s ease;
+  line-height: 1;
+  font-family: 'Arial', sans-serif;
 }
 
 .welcome-close:hover {
   background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.welcome-close:active {
+  transform: scale(0.95);
 }
 
 .welcome-content {
@@ -149,43 +157,90 @@
   font-size: 0.9rem;
 }
 
+/* Journey Overview Styles */
+.journey-overview {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin: 1rem 0;
+  border-left: 4px solid #667eea;
+}
+
+.journey-overview h4 {
+  margin: 0 0 1rem 0;
+  color: #667eea;
+  font-size: 1.1rem;
+}
+
+.journey-steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  color: #495057;
+}
+
+.journey-steps li {
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.journey-steps strong {
+  color: #212529;
+}
+
+.journey-note {
+  background: #e7f3ff;
+  border: 1px solid #b3d9ff;
+  border-radius: 8px;
+  padding: 1rem;
+  margin: 1.5rem 0 0 0;
+  text-align: center;
+}
+
+.journey-note strong {
+  color: #0066cc;
+}
+
 .device-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   margin: 1.5rem 0;
 }
 
 .device-info {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  align-items: flex-start;
+  gap: 0.75rem;
   padding: 1rem;
   background: #f8f9fa;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+}
+
+.device-info:hover {
+  background: #e9ecef;
+  transform: translateY(-1px);
 }
 
 .device-icon {
   font-size: 1.5rem;
-  min-width: 40px;
-  text-align: center;
-}
-
-.device-info div {
-  flex: 1;
+  flex-shrink: 0;
 }
 
 .device-info strong {
   display: block;
-  color: #2c3e50;
+  font-size: 0.9rem;
+  color: #212529;
   margin-bottom: 0.25rem;
 }
 
 .device-info p {
   margin: 0;
   font-size: 0.8rem;
-  color: #7f8c8d;
+  color: #6c757d;
+  line-height: 1.3;
 }
 
 .interaction-tip {
@@ -315,6 +370,110 @@
   background: #f8f9fa;
 }
 
+/* Mini Popup for Tech Terms in Welcome Guide */
+.welcome-mini-popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  max-width: 500px;
+  width: 90%;
+  max-height: 70%;
+  overflow: hidden;
+  animation: mini-popup-enter 0.2s ease-out;
+}
+
+@keyframes mini-popup-enter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+.mini-popup-content {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.mini-popup-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.mini-popup-header h4 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.mini-popup-close {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 18px;
+  font-weight: 300;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  line-height: 1;
+  font-family: 'Arial', sans-serif;
+}
+
+.mini-popup-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(1.05);
+}
+
+.mini-popup-body {
+  padding: 1.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: #2c3e50;
+}
+
+.mini-popup-body h4 {
+  color: #667eea;
+  font-size: 1rem;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.mini-popup-body p {
+  margin: 0.5rem 0;
+}
+
+.mini-popup-body ul, .mini-popup-body ol {
+  margin: 0.5rem 0;
+  padding-left: 1.2rem;
+}
+
+.mini-popup-body li {
+  margin: 0.25rem 0;
+}
+
+.mini-popup-body strong {
+  color: #212529;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .welcome-guide {
@@ -341,11 +500,71 @@
   }
   
   .device-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .device-info {
+    padding: 0.75rem;
+  }
+  
+  .device-icon {
+    font-size: 1.2rem;
+  }
+  
+  .device-info strong {
+    font-size: 0.85rem;
+  }
+  
+  .device-info p {
+    font-size: 0.75rem;
+  }
+  
+  .journey-overview {
+    padding: 1rem;
+  }
+  
+  .journey-steps {
+    padding-left: 1rem;
+  }
+  
+  .journey-steps li {
+    font-size: 0.9rem;
+  }
+    .welcome-actions {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .welcome-mini-popup {
+    width: 95%;
+    max-height: 80%;
+  }
+  
+  .mini-popup-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .mini-popup-header h4 {
+    font-size: 1rem;
+  }
+  
+  .mini-popup-body {
+    padding: 1rem;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .device-grid {
     grid-template-columns: 1fr;
   }
   
-  .welcome-actions {
-    width: 100%;
-    justify-content: center;
+  .welcome-header h2 {
+    font-size: 1.3rem;
+  }
+  
+  .journey-overview h4 {
+    font-size: 1rem;
   }
 }

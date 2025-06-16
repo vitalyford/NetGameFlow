@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TechTerm } from './TechTerm';
+import { getNetworkExplanation } from '../utils/networkExplanations';
 import './TechTerm.css';
 import './WelcomeGuide.css';
 
@@ -9,55 +9,120 @@ interface WelcomeGuideProps {
   onStartTour: () => void;
 }
 
-export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({ 
-  isVisible, 
-  onClose, 
-  onStartTour 
+interface MiniPopup {
+  title: string;
+  content: string;
+}
+
+// Custom TechTerm component for welcome guide that shows mini popups
+const WelcomeTechTerm: React.FC<{ term: string; children: React.ReactNode; onShowPopup: (popup: MiniPopup) => void }> = ({ term, children, onShowPopup }) => {
+  const explanation = getNetworkExplanation(term);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (explanation) {
+      onShowPopup({
+        title: explanation.title,
+        content: explanation.content
+      });
+    }
+  };
+
+  // If no explanation exists, just render the children without interaction
+  if (!explanation) {
+    return <>{children}</>;
+  }
+
+  return (
+    <span
+      className="tech-term clickable"
+      onClick={handleClick}
+      title={`Click to learn more about ${term}`}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          e.stopPropagation();
+          if (explanation) {
+            onShowPopup({
+              title: explanation.title,
+              content: explanation.content
+            });
+          }
+        }
+      }}
+    >
+      {children}
+    </span>
+  );
+};
+
+interface WelcomeGuideProps {
+  isVisible: boolean;
+  onClose: () => void;
+  onStartTour: () => void;
+}
+
+export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
+  isVisible,
+  onClose,
+  onStartTour
 }) => {
   const [currentStep, setCurrentStep] = useState(0);
+  const [miniPopup, setMiniPopup] = useState<MiniPopup | null>(null);
+
+  const showMiniPopup = (popup: MiniPopup) => {
+    setMiniPopup(popup);
+  };
+
+  const hideMiniPopup = () => {
+    setMiniPopup(null);
+  };
 
   const steps = [
     {
-      title: "Welcome to Network Flow! 🌐",
+      title: "Welcome to NetworkFlow! 🌐",
       content: (
         <div>
-          <p>Learn how the internet works through interactive simulations!</p>
-          <p>This tool will show you exactly how data travels from your computer to websites and back.</p>
+          <p>Learn how the internet works through an interactive, step-by-step simulation!</p>
+          <p>This educational platform shows you exactly how data travels from your computer to websites and back through <strong>35+ detailed steps</strong>.</p>
           <div className="feature-highlight">
             <h4>What you'll discover:</h4>
             <ul>
-              <li>🔍 How your computer finds websites</li>
-              <li>📦 How data is packaged and sent</li>
-              <li>🛤️ The path data takes across the internet</li>
-              <li>⚡ Why some websites load faster than others</li>
+              <li>DNS Resolution - How your computer finds websites</li>
+              <li>HTTPS Requests - How secure connections work</li>
+              <li>CDN Delivery - Why some websites load faster</li>
+              <li>DDoS Attacks - How cyber attacks work and protection methods</li>
+              <li>Technical Details - Real IP addresses, protocols, and routing</li>
             </ul>
           </div>
         </div>
       )
     },
     {
-      title: "Two Ways to Explore 🚀",
+      title: "Complete Internet Journey 🚀",
       content: (
         <div>
-          <div className="exploration-options">
-            <div className="option-card packet">
-              <h4>🎯 Single Packet Journey</h4>
-              <p>Watch how <strong>one piece of data</strong> travels through the internet step-by-step.</p>
-              <small>Perfect for understanding the basics!</small>
-            </div>
-            <div className="option-card website">
-              <h4>🌍 Full Website Loading</h4>
-              <p>See how an <strong>entire webpage</strong> gets delivered - multiple packets working together.</p>
-              <small>Great for seeing the big picture!</small>
-            </div>
+          <div className="journey-overview">
+            <h4>One Complete Demonstration</h4>
+            <p>Watch a <strong>complete internet flow</strong> from start to finish:</p>
+            <ol className="journey-steps">
+              <li><strong>🔍 DNS Resolution</strong> - Find the website's IP address</li>
+              <li><strong>📡 HTTPS Request</strong> - Send a secure web request</li>
+              <li><strong>📄 Web Content</strong> - Receive the main webpage</li>
+              <li><strong>⚡ CDN Resources</strong> - Fetch images and files from fast servers</li>
+              <li><strong>🛡️ DDoS & Protection</strong> - See how attacks work and are stopped</li>
+            </ol>
           </div>
-          <p className="recommendation">
-            <strong>💡 Tip:</strong> Start with "Single Packet Journey" if you're new to networking!
+          <p className="journey-note">
+            <strong>💡 Perfect for:</strong> Students, teachers, and anyone curious about how the internet really works!
           </p>
         </div>
       )
-    },
-    {
+    }, {
       title: "Understanding the Network 🗺️",
       content: (
         <div>
@@ -67,33 +132,47 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
               <span className="device-icon">💻</span>
               <div>
                 <strong>Your Computer</strong>
-                <p>Where requests start</p>
+                <p>Where requests start (192.168.1.100)</p>
               </div>
             </div>
             <div className="device-info">
               <span className="device-icon">📡</span>
               <div>
-                <strong><TechTerm term="Router">Routers</TechTerm></strong>
-                <p>Direct traffic like road signs</p>
+                <strong><WelcomeTechTerm term="Router" onShowPopup={showMiniPopup}>Home Router</WelcomeTechTerm></strong>
+                <p>NAT translation & ISP connection</p>
               </div>
             </div>
             <div className="device-info">
               <span className="device-icon">📚</span>
               <div>
-                <strong><TechTerm term="DNS">DNS Server</TechTerm></strong>
-                <p>Internet's address book</p>
+                <strong><WelcomeTechTerm term="DNS" onShowPopup={showMiniPopup}>DNS Server</WelcomeTechTerm></strong>
+                <p>Google's 8.8.8.8 address book</p>
               </div>
             </div>
             <div className="device-info">
               <span className="device-icon">🏢</span>
               <div>
-                <strong><TechTerm term="Server">Web Server</TechTerm></strong>
-                <p>Stores and serves websites</p>
+                <strong><WelcomeTechTerm term="Server" onShowPopup={showMiniPopup}>Web Server</WelcomeTechTerm></strong>
+                <p>Hosts websites & content</p>
+              </div>
+            </div>
+            <div className="device-info">
+              <span className="device-icon">⚡</span>
+              <div>
+                <strong>CDN Server</strong>
+                <p>Fast content delivery</p>
+              </div>
+            </div>
+            <div className="device-info">
+              <span className="device-icon">🛡️</span>
+              <div>
+                <strong>DDoS Protection</strong>
+                <p>Cloudflare security</p>
               </div>
             </div>
           </div>
           <p className="interaction-tip">
-            <strong>🎯 Try this:</strong> Click on any device during a simulation to learn more about it!
+            <strong>🎯 Try this:</strong> Click on any device during the simulation to learn more about it!
           </p>
         </div>
       )
@@ -104,34 +183,44 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
         <div>
           <div className="features-list">
             <div className="feature">
+              <span className="feature-icon">⏯️</span>
+              <div>
+                <strong>Step-by-Step Control</strong>
+                <p>Pause, go back, or jump ahead through 35+ detailed steps at your own pace</p>
+              </div>
+            </div>
+            <div className="feature">
               <span className="feature-icon">🏷️</span>
               <div>
                 <strong>Smart Tooltips</strong>
-                <p>Hover over technical terms to see simple explanations</p>
+                <p>Click technical terms for simple explanations and real-world analogies</p>
               </div>
             </div>
             <div className="feature">
-              <span className="feature-icon">👆</span>
+              <span className="feature-icon">🖱️</span>
               <div>
-                <strong>Step-by-Step Control</strong>
-                <p>Pause, go back, or jump ahead at your own pace</p>
-              </div>
-            </div>
-            <div className="feature">
-              <span className="feature-icon">🎮</span>
-              <div>
-                <strong>Experiment Mode</strong>
-                <p>Try different scenarios and see what happens</p>
+                <strong>Draggable Network</strong>
+                <p>Move devices around to explore the network layout - connections follow!</p>
               </div>
             </div>
             <div className="feature">
               <span className="feature-icon">📊</span>
               <div>
-                <strong>Real-time Stats</strong>
-                <p>See how data flows and track network performance</p>
+                <strong>Real-time Activity Log</strong>
+                <p>Track network events, see real IP addresses, protocols, and packet details</p>
+              </div>
+            </div>
+            <div className="feature">
+              <span className="feature-icon">🧩</span>
+              <div>
+                <strong>Flexible Interface</strong>
+                <p>Resize panels, toggle views, use keyboard shortcuts (Ctrl+1, Ctrl+2)</p>
               </div>
             </div>
           </div>
+          <p className="getting-started-tip">
+            <strong>🚀 Ready to start?</strong> Click "Start" in the control panel to begin your journey through the internet!
+          </p>
         </div>
       )
     }
@@ -154,7 +243,6 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
   };
 
   const isLastStep = currentStep === steps.length - 1;
-
   return (
     <div className="welcome-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="welcome-guide">
@@ -162,46 +250,62 @@ export const WelcomeGuide: React.FC<WelcomeGuideProps> = ({
           <h2>{steps[currentStep].title}</h2>
           <button className="welcome-close" onClick={onClose}>×</button>
         </div>
-        
+
         <div className="welcome-content">
           {steps[currentStep].content}
         </div>
-        
+
         <div className="welcome-footer">
           <div className="step-indicators">
             {steps.map((_, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`step-dot ${index === currentStep ? 'active' : ''} ${index < currentStep ? 'completed' : ''}`}
               />
             ))}
           </div>
-          
+
           <div className="welcome-actions">
-            <button 
-              className="welcome-btn secondary" 
+            <button
+              className="welcome-btn secondary"
               onClick={onClose}
             >
               Skip Tour
             </button>
-            
+
             {currentStep > 0 && (
-              <button 
-                className="welcome-btn outline" 
+              <button
+                className="welcome-btn outline"
                 onClick={handlePrevious}
               >
                 Previous
               </button>
             )}
-            
-            <button 
-              className="welcome-btn primary" 
+
+            <button
+              className="welcome-btn primary"
               onClick={handleNext}
             >
               {isLastStep ? "Let's Start!" : "Next"}
             </button>
           </div>
         </div>
+
+        {/* Mini popup for tech terms */}
+        {miniPopup && (
+          <div className="welcome-mini-popup" onClick={(e) => e.stopPropagation()}>
+            <div className="mini-popup-content">
+              <div className="mini-popup-header">
+                <h4>{miniPopup.title}</h4>
+                <button className="mini-popup-close" onClick={hideMiniPopup}>×</button>
+              </div>
+              <div
+                className="mini-popup-body"
+                dangerouslySetInnerHTML={{ __html: miniPopup.content }}
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
