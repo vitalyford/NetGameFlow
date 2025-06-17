@@ -1,0 +1,8 @@
+# https://developers.cloudflare.com/workers/vite-plugin/tutorial/
+
+name = "netflow"
+compatibility_date = "2025-04-03"
+
+# The not_found_handling value has been set to single-page-application.
+# This means that all not found requests will serve the index.html file. 
+assets = { not_found_handling = "single-page-application" }
