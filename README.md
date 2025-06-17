@@ -2,6 +2,8 @@
 
 An interactive network simulator that makes internet concepts easy to understand. Watch how data travels from your computer to websites through routers, DNS servers, and the internet backbone with step-by-step visualization and security simulations.
 
+![NetGameFlow Screenshot](public/images/screenshot.png)
+
 NetGameFlow makes networking and security concepts accessible through hands-on visualization. Whether you're a student learning about the internet, a professional exploring cybersecurity, or someone curious about how data travels when you click a link, this tool helps you see and understand the invisible infrastructure and security measures that power our connected world.
 
 ## Features
