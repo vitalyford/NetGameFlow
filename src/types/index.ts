@@ -154,6 +154,7 @@ export interface DeviceProps {
   onDeviceMove: (deviceId: string, position: Position) => void;
   onDeviceClick: (deviceId: string) => void;
   containerRect: DOMRect;
+  canvasOffset: { x: number; y: number };
 }
 
 export interface ConnectionProps {

@@ -9,6 +9,7 @@ export const Device: React.FC<DeviceProps> = ({
   onDeviceMove,
   onDeviceClick,
   containerRect,
+  canvasOffset,
 }) => {
   const deviceRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -17,52 +18,61 @@ export const Device: React.FC<DeviceProps> = ({
     startY: number;
     offsetX: number;
     offsetY: number;
-  }>({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  }>({ startX: 0, startY: 0, offsetX: 0, offsetY: 0 });  const handleMouseDown = useCallback((e: React.MouseEvent) => {
     if (e.button !== 0) return; // Only left click
+
+    // Stop event from propagating to canvas drag handler
+    e.stopPropagation();
+    e.preventDefault();
 
     setIsDragging(true);
 
-    const rect = deviceRef.current?.getBoundingClientRect();
-    if (!rect) return;
+    // Calculate offset relative to the device's position in canvas coordinates
+    // (not screen coordinates which include the canvas transform)
+    const deviceCenterX = device.position.x;
+    const deviceCenterY = device.position.y;
+    
+    // Convert mouse position to canvas coordinates
+    const canvasMouseX = e.clientX - containerRect.left - canvasOffset.x;
+    const canvasMouseY = e.clientY - containerRect.top - canvasOffset.y;
+    
+    // Calculate offset from device center
+    const offsetX = canvasMouseX - deviceCenterX;
+    const offsetY = canvasMouseY - deviceCenterY;
 
-    // Calculate the offset from the mouse position to the top-left of the device
-    const offsetX = e.clientX - rect.left;
-    const offsetY = e.clientY - rect.top;    dragData.current = {
+    dragData.current = {
       startX: e.clientX,
       startY: e.clientY,
       offsetX,
       offsetY,
     };
+  }, [device.position, containerRect, canvasOffset]);  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isDragging || !deviceRef.current || !containerRect) return;
 
-    e.preventDefault();
-  }, []);
-  const handleMouseMove = useCallback((e: MouseEvent) => {
-    if (!isDragging || !deviceRef.current) return;
+    // Convert mouse position to canvas coordinates
+    const canvasMouseX = e.clientX - containerRect.left - canvasOffset.x;
+    const canvasMouseY = e.clientY - containerRect.top - canvasOffset.y;
 
-    // Get a fresh container rect to ensure we have the latest bounds
-    const currentContainer = deviceRef.current.closest('.network-topology') as HTMLElement;
-    if (!currentContainer) return;
+    // Calculate new device center position
+    const newX = canvasMouseX - dragData.current.offsetX;
+    const newY = canvasMouseY - dragData.current.offsetY;
 
-    const freshContainerRect = currentContainer.getBoundingClientRect();
+    // Keep device center within bounds
+    const halfWidth = DEVICE_CONFIG.WIDTH / 2;
+    const halfHeight = DEVICE_CONFIG.HEIGHT / 2;
+    const maxX = containerRect.width - halfWidth;
+    const maxY = containerRect.height - halfHeight;
 
-    const newX = e.clientX - freshContainerRect.left - dragData.current.offsetX;
-    const newY = e.clientY - freshContainerRect.top - dragData.current.offsetY;
-
-    // Keep device within bounds
-    const maxX = freshContainerRect.width - DEVICE_CONFIG.WIDTH;
-    const maxY = freshContainerRect.height - DEVICE_CONFIG.HEIGHT;
-
-    const boundedX = Helpers.clamp(newX, 0, maxX);
-    const boundedY = Helpers.clamp(newY, 0, maxY);
+    const boundedX = Helpers.clamp(newX, halfWidth, maxX);
+    const boundedY = Helpers.clamp(newY, halfHeight, maxY);
 
     const newPosition: Position = {
-      x: boundedX + DEVICE_CONFIG.WIDTH / 2,
-      y: boundedY + DEVICE_CONFIG.HEIGHT / 2,
+      x: boundedX,
+      y: boundedY,
     };
 
     onDeviceMove(device.id, newPosition);
-  }, [isDragging, device.id, onDeviceMove]);
+  }, [isDragging, device.id, onDeviceMove, containerRect, canvasOffset]);
 
   const handleMouseUp = useCallback((e: MouseEvent) => {
     if (isDragging) {
@@ -77,9 +87,7 @@ export const Device: React.FC<DeviceProps> = ({
         onDeviceClick(device.id);
       }
     }
-  }, [isDragging, device.id, onDeviceClick]);
-
-  // Add global mouse event listeners
+  }, [isDragging, device.id, onDeviceClick]);  // Add global mouse event listeners
   React.useEffect(() => {
     if (isDragging) {
       document.addEventListener('mousemove', handleMouseMove);
@@ -130,11 +138,12 @@ export const Device: React.FC<DeviceProps> = ({
     };
     return labels[deviceType] || deviceType;
   };
-
   // Don't render if containerRect is invalid
   if (!containerRect || containerRect.width === 0 || containerRect.height === 0) {
     return null;
-  }  return (
+  }
+
+  return (
     <div
       ref={deviceRef}
       className={`${styles.device} ${styles[device.type]} ${device.active ? styles.active : ''} ${isDragging ? styles.dragging : ''} ${device.attackState ? styles[device.attackState] : ''}`}

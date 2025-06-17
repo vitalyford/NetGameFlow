@@ -231,7 +231,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                  <p>• Sends back the requested web pages</p>
                  <p>• Handles thousands of visitors simultaneously</p>
                  <p><em>Think of it as: A library that gives you the exact book you ask for</em></p>`,
-            },            cdnServer: {
+            }, cdnServer: {
                 title: 'CDN Server (Content Delivery Network)',
                 content: `<p>A copy of popular websites stored closer to you for faster loading.</p>
                  <p><strong>What it does:</strong></p>
@@ -356,44 +356,14 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                 setTimeout(() => {
                     containerRef.current?.classList.remove(styles.atBoundary);
                 }, 200);
-            }
-        }
+            }        }
 
         return constrainedOffset;
     }, []);
-    // Canvas dragging event handlers
-    const handleCanvasMouseDown = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        // Only start dragging if not clicking on a device or other interactive element
-        if ((e.target as HTMLElement).closest('.device, .step-tooltip, .step-controller, .floating-step-details-button, .step-controls, button, .resize-handle, .tech-term')) {
-            return;
-        }
 
-        e.preventDefault();
-        setIsDragging(true);
-        setShowDragHint(false); // Hide hint once user starts interacting
-        setDragStart({
-            x: e.clientX - canvasOffset.x,
-            y: e.clientY - canvasOffset.y
-        });
-    }, [canvasOffset]);
-    const handleCanvasMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
-        if (!isDragging) return;
-
-        e.preventDefault();
-        const newOffset = constrainOffset({
-            x: e.clientX - dragStart.x,
-            y: e.clientY - dragStart.y
-        });
-        setCanvasOffset(newOffset);
-    }, [isDragging, dragStart, constrainOffset]);
-    const handleCanvasMouseUp = useCallback(() => {
-        if (isDragging) {
-            setIsDragging(false);
-        }
-    }, [isDragging]);
     // Touch handlers for mobile support
     const handleCanvasTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-        if ((e.target as HTMLElement).closest('.device, .step-controller, .floating-step-details-button')) {
+        if ((e.target as HTMLElement).closest('[data-device-id], .step-controller, .floating-step-details-button')) {
             return;
         }
 
@@ -423,10 +393,34 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         if (isDragging) {
             setIsDragging(false);
         }
-    }, [isDragging]);
-
-    // Global mouse event handlers to handle dragging outside the canvas
+    }, [isDragging]);    // Global mouse event handlers to handle dragging and canvas interactions
     useEffect(() => {
+        const handleGlobalMouseDown = (e: MouseEvent) => {
+            // Check if the click is within our container
+            if (!containerRef.current?.contains(e.target as Node)) {
+                return;
+            }
+
+            // Don't handle if clicking on devices or other interactive elements
+            const target = e.target as HTMLElement;
+            if (target.closest('[data-device-id], .step-tooltip, .step-controller, .floating-step-details-button, .step-controls, button, .resize-handle, .tech-term')) {
+                return; // Let the device handle its own events
+            }
+
+            // Only handle if clicking on the canvas container itself or canvas background elements
+            if (target === containerRef.current || target.classList.contains('canvasDragHint') || 
+                target.closest(`.${styles.networkTopology}`) || target.tagName === 'svg' || target.tagName === 'path') {
+                
+                e.preventDefault();
+                setIsDragging(true);
+                setShowDragHint(false);
+                setDragStart({
+                    x: e.clientX - canvasOffset.x,
+                    y: e.clientY - canvasOffset.y
+                });
+            }
+        };
+
         const handleGlobalMouseMove = (e: MouseEvent) => {
             if (!isDragging) return;
 
@@ -437,16 +431,21 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             });
             setCanvasOffset(newOffset);
         };
+
         const handleGlobalMouseUp = () => {
             if (isDragging) {
                 setIsDragging(false);
             }
         };
 
+        document.addEventListener('mousedown', handleGlobalMouseDown);
         if (isDragging) {
             document.addEventListener('mousemove', handleGlobalMouseMove);
             document.addEventListener('mouseup', handleGlobalMouseUp);
-        } return () => {
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleGlobalMouseDown);
             document.removeEventListener('mousemove', handleGlobalMouseMove);
             document.removeEventListener('mouseup', handleGlobalMouseUp);
         };
@@ -646,14 +645,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         >
                             <i className="fas fa-list"></i>
                         </button>
-                    )}
-
-                    <div
+                    )}                    <div
                         className={`${styles.networkTopology} ${isDragging ? styles.dragging : ''}`}
                         ref={containerRef}
-                        onMouseDown={handleCanvasMouseDown}
-                        onMouseMove={handleCanvasMouseMove}
-                        onMouseUp={handleCanvasMouseUp}
                         onTouchStart={handleCanvasTouchStart}
                         onTouchMove={handleCanvasTouchMove}
                         onTouchEnd={handleCanvasTouchEnd}
@@ -668,9 +662,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                 <i className="fas fa-hand-paper"></i>
                                 &nbsp;Drag to pan around • Press R to reset
                             </div>
-                        )}
-
-                        {/* Devices */}
+                        )}                        {/* Devices */}
                         {containerRect && Object.values(devices).map((device) => (
                             <Device
                                 key={device.id}
@@ -678,6 +670,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                                 onDeviceMove={handleDeviceMove}
                                 onDeviceClick={handleDeviceClick}
                                 containerRect={containerRect}
+                                canvasOffset={canvasOffset}
                             />
                         ))}
 
