@@ -1,0 +1,100 @@
+/* Connection component styles */
+.connections {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.connectionLine {
+  stroke: #bdc3c7;
+  stroke-width: 2;
+  fill: none;
+  opacity: 0.5;
+  stroke-dasharray: 5,5;
+  transition: all 0.3s ease;
+}
+
+.connectionLine.active {
+  stroke: #e74c3c;
+  stroke-width: 3;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: connectionPulse 1.5s infinite;
+}
+
+.connectionLine.currentStep {
+  stroke: #3498db;
+  stroke-width: 4;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: currentStepPulse 1s infinite;
+}
+
+/* Attack traffic styling */
+.connectionLine.attackTraffic {
+  stroke: #e74c3c;
+  stroke-width: 6;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: attackTrafficPulse 0.8s infinite;
+}
+
+.connectionLine.protectionTraffic {
+  stroke: #2ecc71;
+  stroke-width: 4;
+  opacity: 1;
+  stroke-dasharray: none;
+  animation: protectionTrafficPulse 1.2s infinite;
+}
+
+@keyframes connectionPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 3;
+  }
+  50% { 
+    opacity: 0.7; 
+    stroke-width: 4;
+  }
+}
+
+@keyframes currentStepPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 4;
+  }
+  50% { 
+    opacity: 0.8; 
+    stroke-width: 5;
+  }
+}
+
+@keyframes attackTrafficPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 6;
+    stroke: #e74c3c;
+  }
+  50% { 
+    opacity: 0.6; 
+    stroke-width: 8;
+    stroke: #c0392b;
+  }
+}
+
+@keyframes protectionTrafficPulse {
+  0%, 100% { 
+    opacity: 1; 
+    stroke-width: 4;
+    stroke: #2ecc71;
+  }
+  50% { 
+    opacity: 0.8; 
+    stroke-width: 5;
+    stroke: #27ae60;
+  }
+}

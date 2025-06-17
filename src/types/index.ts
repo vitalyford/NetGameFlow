@@ -12,6 +12,7 @@ export interface DeviceData {
   routingTable: RoutingTable;
   ip: string;
   type: DeviceType;
+  attackState?: 'normal' | 'under-attack' | 'recovery' | 'protected';
 }
 
 export interface RoutingTable {
@@ -27,7 +28,9 @@ export type DeviceType =
   | 'internetRouter3' 
   | 'dnsServer' 
   | 'webServer' 
-  | 'cdnServer';
+  | 'cdnServer'
+  | 'botnetCloud'
+  | 'cloudflareEdge';
 
 export interface Connection {
   from: string;
@@ -49,6 +52,11 @@ export interface PacketInfo {
   routingDecision?: string;
   nextHop?: string;
   ttl?: number;
+  // DDoS and attack-related properties
+  attackVectors?: string[];
+  maliciousIPs?: string[];
+  errorDetails?: string;
+  protectionFeatures?: string[];
 }
 
 export interface StepData {
@@ -92,11 +100,43 @@ export interface NetworkStats {
 export type ScenarioType = 'basic' | 'dns' | 'tcp' | 'routing';
 
 export type LogType = 'info' | 'success' | 'warning' | 'error';
+export type LogCategory = 'packet' | 'routing' | 'system' | 'security';
+
+export interface LogDetails {
+  packetInfo?: {
+    protocol: string;
+    source: string;
+    destination: string;
+    size?: string;
+    ttl?: number;
+    query?: string;
+    originalSource?: string;
+    originalDestination?: string;
+    translatedSource?: string;
+    translatedDestination?: string;
+    natPerformed?: boolean;
+    routingDecision?: string;
+    nextHop?: string;
+  };
+  routingInfo?: Record<string, string>;
+  performanceMetrics?: {
+    latency: number;
+    throughput: string;
+    packetLoss: number;
+  };
+  securityInfo?: {
+    threatLevel: 'low' | 'medium' | 'high' | 'critical';
+    protectionStatus: 'active' | 'inactive' | 'degraded';
+    blockReason?: string;
+  };
+}
 
 export interface LogEntry {
   timestamp: string;
   message: string;
   type: LogType;
+  category?: LogCategory;
+  details?: LogDetails;
 }
 
 export interface NetworkSimulatorProps {
@@ -114,6 +154,7 @@ export interface DeviceProps {
   onDeviceMove: (deviceId: string, position: Position) => void;
   onDeviceClick: (deviceId: string) => void;
   containerRect: DOMRect;
+  canvasOffset: { x: number; y: number };
 }
 
 export interface ConnectionProps {

@@ -1,0 +1,1 @@
+export { EducationalPopup } from './EducationalPopup';

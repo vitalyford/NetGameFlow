@@ -1,0 +1,266 @@
+/* Device component styles */
+.device {
+  position: absolute;
+  background: white;
+  border-radius: 10px;
+  padding: 0.8rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  border: 2px solid #ecf0f1;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  user-select: none;
+}
+
+.device:hover {
+  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.15);
+  border-color: #3498db;
+}
+
+.device:hover:not(.dragging) {
+  transform: translateY(-2px);
+}
+
+.device.active {
+  border-color: #e74c3c;
+  box-shadow: 0 8px 30px rgba(231, 76, 60, 0.4);
+}
+
+.device.active:not(.dragging) {
+  transform: scale(1.1);
+}
+
+.device.dragging {
+  z-index: 1000;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  cursor: move;
+  /* Don't apply any transforms while dragging to avoid position conflicts */
+}
+
+.deviceIcon {
+  font-size: 1.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.deviceIcon i {
+  color: #7f8c8d;
+}
+
+.deviceLabel {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 0.2rem;
+  font-size: 0.75rem;
+  line-height: 1.1;
+}
+
+.deviceIp {
+  font-size: 0.65rem;
+  color: #7f8c8d;
+  font-family: 'Courier New', monospace;
+}
+
+/* Device-specific colors */
+.device.client .deviceIcon i {
+  color: #3498db;
+}
+
+.device.router1 .deviceIcon i {
+  color: #e67e22;
+}
+
+.device.ispRouter .deviceIcon i {
+  color: #9b59b6;
+}
+
+.device.internetRouter1 .deviceIcon i {
+  color: #8e44ad;
+}
+
+.device.internetRouter2 .deviceIcon i {
+  color: #e67e22;
+}
+
+.device.internetRouter3 .deviceIcon i {
+  color: #16a085;
+}
+
+.device.dnsServer .deviceIcon i {
+  color: #e74c3c;
+}
+
+.device.webServer .deviceIcon i {
+  color: #27ae60;
+}
+
+.device.cdnServer .deviceIcon i {
+  color: #f39c12;
+}
+
+/* Attack simulation devices */
+.device.botnetCloud .deviceIcon i {
+  color: #c0392b;
+  animation: malicious-pulse 2s infinite;
+}
+
+.device.cloudflareEdge .deviceIcon i {
+  color: #f4900c;
+  animation: protection-glow 3s infinite;
+}
+
+@keyframes malicious-pulse {
+  0%, 100% { 
+    color: #c0392b;
+    transform: scale(1);
+  }
+  50% { 
+    color: #e74c3c;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes protection-glow {
+  0%, 100% { 
+    color: #f4900c;
+    text-shadow: none;
+  }
+  50% { 
+    color: #3498db;
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.8);
+  }
+}
+
+.device::after {
+  content: "i";
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #667eea;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  font-style: italic;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+.device:hover::after {
+  opacity: 1;
+}
+
+/* DDoS Attack States */
+.device.under-attack {
+  border-color: #e74c3c !important;
+  background: #ffebee !important;
+  animation: attack-pulse 0.8s infinite alternate;
+  box-shadow: 0 8px 30px rgba(231, 76, 60, 0.6) !important;
+}
+
+.device.under-attack .deviceIcon i {
+  color: #c62828 !important;
+  animation: attack-shake 0.5s infinite;
+}
+
+.device.recovery {
+  border-color: #27ae60 !important;
+  background: #e8f5e8 !important;
+  animation: recovery-glow 2s ease-in-out;
+  box-shadow: 0 8px 30px rgba(39, 174, 96, 0.6) !important;
+}
+
+.device.recovery .deviceIcon i {
+  color: #2e7d32 !important;
+}
+
+.device.protected {
+  border-color: #2196f3 !important;
+  background: #e3f2fd !important;
+  box-shadow: 0 8px 30px rgba(33, 150, 243, 0.6) !important;
+}
+
+.device.protected .deviceIcon i {
+  color: #1565c0 !important;
+}
+
+@keyframes attack-pulse {
+  0% {
+    transform: scale(1);
+    background: #ffebee !important;
+  }
+  100% {
+    transform: scale(1.05);
+    background: #ffcdd2 !important;
+  }
+}
+
+@keyframes attack-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
+}
+
+@keyframes recovery-glow {
+  0% {
+    background: #ffebee !important;
+    border-color: #e74c3c !important;
+  }
+  50% {
+    background: #e1f5fe !important;
+    border-color: #2196f3 !important;
+  }
+  100% {
+    background: #e8f5e8 !important;
+    border-color: #27ae60 !important;
+  }
+}
+
+.device.under-attack::after {
+  content: "⚠️";
+  opacity: 1 !important;
+  background: #e74c3c !important;
+  animation: warning-blink 1s infinite;
+}
+
+.device.protected::after {
+  content: "🛡️";
+  opacity: 1 !important;
+  background: #27ae60 !important;
+}
+
+@keyframes warning-blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0.3; }
+}
+
+/* Initially hide attack simulation devices */
+.device.botnetCloud,
+.device.cloudflareEdge {
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.5s ease;
+  pointer-events: none;
+}
+
+/* Show attack simulation devices when they become active or under attack */
+.device.botnetCloud.under-attack,
+.device.botnetCloud.active,
+.device.cloudflareEdge.recovery,
+.device.cloudflareEdge.protected,
+.device.cloudflareEdge.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}

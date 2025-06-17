@@ -1,0 +1,1117 @@
+.networkSimulator {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  background: #f8f9fa;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+  color: #2c3e50;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.networkHeader {
+  background: #ffffff;
+  padding: 1rem 2rem;
+  border-bottom: 1px solid #e1e5e9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  z-index: 100;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.headerTitle {
+  flex: 1;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.brandIcon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.brandIcon i {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.brandText h1 {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2c3e50;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  display: block;
+  font-size: 0.875rem;
+  color: #6c757d;
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.panelToggles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Professional button styling - all buttons same size and style */
+.helpBtn,
+.toggleBtn {
+  background: #ffffff;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  min-width: 90px;
+  height: 40px;
+}
+
+.toggleBtn.resetCanvasBtn {
+  background: #e8f4f8;
+  color: #0d7490;
+  border-color: #67e8f9;
+}
+
+.toggleBtn.resetCanvasBtn:hover {
+  background: #cff4fc;
+  border-color: #3dd5f3;
+  transform: translateY(-1px);
+}
+
+.toggleBtn.tourHeaderBtn {
+  background: #e8f4f8;
+  color: #007aff;
+  border-color: #007aff;
+  position: relative;
+}
+
+.toggleBtn.tourHeaderBtn:hover {
+  background: #007aff;
+  color: white;
+  border-color: #007aff;
+  transform: translateY(-1px);
+}
+
+.toggleBtn.tourHeaderBtn.tourNew::after {
+  content: 'New!';
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #ff3b30;
+  color: white;
+  font-size: 8px;
+  font-weight: 600;
+  padding: 1px 4px;
+  border-radius: 6px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.helpBtn:hover,
+.toggleBtn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.toggleBtn.active {
+  background: #3498db;
+  color: white;
+  border-color: #3498db;
+}
+
+.toggleBtn.active:hover {
+  background: #2980b9;
+  border-color: #2980b9;
+}
+
+.toggleBtn i,
+.helpBtn i {
+  font-size: 0.875rem;
+}
+
+.toggleBtn span,
+.helpBtn span {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+/* Main Layout */
+.networkLayout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  height: calc(100vh - 80px); /* Subtract header height */
+}
+
+/* Network Container */
+.networkContainer {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: auto; /* Allow scrolling when content is larger */
+}
+
+/* Network Topology - Main simulation area */
+.networkTopology {
+  flex: 1;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-width: 1200px; /* Minimum width to fit all devices */
+  min-height: 800px; /* Minimum height to fit all devices */
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  margin: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  cursor: grab;
+  user-select: none;
+  touch-action: none; /* Prevent default touch behaviors */
+  transition: none; /* Disable transitions during dragging for smooth performance */
+}
+
+.networkTopology.dragging {
+  cursor: grabbing;
+}
+
+.networkTopology:active {
+  cursor: grabbing;
+}
+
+/* Smooth transition when resetting position */
+.networkTopology.resettingPosition {
+  transition: transform 0.3s ease-out;
+}
+
+/* Prevent text selection during canvas drag */
+.networkTopology.dragging * {
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Re-enable pointer events for interactive elements during drag */
+.networkTopology.dragging .device,
+.networkTopology.dragging .stepController,
+.networkTopology.dragging .floatingStepDetailsButton {
+  pointer-events: auto;
+}
+
+/* Layout modifications when panels are hidden */
+.keyboardHint {
+  font-size: 0.7rem;
+  color: #7f8c8d;
+  margin-top: 0.25rem;
+  font-style: italic;
+}
+
+@media (max-width: 768px) {
+  .keyboardHint {
+    display: none;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .network-layout {
+    flex-direction: column;
+    height: calc(100vh - 60px); /* Smaller header on mobile */
+  }
+
+  .network-container {
+    order: 1;
+    flex: 1;
+    min-height: 0;
+    height: auto;
+  }
+
+  .network-topology {
+    margin: 5px;
+    min-height: 300px;
+    height: 100%;
+    /* Improve touch responsiveness on mobile */
+    touch-action: pan-x pan-y;
+  }
+    .network-header {
+    padding: 0.75rem 1rem;
+    height: 60px; /* Fixed header height on mobile */
+  }
+  
+  .header-content {
+    flex-direction: row; /* Keep horizontal on mobile */
+    align-items: center;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  .brand {
+    gap: 0.75rem;
+  }
+
+  .brand-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .brand-icon i {
+    font-size: 1.25rem;
+  }
+
+  .brand-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .tagline {
+    font-size: 0.8rem;
+  }
+  .header-controls {
+    flex-shrink: 0;
+  }
+  
+  .panel-toggles {
+    gap: 0.3rem;
+  }
+  
+  .toggle-btn {
+    padding: 0.4rem 0.6rem;
+    font-size: 0.75rem;
+  }
+  
+  .toggle-btn span {
+    display: none; /* Hide text on mobile, keep icons */
+  }
+  
+  .help-btn {
+    align-self: flex-end;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.8rem;
+  }
+}
+
+/* Extra small screens (11" laptops and smaller) */
+@media (max-width: 1200px) and (max-height: 800px) {
+  .network-topology {
+    min-height: 400px;
+    min-width: 600px;
+  }
+  
+  .network-container {
+    min-height: 450px;
+  }
+}
+
+/* Loading state */
+.networkSimulator.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.networkSimulator.loading::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 40px;
+  height: 40px;
+  margin: -20px 0 0 -20px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #667eea;
+  animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error state */
+.networkSimulator.error {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+}
+
+.errorMessage {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.95);
+  padding: 30px;
+  border-radius: 10px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  width: 90%;
+}
+
+.errorMessage h3 {
+  color: #e74c3c;
+  margin: 0 0 15px 0;
+}
+
+.errorMessage p {
+  color: #666;
+  margin: 0 0 20px 0;
+}
+
+.errorMessage button {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.errorMessage button:hover {
+  background: #5a6fd8;
+}
+
+/* Layout modifications when panels are hidden */
+.networkLayout.noControlPanel .controlPanelContainer {
+  width: 0;
+}
+
+.networkLayout.noLogPanel .logPanelContainer {
+  width: 0;
+}
+
+.networkLayout.noControlPanel.noLogPanel .networkContainer {
+  flex: 1;
+  width: 100%;
+}
+
+/* Smooth transitions for panel containers */
+.controlPanelContainer {
+  transition: width 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.logPanelContainer {
+  transition: width 0.3s ease;
+  flex-shrink: 0;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Smooth transitions for panel toggles */
+.controlPanel {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  flex-shrink: 0; /* Prevent affecting container size during transitions */
+  will-change: transform, opacity; /* Optimize for animations */
+}
+
+.logContainer {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  flex-shrink: 0; /* Prevent affecting container size during transitions */
+  will-change: transform, opacity; /* Optimize for animations */
+}
+
+/* When panels are being hidden - keep them in layout to prevent size changes */
+.networkLayout.noControlPanel .controlPanel {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none; /* Disable interactions when hidden */
+  overflow: hidden; /* Ensure no content spills out during animation */
+}
+
+.networkLayout.noLogPanel .logContainer {
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none; /* Disable interactions when hidden */
+  overflow: hidden; /* Ensure no content spills out during animation */
+}
+
+/* Floating Help Button */
+.floatingHelpButton {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.4);
+  transition: all 0.3s ease;
+  z-index: 50;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.floatingHelpButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+.floatingHelpButton:active {
+  transform: scale(0.95);
+}
+
+.floatingHelpButton:focus {
+  outline: 3px solid rgba(102, 126, 234, 0.5);
+  outline-offset: 2px;
+}
+
+/* Floating Step Details Button */
+.floatingStepDetailsButton {
+  position: absolute;
+  top: 80px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(40, 167, 69, 0.4);
+  transition: all 0.3s ease;
+  z-index: 50;
+  font-weight: bold;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.floatingStepDetailsButton:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.6);
+  background: linear-gradient(135deg, #219a52 0%, #1bb584 100%);
+}
+
+.floatingStepDetailsButton:active {
+  transform: scale(0.95);
+}
+
+.floatingStepDetailsButton:focus {
+  outline: 3px solid rgba(40, 167, 69, 0.5);
+  outline-offset: 2px;
+}
+
+/* Floating Header Controls */
+.floatingHeaderControls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floatingHeaderControls .helpBtn {
+  background: #667eea;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.floatingHeaderControls .helpBtn:hover {
+  background: #5a67d8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.floatingHeaderControls .panelToggles {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.floatingHeaderControls .toggleBtn {
+  background: transparent;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  transition: all 0.2s ease;
+}
+
+.floatingHeaderControls .toggleBtn:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #475569;
+}
+
+.floatingHeaderControls .toggleBtn.active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+.floatingHeaderControls .toggleBtn.active:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+}
+
+/* Responsive adjustments for help button */
+@media (max-width: 768px) {
+  .floating-help-button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    top: 15px;
+    right: 15px;
+  }
+}
+
+/* Responsive adjustments for step details button */
+@media (max-width: 768px) {
+  .floating-step-details-button {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    top: 70px;
+    right: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .floating-help-button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    top: 10px;
+    right: 10px;
+  }
+  
+  .floating-step-details-button {
+    width: 36px;
+    height: 36px;
+    font-size: 16px;
+    top: 65px;
+    right: 10px;
+  }
+}
+
+/* Canvas drag hint - only show when canvas hasn't been moved */
+.canvasDragHint {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(52, 152, 219, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0;
+  animation: fadeInOut 4s ease-in-out;
+  animation-delay: 2s;
+}
+
+@keyframes fadeInOut {
+  0%, 100% { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  20%, 80% { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+
+.canvasDragHint.hidden {
+  display: none;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  .network-topology {
+    margin: 5px;
+    /* Improve touch responsiveness on mobile */
+    touch-action: pan-x pan-y;
+  }
+  
+  .canvas-drag-hint {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+    top: 10px;
+  }
+  
+  .toggle-btn.reset-canvas-btn span {
+    display: none; /* Hide text on mobile, keep only icon */
+  }
+  
+  .toggle-btn.reset-canvas-btn {
+    min-width: 40px;
+  }
+}
+
+/* Canvas drag boundaries visual feedback */
+.networkTopology.atBoundary {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 0 10px rgba(239, 68, 68, 0.2);
+}
+
+/* Panel Manager Dropdown */
+.panelManager {
+  position: relative;
+}
+
+.panelManagerBtn {
+  background: #ffffff;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  transition: all 0.15s ease;
+  min-width: 110px;
+  height: 40px;
+}
+
+.panelManagerBtn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.panelManagerBtn .faChevronDown {
+  font-size: 0.75rem;
+  transition: transform 0.2s ease;
+}
+
+.panelDropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 280px;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.2s ease;
+}
+
+.panelDropdown.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.panelOption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid #f1f3f4;
+  transition: background-color 0.15s ease;
+}
+
+.panelOption:last-of-type {
+  border-bottom: none;
+}
+
+.panelOption:hover {
+  background: #f8f9fa;
+}
+
+.panelOption label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  flex: 1;
+  margin: 0;
+}
+
+.panelOption input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.checkmark {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #dee2e6;
+  border-radius: 4px;
+  position: relative;
+  transition: all 0.2s ease;
+  background: #ffffff;
+}
+
+.panelOption input:checked + .checkmark {
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.panelOption input:checked + .checkmark::after {
+  content: '';
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.optionContent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+
+.optionContent i {
+  color: #6c757d;
+  width: 16px;
+  text-align: center;
+}
+
+.optionContent div {
+  display: flex;
+  flex-direction: column;
+}
+
+.optionTitle {
+  font-weight: 500;
+  color: #2c3e50;
+  font-size: 0.875rem;
+}
+
+.optionDesc {
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-top: 2px;
+}
+
+.panelOption kbd {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 3px;
+  padding: 2px 6px;
+  font-size: 0.7rem;
+  color: #6c757d;
+  font-family: monospace;
+}
+
+.panelDropdown hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #f1f3f4;
+}
+
+.panelPresets {
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.presetLabel {
+  font-size: 0.75rem;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.presetBtn {
+  background: #667eea;
+  color: #ffffff;
+  border: 1px solid #667eea;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.presetBtn:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.3);
+}
+
+.presetBtn:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 2px rgba(102, 126, 234, 0.2);
+}
+
+.presetBtn i {
+  font-size: 0.7rem;
+}
+
+/* Panel Collapse Buttons */
+.panelCollapseBtn {
+  position: absolute;
+  top: calc(50% - 16px); /* Half the button height for perfect centering */
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.panelCollapseBtn:hover {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.panelCollapseBtn:active {
+  background: #e9ecef;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Control panel collapse button - centered on right edge */
+.controlPanelCollapse {
+  right: -16px;
+}
+
+/* Log panel collapse button - centered on left edge */
+.logPanelCollapse {
+  left: -16px;
+}
+
+/* Show panel buttons - appear on main area edges when panels are hidden */
+.showPanelBtn {
+  position: absolute;
+  top: calc(50% - 18px); /* Half the button height for perfect centering */
+  background: #667eea;
+  color: white;
+  border: 1px solid #667eea;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  z-index: 15;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  opacity: 0.9;
+}
+
+.showPanelBtn:hover {
+  background: #5a67d8;
+  border-color: #5a67d8;
+  opacity: 1;
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+}
+
+.showPanelBtn:active {
+  background: #4c51bf;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Position show buttons on network container edges */
+.showControlPanelBtn {
+  left: 16px;
+}
+
+.showLogPanelBtn {
+  right: 16px;
+}
+
+.showPanelBtn i {
+  font-size: 0.875rem;
+}
+
+.panelCollapseBtn i {
+  font-size: 0.75rem;
+  color: #6c757d;
+}
+
+/* Panel Container Styling */
+.controlPanelContainer,
+.logPanelContainer {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.controlPanelContainer.collapsed,
+.logPanelContainer.collapsed {
+  width: 0;
+  overflow: hidden;
+}
+
+.controlPanelContainer.collapsed .panelCollapseBtn,
+.logPanelContainer.collapsed .panelCollapseBtn {
+  background: #667eea;
+  border-color: #667eea;
+  color: white;
+}
+
+.controlPanelContainer.collapsed .panelCollapseBtn i,
+.logPanelContainer.collapsed .panelCollapseBtn i {
+  color: white;
+}
+
+/* Visual indicators for collapsed panels */
+.controlPanelContainer.collapsed::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #667eea, #764ba2);
+  opacity: 0.6;
+  z-index: 5;
+}
+
+.logPanelContainer.collapsed::before {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(to bottom, #667eea, #764ba2);
+  opacity: 0.6;
+  z-index: 5;
+}
+
+/* Hover effects for collapsed panels */
+.controlPanelContainer.collapsed:hover::before {
+  opacity: 1;
+  width: 6px;
+}
+
+.logPanelContainer.collapsed:hover::before {
+  opacity: 1;
+  width: 6px;
+}
+
+/* Add subtle shadow to active panels */
+.controlPanelContainer.expanded,
+.logPanelContainer.expanded {
+  box-shadow: 0 0 20px rgba(102, 126, 234, 0.1);
+}
+
+/* Ensure Logger component uses full height in expanded log panel */
+.logPanelContainer.expanded {
+  width: 350px;
+  height: 100%;
+}
+
+.logPanelContainer.expanded .logContainer {
+  height: 100%;
+  max-height: none;
+}
+
+/* Responsive behavior for smaller screens */
+@media (max-width: 768px) {
+  .panelManagerBtn span {
+    display: none;
+  }
+  
+  .panelManagerBtn {
+    min-width: 40px;
+  }
+  
+  .panelDropdown {
+    right: auto;
+    left: 0;
+    min-width: 260px;
+  }
+  
+  .panelCollapseBtn {
+    display: none;
+  }
+}

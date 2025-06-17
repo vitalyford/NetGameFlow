@@ -1,0 +1,356 @@
+/* Control Panel - Clean Professional Design */
+.controlPanel {
+  width: 340px;
+  background: #ffffff;
+  border-right: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex-shrink: 0;
+}
+
+/* Custom scrollbar styling */
+.controlPanel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.controlPanel::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.controlPanel::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.controlPanel::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Header */
+.panelHeader {
+  margin-bottom: 32px;
+  border-bottom: 1px solid #f0f0f0;
+  padding-bottom: 16px;
+}
+
+.panelHeader h2 {
+  margin: 0 0 8px 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a1a;
+  letter-spacing: -0.02em;
+}
+
+.panelHeader p {
+  margin: 0;
+  font-size: 14px;
+  color: #666666;
+  line-height: 1.4;
+}
+
+/* Simple Step Progress */
+.stepProgress {
+  margin-top: 16px;
+}
+
+.progressInfo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
+.progressInfo span {
+  font-size: 13px;
+  color: #666666;
+  font-weight: 500;
+}
+
+.progressBar {
+  width: 100%;
+  height: 6px;
+  background: #e9ecef;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: #007aff;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Main Control */
+.mainControl {
+  margin-bottom: 32px;
+}
+
+.startBtn {
+  width: 100%;
+  height: 56px;
+  background: #007aff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 12px;
+}
+
+.startBtn:hover:not(:disabled) {
+  background: #0056cc;
+  transform: translateY(-1px);
+}
+
+.startBtn:disabled {
+  background: #b0b0b0;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.startBtn.running {
+  background: #34c759;
+}
+
+.stopBtn {
+  width: 100%;
+  height: 44px;
+  background: #ff3b30;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.stopBtn:hover {
+  background: #d70015;
+}
+
+/* Demo Info */
+.demoInfo {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.demoInfo h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.demoInfo ol {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.demoInfo li {
+  font-size: 14px;
+  color: #555555;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.demoInfo li:last-child {
+  margin-bottom: 0;
+}
+
+.journeyNote {
+  margin-top: 12px;
+  padding: 8px 12px;
+  background: #e7f3ff;
+  border-radius: 6px;
+  border-left: 3px solid #007aff;
+  text-align: center;
+}
+
+.journeyNote small {
+  font-size: 12px;
+  color: #666666;
+  font-weight: 500;
+}
+
+/* Mode Control */
+.modeControl {
+  margin-bottom: 32px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.modeToggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.modeToggle input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #007aff;
+}
+
+.modeToggle span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #1a1a1a;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.modeToggle small {
+  font-size: 12px;
+  color: #666666;
+  line-height: 1.3;
+  display: block;
+}
+
+/* Stats Panel */
+.statsPanel {
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+}
+
+.statsPanel h3 {
+  margin: 0 0 16px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.stat {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.stat:last-child {
+  border-bottom: none;
+}
+
+.stat .value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+.stat .label {
+  font-size: 14px;
+  color: #666666;
+}
+
+/* Footer */
+.panelFooter {
+  margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid #f0f0f0;
+  text-align: center;
+}
+
+.panelFooter p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.panelFooter i {
+  color: #667eea;
+  font-size: 0.7rem;
+}
+
+.panelFooter a {
+  color: #667eea;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
+
+.panelFooter a:hover {
+  color: #5a67d8;
+  text-decoration: underline;
+}
+
+.panelFooter a:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .controlPanel {
+    width: 300px;
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .controlPanel {
+    width: 100%;
+    max-width: none;
+    padding: 16px;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    height: auto;
+    max-height: 40vh;
+    order: 0;
+  }
+  
+  .mainControl {
+    margin-bottom: 16px;
+  }
+  
+  .demoInfo {
+    margin-bottom: 16px;
+  }
+  
+  .demoInfo ol {
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0 1rem;
+  }
+  
+  .demoInfo li {
+    margin-bottom: 0.25rem;
+  }
+}

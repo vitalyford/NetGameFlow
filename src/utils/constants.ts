@@ -1,5 +1,5 @@
 // Constants and configuration for the Network Simulator
-import type { DeviceType, Connection, WebComponent, RoutingTable } from '../types';
+import type { DeviceType, Connection, WebComponent, RoutingTable } from '@/types';
 
 export const DEVICE_CONFIG = {
   WIDTH: 100,
@@ -23,6 +23,8 @@ export const DEVICE_IPS: Record<DeviceType, string> = {
   dnsServer: '8.8.8.8',
   webServer: '93.184.216.34',
   cdnServer: '151.101.1.140',
+  botnetCloud: '🌐 Global Botnet',
+  cloudflareEdge: '🛡️ CF Protection',
 };
 
 export const PORT_MAP = {
@@ -55,6 +57,11 @@ export const NETWORK_CONNECTIONS: Connection[] = [
   { from: 'internetRouter3', to: 'webServer' },
   { from: 'internetRouter3', to: 'cdnServer' },
   { from: 'internetRouter2', to: 'internetRouter3' },
+  // Attack simulation connections
+  { from: 'botnetCloud', to: 'internetRouter1' },
+  { from: 'botnetCloud', to: 'internetRouter2' },
+  { from: 'cloudflareEdge', to: 'botnetCloud' },
+  { from: 'cloudflareEdge', to: 'webServer' },
 ];
 
 export const WEB_COMPONENTS: WebComponent[] = [
@@ -141,10 +148,19 @@ export const ROUTING_TABLES: Record<DeviceType, RoutingTable> = {
     'Virtual Hosts': 'www.example.com',
     'Load Balancer': '203.0.113.15',
     'CDN Origin': 'Push to edge servers',
-  },
-  cdnServer: {
+  },  cdnServer: {
     'Origin Server': '93.184.216.34',
     'Cache TTL': '3600 seconds',
     'Edge Locations': 'Global distribution',
+  },
+  botnetCloud: {
+    'Compromised Devices': '50,000+ zombies',
+    'Command & Control': 'Dark web servers',
+    'Attack Vectors': 'TCP SYN, HTTP flood',
+  },
+  cloudflareEdge: {
+    'DDoS Protection': 'ML-based filtering',
+    'Rate Limiting': '100 req/sec per IP',
+    'Sink Holes': 'Traffic absorption',
   },
 };

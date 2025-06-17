@@ -1,0 +1,837 @@
+/* Step Controller styles - Modern, draggable design */
+.stepTooltip {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e1e5e9;
+  z-index: 500;
+  min-width: 350px;
+  max-width: 900px;
+  min-height: 450px;
+  max-height: 900px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+  user-select: none;
+  display: flex;
+  flex-direction: column;
+  resize: none; /* Disable default resize since we have custom handles */
+}
+
+.stepTooltip.dragging {
+  transform: none;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+  z-index: 1000;
+}
+
+.stepTooltip.resizing {
+  transition: none;
+  user-select: none;
+  box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+  border-color: rgba(102, 126, 234, 0.5);
+}
+
+.stepTooltip.resizing * {
+  user-select: none;
+  pointer-events: none;
+}
+
+.stepTooltip.resizing .resizeHandle::after {
+  opacity: 1 !important;
+  background: rgba(102, 126, 234, 0.6) !important;
+}
+
+.stepTooltip.minimized {
+  height: auto !important;
+  min-height: auto !important;
+  max-height: none !important;
+  opacity: 0.9;
+  transform: translateX(-50%) scale(0.95);
+}
+
+.stepTooltip.minimized .tooltipHeader {
+  border-radius: 12px;
+}
+
+.stepTooltip.minimized:hover {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.stepTooltip.minimized .minimizeBtn {
+  background: rgba(255, 255, 255, 0.4);
+  animation: pulse-expand 2s infinite;
+}
+
+@keyframes pulse-expand {
+  0%, 100% { 
+    background: rgba(255, 255, 255, 0.4);
+    transform: scale(1);
+  }
+  50% { 
+    background: rgba(255, 255, 255, 0.6);
+    transform: scale(1.1);
+  }
+}
+
+.tooltipHeader {
+  display: flex;
+  align-items: flex-start;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px 12px 0 0;
+  cursor: grab;
+}
+
+.tooltipHeader:active {
+  cursor: grabbing;
+}
+
+.dragHandle {
+  margin-right: 0.75rem;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: grab;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.stepTitleSection {
+  flex: 1;
+}
+
+.tooltipHeader h4 {
+  margin: 0 0 0.5rem 0;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.simpleExplanation {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.9;
+  line-height: 1.4;
+}
+
+.headerControls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-left: 1rem;
+}
+
+.stepCounter {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.minimizeBtn {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.minimizeBtn:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+/* Fallback for minimize button */
+.minimizeBtn i:not([class*="fa-"]):not(.fa)::before {
+  content: "▼";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.minimized .minimizeBtn i:not([class*="fa-"]):not(.fa)::before {
+  content: "▲";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Fallback for drag handle */
+.dragHandle i:not([class*="fa-"]):not(.fa)::before {
+  content: "⋮⋮";
+  font-family: system-ui, -apple-system, sans-serif;
+  letter-spacing: 1px;
+}
+
+.tooltipContent {
+  padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Add visible scrollbar styling for StepController */
+.tooltipContent::-webkit-scrollbar {
+  width: 16px;
+}
+
+.tooltipContent::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.tooltipContent::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 8px;
+  border: 2px solid #f1f1f1;
+  min-height: 30px;
+}
+
+.tooltipContent::-webkit-scrollbar-thumb:hover {
+  background: #5a67d8;
+}
+
+.currentAction {
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: #e8f4fd;
+  border-left: 4px solid #3498db;
+  border-radius: 6px;
+  color: #2c3e50;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.toggleDetails {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.detailsToggle {
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.detailsToggle:hover {
+  background: #e9ecef;
+  border-color: #adb5bd;
+}
+
+.detailSection {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid #e9ecef;
+}
+
+.detailSection h5 {
+  margin: 0 0 0.75rem 0;
+  color: #495057;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.detailItem:last-child {
+  margin-bottom: 0;
+}
+
+.detailItem span:first-child {
+  color: #6c757d;
+  font-weight: 500;
+  min-width: 70px;
+}
+
+.detailItem span:last-child {
+  color: #495057;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  text-align: right;
+  flex: 1;
+  word-break: break-all;
+}
+
+.routingTable {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.routeEntry {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem;
+  background: white;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  border: 1px solid #e9ecef;
+}
+
+.routeEntry span:first-child {
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.routeEntry span:last-child {
+  color: #495057;
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+}
+
+/* Step Controls */
+.stepControls {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: #f8f9fa;
+  border-radius: 0 0 12px 12px;
+  border-top: 1px solid #e9ecef;
+  justify-content: center;
+}
+
+/* Resize Handles */
+.resizeHandle {
+  position: absolute;
+  background: transparent;
+  z-index: 10;
+  transition: opacity 0.2s ease;
+}
+
+/* Corner handles */
+.resizeHandle.resizeNw {
+  top: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: nw-resize;
+}
+
+.resizeHandle.resizeNe {
+  top: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: ne-resize;
+}
+
+.resizeHandle.resizeSw {
+  bottom: -8px;
+  left: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: sw-resize;
+}
+
+.resizeHandle.resizeSe {
+  bottom: -8px;
+  right: -8px;
+  width: 20px;
+  height: 20px;
+  cursor: se-resize;
+}
+
+/* Edge handles */
+.resizeHandle.resizeN {
+  top: -5px;
+  left: 20px;
+  right: 20px;
+  height: 10px;
+  cursor: n-resize;
+}
+
+.resizeHandle.resizeS {
+  bottom: -5px;
+  left: 20px;
+  right: 20px;
+  height: 10px;
+  cursor: s-resize;
+}
+
+.resizeHandle.resizeW {
+  left: -5px;
+  top: 20px;
+  bottom: 20px;
+  width: 10px;
+  cursor: w-resize;
+}
+
+.resizeHandle.resizeE {
+  right: -5px;
+  top: 20px;
+  bottom: 20px;
+  width: 10px;
+  cursor: e-resize;
+}
+
+/* Visual feedback for resize handles */
+.resizeHandle::after {
+  content: '';
+  position: absolute;
+  inset: 3px;
+  background: rgba(102, 126, 234, 0.3);
+  border: 1px solid rgba(102, 126, 234, 0.5);
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.resizeHandle:hover::after,
+.stepTooltip:hover .resizeHandle::after,
+.stepTooltip.resizing .resizeHandle::after {
+  opacity: 1;
+}
+
+/* Make corner handles more visible on hover */
+.resizeHandle.resizeNw::after,
+.resizeHandle.resizeNe::after,
+.resizeHandle.resizeSw::after,
+.resizeHandle.resizeSe::after {
+  background: rgba(102, 126, 234, 0.5);
+  border: 1px solid rgba(102, 126, 234, 0.7);
+}
+
+/* Edge handles get a different visual treatment */
+.resizeHandle.resizeN::after,
+.resizeHandle.resizeS::after {
+  background: linear-gradient(to right, transparent, rgba(102, 126, 234, 0.4), transparent);
+  border: none;
+  border-radius: 0;
+}
+
+.resizeHandle.resizeW::after,
+.resizeHandle.resizeE::after {
+  background: linear-gradient(to bottom, transparent, rgba(102, 126, 234, 0.4), transparent);
+  border: none;
+  border-radius: 0;
+}
+
+/* Hide resize handles when minimized */
+.stepTooltip.minimized .resizeHandle {
+  display: none;
+}
+
+/* Resize indicator */
+.resizeIndicator {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 16px;
+  height: 16px;
+  color: #adb5bd;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.5;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.stepTooltip:hover .resizeIndicator {
+  opacity: 0.8;
+}
+
+/* Fallback for resize indicator */
+.resizeIndicator i:not([class*="fa-"]):not(.fa)::before {
+  content: "⤡";
+  font-family: system-ui, -apple-system, sans-serif;
+  font-size: 14px;
+}
+
+.stepBtn {
+  background: #ffffff;
+  border: 1px solid #dee2e6;
+  color: #495057;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  font-weight: 500;
+  position: relative;
+}
+
+.stepBtn i {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* Fallback styles for when FontAwesome doesn't load */
+.stepBtn i::before {
+  display: inline-block;
+}
+
+.stepBtn.previous i:not([class*="fa-"]):not(.fa)::before {
+  content: "⬅️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepBtn.next i:not([class*="fa-"]):not(.fa)::before {
+  content: "➡️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepBtn.autoPlay i:not([class*="fa-"]):not(.fa)::before {
+  content: "▶️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepBtn.pause i:not([class*="fa-"]):not(.fa)::before {
+  content: "⏸️";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepBtn.reset i:not([class*="fa-"]):not(.fa)::before {  
+  content: "🔄";
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.stepBtn:hover:not(:disabled) {
+  background: #f8f9fa;
+  border-color: #adb5bd;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Enhanced tooltip styling for step buttons */
+.stepBtn[title] {
+  position: relative;
+}
+
+.stepBtn[title]:hover::after {
+  content: attr(title);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  z-index: 1000;
+  margin-bottom: 5px;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s ease-out 0.5s forwards;
+  pointer-events: none;
+  max-width: 200px;
+  text-align: center;
+}
+
+.stepBtn[title]:hover::before {
+  content: '';
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+  z-index: 1000;
+  margin-bottom: -5px;
+  opacity: 0;
+  animation: tooltip-fade-in 0.2s ease-out 0.5s forwards;
+  pointer-events: none;
+}
+
+/* Adjust tooltip positioning on smaller screens */
+@media (max-width: 480px) {
+  .stepBtn[title]:hover::after {
+    bottom: auto;
+    top: 100%;
+    margin-bottom: 0;
+    margin-top: 5px;
+  }
+  
+  .stepBtn[title]:hover::before {
+    bottom: auto;
+    top: 100%;
+    border-top-color: transparent;
+    border-bottom-color: rgba(0, 0, 0, 0.9);
+    margin-bottom: 0;
+    margin-top: -5px;
+  }
+}
+
+@keyframes tooltip-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.stepBtn:disabled {
+  background: #f8f9fa;
+  color: #adb5bd;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.stepBtn.previous {
+  background: #6c757d;
+  color: white;
+  border-color: #6c757d;
+}
+
+.stepBtn.previous:hover:not(:disabled) {
+  background: #5a6268;
+  border-color: #545b62;
+}
+
+.stepBtn.next {
+  background: #007bff;
+  color: white;
+  border-color: #007bff;
+}
+
+.stepBtn.next:hover:not(:disabled) {
+  background: #0056b3;
+  border-color: #004085;
+}
+
+.stepBtn.autoPlay {
+  background: #28a745;
+  color: white;
+  border-color: #28a745;
+}
+
+.stepBtn.autoPlay:hover:not(:disabled) {
+  background: #218838;
+  border-color: #1e7e34;
+}
+
+.stepBtn.pause {
+  background: #fd7e14;
+  color: white;
+  border-color: #fd7e14;
+}
+
+.stepBtn.pause:hover:not(:disabled) {
+  background: #e55c14;
+  border-color: #d14610;
+}
+
+.stepBtn.reset {
+  background: #e9ecef;
+  color: #495057;
+  border-color: #dee2e6;
+}
+
+.stepBtn.reset:hover:not(:disabled) {
+  background: #dee2e6;
+  color: #212529;
+  border-color: #adb5bd;
+}
+
+/* Animation for smooth transitions */
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+.stepTooltip {
+  animation: slide-up 0.3s ease-out;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .stepTooltip {
+    max-width: calc(100vw - 40px);
+    min-width: unset;
+    left: 20px;
+    right: 20px;
+    transform: none;
+    bottom: 10px;
+  }
+  
+  .tooltipHeader {
+    padding: 0.75rem 1rem;
+  }
+  
+  .headerControls {
+    margin-left: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .stepControls {
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+  
+  .stepBtn {
+    padding: 0.6rem;
+    min-width: 40px;
+    min-height: 40px;
+  }
+  
+  .stepBtn i {
+    font-size: 1rem;
+  }
+}
+
+/* Enhanced networking information styles */
+.explanationText {
+  background: #f8f9fa;
+  border-left: 4px solid #4a90e2;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  font-style: italic;
+  color: #495057;
+  border-radius: 0 4px 4px 0;
+}
+
+.natInfo {
+  background: #e8f4f8;
+  border: 1px solid #bee5eb;
+  border-radius: 6px;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.natInfo h6 {
+  margin: 0 0 0.5rem 0;
+  color: #0c5460;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.conceptsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.conceptTag {
+  background: #e7f3ff;
+  color: #0056b3;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  border: 1px solid #b3d9ff;
+  font-weight: 500;
+}
+
+.conceptTag:hover {
+  background: #cce7ff;
+  cursor: pointer;
+}
+
+/* Section headers with emojis */
+.detailSection h5 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #2c3e50;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.detailSection h6 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Enhanced detail items */
+.detailItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 0.4rem 0;
+  border-bottom: 1px solid #f1f3f4;
+  font-size: 0.85rem;
+}
+
+.detailItem:last-child {
+  border-bottom: none;
+}
+
+.detailItem span:first-child {
+  font-weight: 500;
+  color: #495057;
+  min-width: 120px;
+  flex-shrink: 0;
+}
+
+.detailItem span:last-child {
+  color: #212529;
+  text-align: right;
+  word-break: break-all;
+  font-family: 'Courier New', monospace;
+  background: #f8f9fa;
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.8rem;
+}
+
+/* Route entry styling */
+.routeEntry {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.3rem 0;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8rem;
+  background: #f8f9fa;
+  margin: 0.2rem 0;
+  padding: 0.4rem;
+  border-radius: 4px;
+}
+
+.routeEntry span:first-child {
+  font-weight: bold;
+  color: #495057;
+}
+
+.routeEntry span:last-child {
+  color: #007bff;
+}

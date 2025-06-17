@@ -1,0 +1,241 @@
+.container {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.9);
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  line-height: 1.4;
+  max-width: 250px;
+  word-wrap: break-word;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: appear 0.15s ease-out;
+  pointer-events: none;
+  font-weight: 400;
+  white-space: normal;
+}
+
+/* Special styling for tooltips within step controller */
+.tooltip.stepController {
+  max-width: 350px;
+  padding: 1px 3px;
+  font-size: 14px;
+  line-height: 1.25;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.95);
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.2);
+  min-width: 120px;
+  width: max-content;
+  z-index: 1002;
+}
+
+.tooltip.stepController .content {
+  text-align: left;
+  text-transform: none;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+}
+
+/* Scrollable tooltip styling */
+.tooltip.stepController::-webkit-scrollbar {
+  width: 3px;
+}
+
+.tooltip.stepController::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+}
+
+.tooltip.stepController::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 2px;
+}
+
+.tooltip.stepController::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+/* Better positioning for step controller tooltips */
+.tooltip.stepController.left {
+  right: calc(100% + 2px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.tooltip.stepController.right {
+  left: calc(100% + 2px);
+  top: 50%;
+  transform: translateY(-50%);
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.tooltip.stepController.top {
+  bottom: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 85%;
+}
+
+.tooltip.stepController.bottom {
+  top: calc(100% + 2px);
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 85%;
+}
+
+/* Ensure tooltips stay within step controller bounds */
+.stepTooltip {
+  overflow: visible;
+  position: relative;
+}
+
+.stepTooltip .tooltip {
+  /* Constrain tooltips to step controller boundaries */
+  max-width: min(450px, 60vw);
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Smaller arrows for step controller tooltips */
+.tooltip.stepController .arrow {
+  border-width: 3px;
+}
+
+.tooltip.stepController .arrowTop {
+  border-top-color: rgba(0, 0, 0, 0.95);
+  border-left-width: 3px;
+  border-right-width: 3px;
+}
+
+.tooltip.stepController .arrowBottom {
+  border-bottom-color: rgba(0, 0, 0, 0.95);
+  border-left-width: 3px;
+  border-right-width: 3px;
+}
+
+.tooltip.stepController .arrowLeft {
+  border-left-color: rgba(0, 0, 0, 0.95);
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+}
+
+.tooltip.stepController .arrowRight {
+  border-right-color: rgba(0, 0, 0, 0.95);
+  border-top-width: 3px;
+  border-bottom-width: 3px;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(5px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.content {
+  text-align: left;
+  text-transform: none;
+}
+
+/* Positioning */
+.top {
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.bottom {
+  top: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.left {
+  right: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.right {
+  left: calc(100% + 6px);
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+/* Arrows */
+.arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.arrowTop {
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid rgba(0, 0, 0, 0.9);
+}
+
+.arrowBottom {
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid rgba(0, 0, 0, 0.9);
+}
+
+.arrowLeft {
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid rgba(0, 0, 0, 0.9);
+}
+
+.arrowRight {
+  right: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-right: 5px solid rgba(0, 0, 0, 0.9);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .tooltip {
+    max-width: 220px;
+    font-size: 12px;
+    padding: 6px 8px;
+  }
+}
+
+/* Ensure proper text rendering */
+.tooltip * {
+  text-transform: none !important;
+  font-weight: normal !important;
+}
+
+.content {
+  display: block;
+  text-transform: none;
+  font-style: normal;
+}
