@@ -289,6 +289,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     };
     const handleStartTour = () => {
         setShowWelcome(false);
+        // First, completely reset any existing simulation state
+        stopSimulation();
         // Start with the basic scenario and packet simulation
         changeScenario('basic');
         setTimeout(() => startStepMode('packet'), 500);
@@ -356,7 +358,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                 setTimeout(() => {
                     containerRef.current?.classList.remove(styles.atBoundary);
                 }, 200);
-            }        }
+            }
+        }
 
         return constrainedOffset;
     }, []);
@@ -408,9 +411,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             }
 
             // Only handle if clicking on the canvas container itself or canvas background elements
-            if (target === containerRef.current || target.classList.contains('canvasDragHint') || 
+            if (target === containerRef.current || target.classList.contains('canvasDragHint') ||
                 target.closest(`.${styles.networkTopology}`) || target.tagName === 'svg' || target.tagName === 'path') {
-                
+
                 e.preventDefault();
                 setIsDragging(true);
                 setShowDragHint(false);
