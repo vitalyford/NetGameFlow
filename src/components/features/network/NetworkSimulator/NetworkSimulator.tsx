@@ -45,12 +45,13 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     // Panel visibility state
     const [showControlPanel, setShowControlPanel] = useState(true);
     const [showLogPanel, setShowLogPanel] = useState(true);
-    const [showPanelDropdown, setShowPanelDropdown] = useState(false);
-    // Canvas dragging state
+    const [showPanelDropdown, setShowPanelDropdown] = useState(false);    // Canvas dragging and zoom state
     const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
     const [showDragHint, setShowDragHint] = useState(true);
+    const [zoomLevel, setZoomLevel] = useState(1);
+    const [isZooming, setIsZooming] = useState(false);
 
     const {
         devices,
@@ -340,10 +341,12 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             window.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('click', handleClickOutside);
         };
-    }, [showControlPanel, showLogPanel, showPanelDropdown]);
-    // Constrain canvas offset to reasonable bounds
+    }, [showControlPanel, showLogPanel, showPanelDropdown]);    // Constrain canvas offset to reasonable bounds based on zoom level
     const constrainOffset = useCallback((offset: { x: number; y: number }) => {
-        const maxOffset = 500; // Maximum pixels the canvas can be dragged in any direction
+        // Adjust max offset based on zoom level - allow more movement when zoomed in
+        const baseMaxOffset = 500;
+        const maxOffset = baseMaxOffset * Math.max(1, zoomLevel);
+        
         const constrainedOffset = {
             x: Math.max(-maxOffset, Math.min(maxOffset, offset.x)),
             y: Math.max(-maxOffset, Math.min(maxOffset, offset.y))
@@ -362,41 +365,125 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         }
 
         return constrainedOffset;
-    }, []);
+    }, [zoomLevel]);
 
-    // Touch handlers for mobile support
+    // Zoom handling functions
+    const handleZoomChange = useCallback((newZoom: number, centerX?: number, centerY?: number) => {
+        const minZoom = 0.1;
+        const maxZoom = 3;
+        const clampedZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
+        
+        if (clampedZoom === zoomLevel) return;
+
+        // If center point is provided, adjust offset to zoom towards that point
+        if (centerX !== undefined && centerY !== undefined && containerRef.current) {
+            const rect = containerRef.current.getBoundingClientRect();
+            const relativeX = centerX - rect.left;
+            const relativeY = centerY - rect.top;
+            
+            // Calculate the point in the canvas coordinate system
+            const canvasPointX = (relativeX - canvasOffset.x) / zoomLevel;
+            const canvasPointY = (relativeY - canvasOffset.y) / zoomLevel;
+            
+            // Calculate new offset to keep the zoom center point fixed
+            const newOffsetX = relativeX - canvasPointX * clampedZoom;
+            const newOffsetY = relativeY - canvasPointY * clampedZoom;
+            
+            setCanvasOffset(constrainOffset({ x: newOffsetX, y: newOffsetY }));
+        }
+        
+        setZoomLevel(clampedZoom);
+    }, [zoomLevel, canvasOffset, constrainOffset]);
+
+    // Mouse wheel zoom
+    const handleWheel = useCallback((e: WheelEvent) => {
+        if (!containerRef.current?.contains(e.target as Node)) return;
+        
+        // Check if user is holding Ctrl key for zoom, otherwise allow normal scrolling
+        if (!e.ctrlKey && !e.metaKey) return;
+        
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
+        const newZoom = zoomLevel * zoomDelta;
+        
+        handleZoomChange(newZoom, e.clientX, e.clientY);
+    }, [zoomLevel, handleZoomChange]);    // Touch pinch-to-zoom
+    const [touchStartDistance, setTouchStartDistance] = useState<number | null>(null);
+    const [touchStartZoom, setTouchStartZoom] = useState<number>(1);
+
+    const getTouchDistance = useCallback((touches: React.TouchList) => {
+        if (touches.length < 2) return null;
+        const touch1 = touches[0];
+        const touch2 = touches[1];
+        return Math.sqrt(
+            Math.pow(touch2.clientX - touch1.clientX, 2) + 
+            Math.pow(touch2.clientY - touch1.clientY, 2)
+        );
+    }, []);// Touch handlers for mobile support
     const handleCanvasTouchStart = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
         if ((e.target as HTMLElement).closest('[data-device-id], .step-controller, .floating-step-details-button')) {
             return;
         }
 
         if (e.touches.length === 1) {
+            // Single touch - panning
             e.preventDefault();
             const touch = e.touches[0];
             setIsDragging(true);
-            setShowDragHint(false); // Hide hint once user starts interacting
+            setShowDragHint(false);
             setDragStart({
                 x: touch.clientX - canvasOffset.x,
                 y: touch.clientY - canvasOffset.y
             });
+        } else if (e.touches.length === 2) {
+            // Two touches - pinch to zoom
+            e.preventDefault();
+            setIsDragging(false);
+            setIsZooming(true);
+            const distance = getTouchDistance(e.touches);
+            setTouchStartDistance(distance);
+            setTouchStartZoom(zoomLevel);
         }
-    }, [canvasOffset]);
-    const handleCanvasTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
-        if (!isDragging || e.touches.length !== 1) return;
+    }, [canvasOffset, zoomLevel, getTouchDistance]);
 
+    const handleCanvasTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
         e.preventDefault();
-        const touch = e.touches[0];
-        const newOffset = constrainOffset({
-            x: touch.clientX - dragStart.x,
-            y: touch.clientY - dragStart.y
-        });
-        setCanvasOffset(newOffset);
-    }, [isDragging, dragStart, constrainOffset]);
+        
+        if (e.touches.length === 1 && isDragging && !isZooming) {
+            // Single touch panning
+            const touch = e.touches[0];
+            const newOffset = constrainOffset({
+                x: touch.clientX - dragStart.x,
+                y: touch.clientY - dragStart.y
+            });
+            setCanvasOffset(newOffset);
+        } else if (e.touches.length === 2 && isZooming && touchStartDistance) {
+            // Two finger pinch to zoom
+            const currentDistance = getTouchDistance(e.touches);
+            if (currentDistance) {
+                const zoomFactor = currentDistance / touchStartDistance;
+                const newZoom = touchStartZoom * zoomFactor;
+                
+                // Get center point between the two touches
+                const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                
+                handleZoomChange(newZoom, centerX, centerY);
+            }
+        }
+    }, [isDragging, isZooming, dragStart, constrainOffset, touchStartDistance, touchStartZoom, getTouchDistance, handleZoomChange]);
+
     const handleCanvasTouchEnd = useCallback(() => {
         if (isDragging) {
             setIsDragging(false);
         }
-    }, [isDragging]);    // Global mouse event handlers to handle dragging and canvas interactions
+        if (isZooming) {
+            setIsZooming(false);
+            setTouchStartDistance(null);
+        }
+    }, [isDragging, isZooming]);    // Global mouse event handlers to handle dragging and canvas interactions
     useEffect(() => {
         const handleGlobalMouseDown = (e: MouseEvent) => {
             // Check if the click is within our container
@@ -442,6 +529,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         };
 
         document.addEventListener('mousedown', handleGlobalMouseDown);
+        document.addEventListener('wheel', handleWheel, { passive: false });
         if (isDragging) {
             document.addEventListener('mousemove', handleGlobalMouseMove);
             document.addEventListener('mouseup', handleGlobalMouseUp);
@@ -449,12 +537,14 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
 
         return () => {
             document.removeEventListener('mousedown', handleGlobalMouseDown);
+            document.removeEventListener('wheel', handleWheel);
             document.removeEventListener('mousemove', handleGlobalMouseMove);
             document.removeEventListener('mouseup', handleGlobalMouseUp);
         };
-    }, [isDragging, dragStart, canvasOffset, constrainOffset]);// Reset canvas position
+    }, [isDragging, dragStart, canvasOffset, constrainOffset, handleWheel]);    // Reset canvas position and zoom
     const resetCanvasPosition = useCallback(() => {
         setCanvasOffset({ x: 0, y: 0 });
+        setZoomLevel(1);
         // Temporarily add a smooth transition class
         if (containerRef.current) {
             containerRef.current.classList.add(styles.resettingPosition);
@@ -487,8 +577,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         <div className={`${styles.networkSimulator} ${className}`}>
             {/* Header */}
             <header className={styles.networkHeader}>
-                <div className={styles.headerContent}>
-                    <div className={styles.headerTitle}>
+                <div className={styles.headerContent}>                    <div className={styles.headerTitle}>
                         <div className={styles.brand}>
                             <div className={styles.brandIcon}>
                                 <i className="fas fa-network-wired"></i>
@@ -499,13 +588,39 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             </div>
                         </div>
                     </div>
+                      {/* Zoom Controls in Header */}
+                    <div className={styles.headerZoomControls}>
+                        <div className={styles.zoomButtonsRow}>
+                            <button
+                                className={styles.headerZoomBtn}
+                                onClick={() => handleZoomChange(zoomLevel * 0.8)}
+                                title="Zoom out (Ctrl + Mouse Wheel)"
+                            >
+                                <i className="fas fa-minus"></i>
+                            </button>
+                            <div className={styles.headerZoomLevel} title={`Current zoom: ${Math.round(zoomLevel * 100)}%`}>
+                                {Math.round(zoomLevel * 100)}%
+                            </div>
+                            <button
+                                className={styles.headerZoomBtn}
+                                onClick={() => handleZoomChange(zoomLevel * 1.2)}
+                                title="Zoom in (Ctrl + Mouse Wheel)"
+                            >
+                                <i className="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <div className={styles.zoomHint}>
+                            CTRL + Mouse Wheel
+                        </div>
+                    </div>
+
                     <div className={styles.headerControls}>
-                        {/* Canvas Reset Button - only show when canvas is moved */}
-                        {(canvasOffset.x !== 0 || canvasOffset.y !== 0) && (
+                        {/* Canvas Reset Button - only show when canvas is moved or zoomed */}
+                        {(canvasOffset.x !== 0 || canvasOffset.y !== 0 || zoomLevel !== 1) && (
                             <button
                                 className={`${styles.toggleBtn} ${styles.resetCanvasBtn}`}
                                 onClick={resetCanvasPosition}
-                                title="Reset canvas position (R)"
+                                title="Reset canvas position and zoom (R)"
                             >
                                 <i className="fas fa-home"></i>
                                 <span>Reset View</span>
@@ -637,9 +752,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         >
                             <i className="fas fa-sliders-h"></i>
                         </button>
-                    )}
-
-                    {/* Show Log Panel Button - appears when log panel is hidden */}
+                    )}                    {/* Show Log Panel Button - appears when log panel is hidden */}
                     {showLogger && !showLogPanel && (
                         <button
                             className={`${styles.showPanelBtn} ${styles.showLogPanelBtn}`}
@@ -648,24 +761,23 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         >
                             <i className="fas fa-list"></i>
                         </button>
-                    )}                    <div
+                    )}<div
                         className={`${styles.networkTopology} ${isDragging ? styles.dragging : ''}`}
                         ref={containerRef}
                         onTouchStart={handleCanvasTouchStart}
                         onTouchMove={handleCanvasTouchMove}
                         onTouchEnd={handleCanvasTouchEnd}
                         style={{
-                            transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px)`,
+                            transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px) scale(${zoomLevel})`,
                             cursor: isDragging ? 'grabbing' : 'grab'
                         }}
-                    >
-                        {/* Canvas Drag Hint */}
-                        {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && !isDragging && (
+                    >                        {/* Canvas Drag Hint */}
+                        {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && zoomLevel === 1 && !isDragging && (
                             <div className={styles.canvasDragHint}>
                                 <i className="fas fa-hand-paper"></i>
-                                &nbsp;Drag to pan around • Press R to reset
+                                &nbsp;Drag to pan • Ctrl+Wheel to zoom • R to reset
                             </div>
-                        )}                        {/* Devices */}
+                        )}{/* Devices */}
                         {containerRect && Object.values(devices).map((device) => (
                             <Device
                                 key={device.id}

@@ -1,5 +1,15 @@
 # NetGameFlow
 
+<div align="center">
+
+[![React](https://img.shields.io/badge/React-20232A?style=flat&logo=react&logoColor=61DAFB)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Bun](https://img.shields.io/badge/Bun-000000?style=flat&logo=bun&logoColor=white)](https://bun.sh/)
+[![Vite](https://img.shields.io/badge/Vite-646CFF?style=flat&logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Cloudflare Workers](https://img.shields.io/badge/Deployed%20on-Cloudflare%20Workers-f38020?style=flat&logo=cloudflare&logoColor=white)](https://netflow.vford.com)
+
+</div>
+
 An interactive network simulator that makes internet concepts easy to understand. Watch how data travels from your computer to websites through routers, DNS servers, and the internet backbone with step-by-step visualization and security simulations.
 
 ![NetGameFlow Screenshot](public/images/screenshot.png)
