@@ -25,10 +25,25 @@
   align-items: center;
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
 }
 
 .headerTitle {
   flex: 1;
+}
+
+/* Header Zoom Controls - positioned in absolute center */
+.headerZoomControls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 8px;
+  padding: 6px 8px;
 }
 
 .brand {
@@ -190,7 +205,7 @@
   display: flex;
   flex-direction: column;
   min-height: 0;
-  overflow: auto; /* Allow scrolling when content is larger */
+  overflow: hidden; /* Hide scrollbars since we have draggable canvas */
 }
 
 /* Network Topology - Main simulation area */
@@ -211,6 +226,7 @@
   user-select: none;
   touch-action: none; /* Prevent default touch behaviors */
   transition: none; /* Disable transitions during dragging for smooth performance */
+  transform-origin: center center; /* Set zoom origin to center */
 }
 
 .networkTopology.dragging {
@@ -615,48 +631,114 @@
   color: white;
 }
 
-.floatingHeaderControls .toggleBtn.active:hover {
-  background: #2563eb;
+.floatingHeaderControls .toggleBtn.active:hover {  background: #2563eb;
   border-color: #2563eb;
 }
 
-/* Responsive adjustments for help button */
-@media (max-width: 768px) {
-  .floating-help-button {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-    top: 15px;
-    right: 15px;
-  }
+/* Header Zoom Controls - positioned in absolute center */
+.headerZoomControls {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: rgba(102, 126, 234, 0.1);
+  border: 1px solid rgba(102, 126, 234, 0.2);
+  border-radius: 8px;
+  padding: 6px 8px;
 }
 
-/* Responsive adjustments for step details button */
+.zoomButtonsRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.zoomHint {
+  font-size: 0.65rem;
+  color: #667eea;
+  font-weight: 500;
+  text-align: center;
+  opacity: 0.8;
+  white-space: nowrap;
+}
+
+.headerZoomBtn {
+  background: #ffffff;
+  color: #667eea;
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 0.75rem;
+}
+
+.headerZoomBtn:hover {
+  background: #667eea;
+  color: white;
+  border-color: #667eea;
+  transform: translateY(-1px);
+}
+
+.headerZoomBtn:active {
+  background: #5a67d8;
+  border-color: #5a67d8;
+  transform: translateY(0);
+}
+
+.headerZoomLevel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #667eea;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(102, 126, 234, 0.3);
+  border-radius: 4px;
+  padding: 4px 8px;
+  min-width: 48px;
+  text-align: center;
+  cursor: default;
+}
+
 @media (max-width: 768px) {
-  .floating-step-details-button {
-    width: 40px;
-    height: 40px;
-    font-size: 18px;
-    top: 70px;
-    right: 15px;
+  .headerZoomControls {
+    padding: 4px 6px;
+    gap: 3px;
+  }
+  
+  .zoomButtonsRow {
+    gap: 6px;
+  }
+  
+  .headerZoomBtn {
+    width: 24px;
+    height: 24px;
+    font-size: 0.7rem;
+  }
+  
+  .headerZoomLevel {
+    font-size: 0.7rem;
+    padding: 3px 6px;
+    min-width: 42px;
+  }
+  
+  .zoomHint {
+    font-size: 0.6rem;
   }
 }
 
 @media (max-width: 480px) {
-  .floating-help-button {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-    top: 10px;
-    right: 10px;
-  }
-  
-  .floating-step-details-button {
-    width: 36px;
-    height: 36px;
-    font-size: 16px;
-    top: 65px;
-    right: 10px;
+  .headerZoomControls {
+    display: none; /* Hide on very small screens to save space */
   }
 }
 
