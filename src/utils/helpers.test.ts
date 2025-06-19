@@ -16,9 +16,10 @@ describe('Helpers', () => {
     })
   })
 
-  describe('generatePacketInfo', () => {    it('generates DNS packet info for dns scenario', () => {
+  describe('generatePacketInfo', () => {
+    it('generates DNS packet info for dns scenario', () => {
       const packetInfo = Helpers.generatePacketInfo('query', 'client', 'router1', 'dns')
-      
+
       expect(packetInfo.source).toMatch(/^192\.168\.1\.100:\d+$/)
       expect(packetInfo.destination).toBe('192.168.1.1:53')
       expect(packetInfo.protocol).toBe('DNS (UDP)')
@@ -27,7 +28,7 @@ describe('Helpers', () => {
 
     it('generates HTTPS packet info for non-dns scenarios', () => {
       const packetInfo = Helpers.generatePacketInfo('request', 'client', 'router1', 'basic')
-      
+
       expect(packetInfo.source).toMatch(/^192\.168\.1\.100:\d+$/)
       expect(packetInfo.destination).toBe('192.168.1.1:443')
       expect(packetInfo.protocol).toBe('HTTPS (TCP)')
@@ -37,11 +38,11 @@ describe('Helpers', () => {
     it('generates packet with random source port', () => {
       const packet1 = Helpers.generatePacketInfo('request', 'client', 'router1', 'basic')
       const packet2 = Helpers.generatePacketInfo('request', 'client', 'router1', 'basic')
-      
+
       // Extract port numbers
       const port1 = packet1.source.split(':')[1]
       const port2 = packet2.source.split(':')[1]
-      
+
       // Ports should be within expected range
       expect(parseInt(port1)).toBeGreaterThanOrEqual(54321)
       expect(parseInt(port1)).toBeLessThanOrEqual(55321)
@@ -52,7 +53,7 @@ describe('Helpers', () => {
     it('generates packet with random size', () => {
       const packetInfo = Helpers.generatePacketInfo('request', 'client', 'router1', 'basic')
       const sizeMatch = packetInfo.size.match(/^(\d+) bytes$/)
-      
+
       expect(sizeMatch).toBeTruthy()
       const size = parseInt(sizeMatch![1])
       expect(size).toBeGreaterThanOrEqual(100)
@@ -69,9 +70,9 @@ describe('Helpers', () => {
         route: ['client', 'router1', 'webServer'],
         size: '15 KB'
       }
-      
+
       const packetInfo = Helpers.generateWebComponentPacketInfo(component)
-      
+
       expect(packetInfo.source).toMatch(/^192\.168\.1\.100:\d+$/)
       expect(packetInfo.destination).toBe('93.184.216.34:443')
       expect(packetInfo.protocol).toBe('HTTPS (TCP)')
@@ -87,9 +88,9 @@ describe('Helpers', () => {
         route: ['client', 'router1', 'cdnServer'],
         size: '8 KB'
       }
-      
+
       const packetInfo = Helpers.generateWebComponentPacketInfo(component)
-      
+
       expect(packetInfo.source).toMatch(/^192\.168\.1\.100:\d+$/)
       expect(packetInfo.destination).toBe('151.101.1.140:443')
       expect(packetInfo.protocol).toBe('HTTPS (TCP)')

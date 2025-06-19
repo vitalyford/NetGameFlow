@@ -24,7 +24,7 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
   const [resizeDirection, setResizeDirection] = useState<string | null>(null);
   const dragRef = useRef<HTMLDivElement>(null);
   const dragData = useRef({ startX: 0, startY: 0, startPosX: 0, startPosY: 0 });
-  
+
   const resizeData = useRef({
     startX: 0,
     startY: 0,
@@ -148,6 +148,14 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
     }
   }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
+  // Memoize the style object for better performance (needs to be before early return)
+  const tooltipStyle = React.useMemo(() => ({
+    transform: `translate(${position.x}px, ${position.y}px)`,
+    width: `${size.width}px`,
+    height: isMinimized ? 'auto' : `${size.height}px`,
+    cursor: isDragging ? 'grabbing' : 'grab'
+  }), [position.x, position.y, size.width, size.height, isMinimized, isDragging]);
+
   if (!isStepMode || !stepData) return null;
 
   const handleAutoPlay = () => {
@@ -183,9 +191,7 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
       cdnServer: 'CDN Server'
     };
     return names[deviceId] || deviceId;
-  };
-
-  const getSimpleExplanation = (step: StepData) => {
+  }; const getSimpleExplanation = (step: StepData) => {
     if (step.fromDevice === 'client' && step.toDevice === 'dnsServer') {
       return "Your computer is asking: 'What's the address for this website?'";
     } else if (step.fromDevice === 'dnsServer' && step.toDevice === 'client') {
@@ -201,314 +207,308 @@ export const StepController = React.forwardRef<HTMLDivElement, StepControllerPro
     }
   };
 
-  return (
-    <div
-      ref={setRefs}
-      className={`${styles.stepTooltip} ${isMinimized ? styles.minimized : ''} ${isDragging ? styles.dragging : ''} ${isResizing ? styles.resizing : ''}`}
-      style={{
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        width: `${size.width}px`,
-        height: isMinimized ? 'auto' : `${size.height}px`,
-        cursor: isDragging ? 'grabbing' : 'grab'
-      }}
-      onMouseDown={handleMouseDown}
-      onClick={(e) => e.stopPropagation()}
-    >
-      <div className={styles.tooltipHeader}>
-        <div className={styles.dragHandle}>
-          <i className="fas fa-grip-dots"></i>
+  return (<div
+    ref={setRefs}
+    className={`${styles.stepTooltip} ${isMinimized ? styles.minimized : ''} ${isDragging ? styles.dragging : ''} ${isResizing ? styles.resizing : ''}`}
+    style={tooltipStyle}
+    onMouseDown={handleMouseDown}
+    onClick={(e) => e.stopPropagation()}
+  >
+    <div className={styles.tooltipHeader}>
+      <div className={styles.dragHandle}>
+        <i className="fas fa-grip-dots"></i>
+      </div>
+      <div className={styles.stepTitleSection}>
+        <h4>{getStepTitle(stepData)}</h4>
+        <p className={styles.simpleExplanation}>{stepData.description || getSimpleExplanation(stepData)}</p>
+      </div>
+      <div className={styles.headerControls}>
+        <span className={styles.stepCounter}>{currentStep + 1} / {totalSteps}</span>
+        <button
+          className={styles.minimizeBtn}
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsMinimized(!isMinimized);
+          }}
+          title={isMinimized ? "Expand details" : "Minimize"}
+        >
+          <i className={`fas fa-chevron-${isMinimized ? 'up' : 'down'}`}></i>
+        </button>
+      </div>
+    </div>
+    {!isMinimized && (
+      <div className={styles.tooltipContent} onClick={(e) => e.stopPropagation()}>
+        <div className={styles.currentAction}>
+          <strong>What's happening:</strong> {stepData.action}
         </div>
-        <div className={styles.stepTitleSection}>
-          <h4>{getStepTitle(stepData)}</h4>
-          <p className={styles.simpleExplanation}>{stepData.description || getSimpleExplanation(stepData)}</p>
-        </div>
-        <div className={styles.headerControls}>
-          <span className={styles.stepCounter}>{currentStep + 1} / {totalSteps}</span>
+
+        <div className={styles.toggleDetails}>
           <button
-            className={styles.minimizeBtn}
+            className={styles.detailsToggle}
             onClick={(e) => {
               e.stopPropagation();
-              setIsMinimized(!isMinimized);
+              setIsDetailed(!isDetailed);
             }}
-            title={isMinimized ? "Expand details" : "Minimize"}
           >
-            <i className={`fas fa-chevron-${isMinimized ? 'up' : 'down'}`}></i>
+            {isDetailed ? 'Hide' : 'Show'} Technical Details
           </button>
         </div>
-      </div>
-      {!isMinimized && (
-        <div className={styles.tooltipContent} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.currentAction}>
-            <strong>What's happening:</strong> {stepData.action}
-          </div>
+        {isDetailed && (
+          <>
+            {/* Packet Journey Information */}
+            <div className={styles.detailSection}>
+              <h5>📦 Packet Journey</h5>
+              <div className={styles.detailItem}>
+                <span>From:</span>
+                <span>{getDeviceName(stepData.fromDevice)} ({stepData.fromDevice})</span>
+              </div>
+              <div className={styles.detailItem}>
+                <span>To:</span>
+                <span>{getDeviceName(stepData.toDevice)} ({stepData.toDevice})</span>
+              </div>
+              {stepData.detailedExplanation && (
+                <div className={styles.explanationText}>
+                  {stepData.detailedExplanation.packetJourney}
+                </div>
+              )}
+            </div>
 
-          <div className={styles.toggleDetails}>
-            <button
-              className={styles.detailsToggle}
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDetailed(!isDetailed);
-              }}
-            >
-              {isDetailed ? 'Hide' : 'Show'} Technical Details
-            </button>
-          </div>
-          {isDetailed && (
-            <>
-              {/* Packet Journey Information */}
+            {/* Packet Information */}
+            <div className={styles.detailSection}>
+              <h5><TechTerm term="Packet">📨 Packet</TechTerm> Information</h5>
+              <div className={styles.detailItem}>
+                <span>Source:</span>
+                <span>{stepData.packetInfo.source}</span>
+              </div>
+              <div className={styles.detailItem}>
+                <span>Destination:</span>
+                <span>{stepData.packetInfo.destination}</span>
+              </div>
+
+              {/* NAT Information */}
+              {stepData.packetInfo.natPerformed && (
+                <div className={styles.natInfo}>
+                  <h6><TechTerm term="NAT">🔄 NAT Translation</TechTerm></h6>
+                  {stepData.packetInfo.originalSource && (
+                    <div className={styles.detailItem}>
+                      <span>Original Source:</span>
+                      <span>{stepData.packetInfo.originalSource}</span>
+                    </div>
+                  )}
+                  {stepData.packetInfo.translatedSource && (
+                    <div className={styles.detailItem}>
+                      <span>Translated To:</span>
+                      <span>{stepData.packetInfo.translatedSource}</span>
+                    </div>
+                  )}
+                  {stepData.packetInfo.originalDestination && (
+                    <div className={styles.detailItem}>
+                      <span>Original Dest:</span>
+                      <span>{stepData.packetInfo.originalDestination}</span>
+                    </div>
+                  )}
+                  {stepData.packetInfo.translatedDestination && (
+                    <div className={styles.detailItem}>
+                      <span>Translated To:</span>
+                      <span>{stepData.packetInfo.translatedDestination}</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className={styles.detailItem}>
+                <span><TechTerm term="Protocol">Protocol</TechTerm>:</span>
+                <span>{stepData.packetInfo.protocol}</span>
+              </div>
+              <div className={styles.detailItem}>
+                <span>Size:</span>
+                <span>{stepData.packetInfo.size}</span>
+              </div>
+              {stepData.packetInfo.ttl && (
+                <div className={styles.detailItem}>
+                  <span><TechTerm term="TTL">TTL</TechTerm>:</span>
+                  <span>{stepData.packetInfo.ttl}</span>
+                </div>
+              )}
+              {stepData.packetInfo.request && (
+                <div className={styles.detailItem}>
+                  <span>Request:</span>
+                  <span>{stepData.packetInfo.request}</span>
+                </div>
+              )}
+              {stepData.packetInfo.query && (
+                <div className={styles.detailItem}>
+                  <span>Query:</span>
+                  <span>{stepData.packetInfo.query}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Routing Decision */}
+            {stepData.packetInfo.routingDecision && (
               <div className={styles.detailSection}>
-                <h5>📦 Packet Journey</h5>
+                <h5>🧭 Routing Decision</h5>
                 <div className={styles.detailItem}>
-                  <span>From:</span>
-                  <span>{getDeviceName(stepData.fromDevice)} ({stepData.fromDevice})</span>
+                  <span>Decision:</span>
+                  <span>{stepData.packetInfo.routingDecision}</span>
                 </div>
-                <div className={styles.detailItem}>
-                  <span>To:</span>
-                  <span>{getDeviceName(stepData.toDevice)} ({stepData.toDevice})</span>
-                </div>
+                {stepData.packetInfo.nextHop && (
+                  <div className={styles.detailItem}>
+                    <span>Next Hop:</span>
+                    <span>{stepData.packetInfo.nextHop}</span>
+                  </div>
+                )}
                 {stepData.detailedExplanation && (
                   <div className={styles.explanationText}>
-                    {stepData.detailedExplanation.packetJourney}
+                    {stepData.detailedExplanation.routingLogic}
                   </div>
                 )}
               </div>
+            )}
 
-              {/* Packet Information */}
+            {/* Networking Concepts */}
+            {stepData.detailedExplanation?.networkingConcepts && (
               <div className={styles.detailSection}>
-                <h5><TechTerm term="Packet">📨 Packet</TechTerm> Information</h5>
-                <div className={styles.detailItem}>
-                  <span>Source:</span>
-                  <span>{stepData.packetInfo.source}</span>
+                <h5>🎓 Networking Concepts</h5>
+                <div className={styles.conceptsList}>
+                  {stepData.detailedExplanation.networkingConcepts.map((concept, index) => (
+                    <span key={index} className={styles.conceptTag}>
+                      <TechTerm term={concept}>{concept}</TechTerm>
+                    </span>
+                  ))}
                 </div>
-                <div className={styles.detailItem}>
-                  <span>Destination:</span>
-                  <span>{stepData.packetInfo.destination}</span>
-                </div>
-
-                {/* NAT Information */}
-                {stepData.packetInfo.natPerformed && (
-                  <div className={styles.natInfo}>
-                    <h6><TechTerm term="NAT">🔄 NAT Translation</TechTerm></h6>
-                    {stepData.packetInfo.originalSource && (
-                      <div className={styles.detailItem}>
-                        <span>Original Source:</span>
-                        <span>{stepData.packetInfo.originalSource}</span>
-                      </div>
-                    )}
-                    {stepData.packetInfo.translatedSource && (
-                      <div className={styles.detailItem}>
-                        <span>Translated To:</span>
-                        <span>{stepData.packetInfo.translatedSource}</span>
-                      </div>
-                    )}
-                    {stepData.packetInfo.originalDestination && (
-                      <div className={styles.detailItem}>
-                        <span>Original Dest:</span>
-                        <span>{stepData.packetInfo.originalDestination}</span>
-                      </div>
-                    )}
-                    {stepData.packetInfo.translatedDestination && (
-                      <div className={styles.detailItem}>
-                        <span>Translated To:</span>
-                        <span>{stepData.packetInfo.translatedDestination}</span>
-                      </div>
-                    )}
-                  </div>
-                )}
-
-                <div className={styles.detailItem}>
-                  <span><TechTerm term="Protocol">Protocol</TechTerm>:</span>
-                  <span>{stepData.packetInfo.protocol}</span>
-                </div>
-                <div className={styles.detailItem}>
-                  <span>Size:</span>
-                  <span>{stepData.packetInfo.size}</span>
-                </div>
-                {stepData.packetInfo.ttl && (
-                  <div className={styles.detailItem}>
-                    <span><TechTerm term="TTL">TTL</TechTerm>:</span>
-                    <span>{stepData.packetInfo.ttl}</span>
-                  </div>
-                )}
-                {stepData.packetInfo.request && (
-                  <div className={styles.detailItem}>
-                    <span>Request:</span>
-                    <span>{stepData.packetInfo.request}</span>
-                  </div>
-                )}
-                {stepData.packetInfo.query && (
-                  <div className={styles.detailItem}>
-                    <span>Query:</span>
-                    <span>{stepData.packetInfo.query}</span>
-                  </div>
-                )}
               </div>
+            )}
 
-              {/* Routing Decision */}
-              {stepData.packetInfo.routingDecision && (
-                <div className={styles.detailSection}>
-                  <h5>🧭 Routing Decision</h5>
-                  <div className={styles.detailItem}>
-                    <span>Decision:</span>
-                    <span>{stepData.packetInfo.routingDecision}</span>
-                  </div>
-                  {stepData.packetInfo.nextHop && (
-                    <div className={styles.detailItem}>
-                      <span>Next Hop:</span>
-                      <span>{stepData.packetInfo.nextHop}</span>
+            {/* Routing Information */}
+            {Object.keys(stepData.routingInfo).length > 0 && (
+              <div className={styles.detailSection}>
+                <h5><TechTerm term="Router">📋 Routing</TechTerm> Table</h5>
+                <div className={styles.routingTable}>
+                  {Object.entries(stepData.routingInfo).map(([dest, route]) => (
+                    <div key={dest} className={styles.routeEntry}>
+                      <span>{dest}:</span>
+                      <span>{route}</span>
                     </div>
-                  )}
-                  {stepData.detailedExplanation && (
-                    <div className={styles.explanationText}>
-                      {stepData.detailedExplanation.routingLogic}
-                    </div>
-                  )}
+                  ))}
                 </div>
-              )}
-
-              {/* Networking Concepts */}
-              {stepData.detailedExplanation?.networkingConcepts && (
-                <div className={styles.detailSection}>
-                  <h5>🎓 Networking Concepts</h5>
-                  <div className={styles.conceptsList}>
-                    {stepData.detailedExplanation.networkingConcepts.map((concept, index) => (
-                      <span key={index} className={styles.conceptTag}>
-                        <TechTerm term={concept}>{concept}</TechTerm>
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Routing Information */}
-              {Object.keys(stepData.routingInfo).length > 0 && (
-                <div className={styles.detailSection}>
-                  <h5><TechTerm term="Router">📋 Routing</TechTerm> Table</h5>
-                  <div className={styles.routingTable}>
-                    {Object.entries(stepData.routingInfo).map(([dest, route]) => (
-                      <div key={dest} className={styles.routeEntry}>
-                        <span>{dest}:</span>
-                        <span>{route}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
-      {/* Step Controls - always visible */}
-      <div className={styles.stepControls} onClick={(e) => e.stopPropagation()}>
-        <button
-          className={`${styles.stepBtn} ${styles.previous}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onPrevious();
-          }}
-          disabled={currentStep === 0}
-          title="Previous Step"
-          aria-label="Previous Step"
-        >
-          <i className="fas fa-chevron-left"></i>
-        </button>
-
-        {!isAutoPlaying ? (
-          <button
-            className={`${styles.stepBtn} ${styles.autoPlay}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handleAutoPlay();
-            }}
-            title="Auto Play All Steps"
-            aria-label="Auto Play"
-          >
-            <i className="fas fa-play"></i>
-          </button>
-        ) : (
-          <button
-            className={`${styles.stepBtn} ${styles.pause}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePause();
-            }}
-            title="Pause Auto Play"
-            aria-label="Pause"
-          >
-            <i className="fas fa-pause"></i>
-          </button>
+              </div>
+            )}
+          </>
         )}
-
-        <button
-          className={`${styles.stepBtn} ${styles.next}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onNext();
-          }}
-          disabled={currentStep === totalSteps - 1}
-          title="Next Step"
-          aria-label="Next Step"
-        >
-          <i className="fas fa-chevron-right"></i>
-        </button>
-
-        <button
-          className={`${styles.stepBtn} ${styles.reset}`}
-          onClick={(e) => {
-            e.stopPropagation();
-            onReset();
-          }}
-          title="Restart Demo from Beginning"
-          aria-label="Restart Demo"
-        >
-          <i className="fas fa-redo"></i>
-        </button>
       </div>
-      {/* Resize Handles */}
-      {!isMinimized && (
-        <>
-          {/* Corner handles */}
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeNw}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeNe}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeSw}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeSe}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
-          />
+    )}
+    {/* Step Controls - always visible */}
+    <div className={styles.stepControls} onClick={(e) => e.stopPropagation()}>
+      <button
+        className={`${styles.stepBtn} ${styles.previous}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onPrevious();
+        }}
+        disabled={currentStep === 0}
+        title="Previous Step"
+        aria-label="Previous Step"
+      >
+        <i className="fas fa-chevron-left"></i>
+      </button>
 
-          {/* Edge handles */}
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeN}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'n')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeS}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 's')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeW}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'w')}
-          />
-          <div
-            className={`${styles.resizeHandle} ${styles.resizeE}`}
-            onMouseDown={(e) => handleResizeMouseDown(e, 'e')}
-          />
-
-          {/* Resize indicator */}
-          <div className={styles.resizeIndicator}>
-            <i className="fas fa-expand-arrows-alt"></i>
-          </div>
-        </>
+      {!isAutoPlaying ? (
+        <button
+          className={`${styles.stepBtn} ${styles.autoPlay}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handleAutoPlay();
+          }}
+          title="Auto Play All Steps"
+          aria-label="Auto Play"
+        >
+          <i className="fas fa-play"></i>
+        </button>
+      ) : (
+        <button
+          className={`${styles.stepBtn} ${styles.pause}`}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePause();
+          }}
+          title="Pause Auto Play"
+          aria-label="Pause"
+        >
+          <i className="fas fa-pause"></i>
+        </button>
       )}
+
+      <button
+        className={`${styles.stepBtn} ${styles.next}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onNext();
+        }}
+        disabled={currentStep === totalSteps - 1}
+        title="Next Step"
+        aria-label="Next Step"
+      >
+        <i className="fas fa-chevron-right"></i>
+      </button>
+
+      <button
+        className={`${styles.stepBtn} ${styles.reset}`}
+        onClick={(e) => {
+          e.stopPropagation();
+          onReset();
+        }}
+        title="Restart Demo from Beginning"
+        aria-label="Restart Demo"
+      >
+        <i className="fas fa-redo"></i>
+      </button>
     </div>
+    {/* Resize Handles */}
+    {!isMinimized && (
+      <>
+        {/* Corner handles */}
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeNw}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'nw')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeNe}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'ne')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeSw}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'sw')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeSe}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'se')}
+        />
+
+        {/* Edge handles */}
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeN}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'n')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeS}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 's')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeW}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'w')}
+        />
+        <div
+          className={`${styles.resizeHandle} ${styles.resizeE}`}
+          onMouseDown={(e) => handleResizeMouseDown(e, 'e')}
+        />
+
+        {/* Resize indicator */}
+        <div className={styles.resizeIndicator}>
+          <i className="fas fa-expand-arrows-alt"></i>
+        </div>
+      </>
+    )}
+  </div>
   );
 });

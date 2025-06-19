@@ -49,7 +49,7 @@ export const Device: React.FC<DeviceProps> = ({
   }, [device.position, containerRect, canvasOffset]);  const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !deviceRef.current || !containerRect) return;
 
-    // Convert mouse position to canvas coordinates
+    // Convert mouse position to canvas coordinates immediately
     const canvasMouseX = e.clientX - containerRect.left - canvasOffset.x;
     const canvasMouseY = e.clientY - containerRect.top - canvasOffset.y;
 
@@ -99,13 +99,13 @@ export const Device: React.FC<DeviceProps> = ({
       };
     }
   }, [isDragging, handleMouseMove, handleMouseUp]);
-
-  const deviceStyle: React.CSSProperties = {
+  // Memoize device style for better performance
+  const deviceStyle: React.CSSProperties = React.useMemo(() => ({
     left: device.position.x - DEVICE_CONFIG.WIDTH / 2,
     top: device.position.y - DEVICE_CONFIG.HEIGHT / 2,
     width: DEVICE_CONFIG.WIDTH,
     height: DEVICE_CONFIG.HEIGHT,
-  };
+  }), [device.position.x, device.position.y]);
   const getDeviceIcon = (deviceType: string) => {
     const icons: Record<string, string> = {
       client: 'fas fa-laptop',

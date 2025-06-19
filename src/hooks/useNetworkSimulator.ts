@@ -1506,7 +1506,7 @@ export const useNetworkSimulator = (initialScenario: ScenarioType = 'basic') => 
           return prev;
         }
       });
-    }, 3000);
+    }, 3000) as unknown as number;
   }, [
     stepData,
     clearConnectionHighlights,
