@@ -45,7 +45,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
     // Panel visibility state
     const [showControlPanel, setShowControlPanel] = useState(true);
     const [showLogPanel, setShowLogPanel] = useState(true);
-    const [showPanelDropdown, setShowPanelDropdown] = useState(false);    // Canvas dragging and zoom state
+    const [showPanelDropdown, setShowPanelDropdown] = useState(false);
+
+    // Canvas dragging and zoom state
     const [canvasOffset, setCanvasOffset] = useState({ x: 0, y: 0 });
     const [isDragging, setIsDragging] = useState(false);
     const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -341,12 +343,14 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             window.removeEventListener('keydown', handleKeyDown);
             document.removeEventListener('click', handleClickOutside);
         };
-    }, [showControlPanel, showLogPanel, showPanelDropdown]);    // Constrain canvas offset to reasonable bounds based on zoom level
+    }, [showControlPanel, showLogPanel, showPanelDropdown]);
+
+    // Constrain canvas offset to reasonable bounds based on zoom level
     const constrainOffset = useCallback((offset: { x: number; y: number }) => {
         // Adjust max offset based on zoom level - allow more movement when zoomed in
         const baseMaxOffset = 500;
         const maxOffset = baseMaxOffset * Math.max(1, zoomLevel);
-        
+
         const constrainedOffset = {
             x: Math.max(-maxOffset, Math.min(maxOffset, offset.x)),
             y: Math.max(-maxOffset, Math.min(maxOffset, offset.y))
@@ -372,7 +376,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         const minZoom = 0.1;
         const maxZoom = 3;
         const clampedZoom = Math.max(minZoom, Math.min(maxZoom, newZoom));
-        
+
         if (clampedZoom === zoomLevel) return;
 
         // If center point is provided, adjust offset to zoom towards that point
@@ -380,36 +384,38 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             const rect = containerRef.current.getBoundingClientRect();
             const relativeX = centerX - rect.left;
             const relativeY = centerY - rect.top;
-            
+
             // Calculate the point in the canvas coordinate system
             const canvasPointX = (relativeX - canvasOffset.x) / zoomLevel;
             const canvasPointY = (relativeY - canvasOffset.y) / zoomLevel;
-            
+
             // Calculate new offset to keep the zoom center point fixed
             const newOffsetX = relativeX - canvasPointX * clampedZoom;
             const newOffsetY = relativeY - canvasPointY * clampedZoom;
-            
+
             setCanvasOffset(constrainOffset({ x: newOffsetX, y: newOffsetY }));
         }
-        
+
         setZoomLevel(clampedZoom);
     }, [zoomLevel, canvasOffset, constrainOffset]);
 
     // Mouse wheel zoom
     const handleWheel = useCallback((e: WheelEvent) => {
         if (!containerRef.current?.contains(e.target as Node)) return;
-        
+
         // Check if user is holding Ctrl key for zoom, otherwise allow normal scrolling
         if (!e.ctrlKey && !e.metaKey) return;
-        
+
         e.preventDefault();
         e.stopPropagation();
-        
+
         const zoomDelta = e.deltaY > 0 ? 0.9 : 1.1;
         const newZoom = zoomLevel * zoomDelta;
-        
+
         handleZoomChange(newZoom, e.clientX, e.clientY);
-    }, [zoomLevel, handleZoomChange]);    // Touch pinch-to-zoom
+    }, [zoomLevel, handleZoomChange]);
+
+    // Touch pinch-to-zoom
     const [touchStartDistance, setTouchStartDistance] = useState<number | null>(null);
     const [touchStartZoom, setTouchStartZoom] = useState<number>(1);
 
@@ -418,7 +424,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         const touch1 = touches[0];
         const touch2 = touches[1];
         return Math.sqrt(
-            Math.pow(touch2.clientX - touch1.clientX, 2) + 
+            Math.pow(touch2.clientX - touch1.clientX, 2) +
             Math.pow(touch2.clientY - touch1.clientY, 2)
         );
     }, []);// Touch handlers for mobile support
@@ -450,7 +456,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
 
     const handleCanvasTouchMove = useCallback((e: React.TouchEvent<HTMLDivElement>) => {
         e.preventDefault();
-        
+
         if (e.touches.length === 1 && isDragging && !isZooming) {
             // Single touch panning
             const touch = e.touches[0];
@@ -465,11 +471,11 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             if (currentDistance) {
                 const zoomFactor = currentDistance / touchStartDistance;
                 const newZoom = touchStartZoom * zoomFactor;
-                
+
                 // Get center point between the two touches
                 const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
                 const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
-                
+
                 handleZoomChange(newZoom, centerX, centerY);
             }
         }
@@ -483,7 +489,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             setIsZooming(false);
             setTouchStartDistance(null);
         }
-    }, [isDragging, isZooming]);    // Global mouse event handlers to handle dragging and canvas interactions
+    }, [isDragging, isZooming]);
+
+    // Global mouse event handlers to handle dragging and canvas interactions
     useEffect(() => {
         const handleGlobalMouseDown = (e: MouseEvent) => {
             // Check if the click is within our container
@@ -541,7 +549,9 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
             document.removeEventListener('mousemove', handleGlobalMouseMove);
             document.removeEventListener('mouseup', handleGlobalMouseUp);
         };
-    }, [isDragging, dragStart, canvasOffset, constrainOffset, handleWheel]);    // Reset canvas position and zoom
+    }, [isDragging, dragStart, canvasOffset, constrainOffset, handleWheel]);
+
+    // Reset canvas position and zoom
     const resetCanvasPosition = useCallback(() => {
         setCanvasOffset({ x: 0, y: 0 });
         setZoomLevel(1);
@@ -577,7 +587,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
         <div className={`${styles.networkSimulator} ${className}`}>
             {/* Header */}
             <header className={styles.networkHeader}>
-                <div className={styles.headerContent}>                    <div className={styles.headerTitle}>
+                <div className={styles.headerContent}>
+                    <div className={styles.headerTitle}>
                         <div className={styles.brand}>
                             <div className={styles.brandIcon}>
                                 <i className="fas fa-network-wired"></i>
@@ -588,7 +599,7 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             </div>
                         </div>
                     </div>
-                      {/* Zoom Controls in Header */}
+                    {/* Zoom Controls in Header */}
                     <div className={styles.headerZoomControls}>
                         <div className={styles.zoomButtonsRow}>
                             <button
@@ -752,7 +763,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                         >
                             <i className="fas fa-sliders-h"></i>
                         </button>
-                    )}                    {/* Show Log Panel Button - appears when log panel is hidden */}
+                    )}
+                    {/* Show Log Panel Button - appears when log panel is hidden */}
                     {showLogger && !showLogPanel && (
                         <button
                             className={`${styles.showPanelBtn} ${styles.showLogPanelBtn}`}
@@ -771,7 +783,8 @@ const NetworkSimulatorInner: React.FC<NetworkSimulatorProps> = ({
                             transform: `translate(${canvasOffset.x}px, ${canvasOffset.y}px) scale(${zoomLevel})`,
                             cursor: isDragging ? 'grabbing' : 'grab'
                         }}
-                    >                        {/* Canvas Drag Hint */}
+                    >
+                        {/* Canvas Drag Hint */}
                         {showDragHint && canvasOffset.x === 0 && canvasOffset.y === 0 && zoomLevel === 1 && !isDragging && (
                             <div className={styles.canvasDragHint}>
                                 <i className="fas fa-hand-paper"></i>
