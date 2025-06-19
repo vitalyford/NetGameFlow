@@ -4,8 +4,7 @@
   background: white;
   border-radius: 10px;
   padding: 0.8rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  border: 2px solid #ecf0f1;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);  border: 2px solid #ecf0f1;
   text-align: center;
   transition: all 0.3s ease;
   cursor: pointer;
@@ -39,6 +38,8 @@
   z-index: 1000;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   cursor: move;
+  /* Disable transitions while dragging for immediate response */
+  transition: none !important;
   /* Don't apply any transforms while dragging to avoid position conflicts */
 }
 
