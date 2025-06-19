@@ -19,11 +19,12 @@ export const Tooltip: React.FC<TooltipProps> = ({
     const timeoutRef = useRef<number | null>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
     const triggerRef = useRef<HTMLDivElement>(null);
+
     const showTooltip = () => {
         timeoutRef.current = setTimeout(() => {
             setIsVisible(true);
             adjustPosition();
-        }, delay);
+        }, delay) as unknown as number;
     };
 
     const hideTooltip = () => {
